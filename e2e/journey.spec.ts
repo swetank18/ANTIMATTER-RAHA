@@ -1,0 +1,95 @@
+import { writeFileSync } from 'node:fs';
+import { expect, test, type Page } from '@playwright/test';
+
+const requests = async (page: Page) => {
+  const ledger = await (await page.request.get('/api/ledger?limit=2000')).json();
+  return ledger.filter((e: { type: string }) => e.type === 'RIDE_REQUEST').length;
+};
+
+async function settle(page: Page) {
+  await page.goto('/#/rider');
+  await page.waitForFunction(() => !!localStorage.getItem('pack'));
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller || location.reload() === undefined);
+  await page.reload();
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+  await page.waitForTimeout(800);
+}
+
+test.beforeEach(async ({ request }) => {
+  await request.post('/api/reset', { data: {} });
+});
+
+test('C01: the rider journey survives losing the internet in a real browser', async ({ page, context }) => {
+  await settle(page);
+  const before = await requests(page);
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Is this fare fair?' })).toBeVisible();
+  await expect(page.locator('#net')).toContainText('You are offline');
+  await expect(page.getByText('Queued until you reconnect')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Check this fare' }).click();
+  await expect(page.locator('#check-out')).toContainText('Using fares saved at');
+
+  await page.getByRole('button', { name: 'Find my group' }).click();
+  await expect(page.getByText('Waiting to send')).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByText('Waiting to send')).toBeVisible();
+  expect(await requests(page)).toBe(before);
+
+  await context.setOffline(false);
+  await expect(page.locator('#net')).toBeEmpty({ timeout: 10000 });
+  await expect(page.getByText('Sent', { exact: true })).toBeVisible({ timeout: 10000 });
+  expect(await requests(page)).toBe(before + 1);
+
+  await page.reload();
+  await page.waitForTimeout(3000);
+  expect(await requests(page)).toBe(before + 1);
+});
+
+test('C01: a hard outage from the Arena is shown the same way', async ({ page, request }) => {
+  await settle(page);
+  await request.post('/api/arena/offline', { data: { on: true } });
+  await expect(page.locator('#net')).toContainText('You are offline', { timeout: 8000 });
+  await request.post('/api/arena/offline', { data: { on: false } });
+  await expect(page.locator('#net')).toBeEmpty({ timeout: 8000 });
+});
+
+test('C06: keyboard only, no colour, no serious accessibility issues', async ({ page }) => {
+  await settle(page);
+  await page.goto('/#/rider?mode=keyboard');
+  await expect(page.locator('html')).toHaveAttribute('data-mode', 'keyboard');
+
+  const focusOn = async (name: string) => {
+    for (let i = 0; i < 30; i++) {
+      await page.keyboard.press('Tab');
+      if (await page.evaluate((n) => document.activeElement?.textContent?.trim() === n, name)) return;
+    }
+    throw new Error(`Could not reach "${name}" by keyboard`);
+  };
+  await focusOn('Check this fare');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#check-out')).toContainText('cannot be checked against the legal cap');
+  await focusOn('Find my group');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#ride')).toBeFocused({ timeout: 10000 });
+  const keyboardJourney = true;
+
+  const audit = async (hash: string) => {
+    await page.goto(hash);
+    await page.waitForTimeout(600);
+    await page.addScriptTag({ path: 'node_modules/axe-core/axe.min.js' });
+    return page.evaluate(async () => {
+      const r = await (window as any).axe.run();
+      return r.violations.filter((v: any) => ['serious', 'critical'].includes(v.impact)).map((v: any) => `${v.id}: ${v.nodes.length}`);
+    });
+  };
+  const rider = await audit('/#/rider');
+  const arena = await audit('/#/arena');
+  console.log('serious issues', JSON.stringify({ rider, arena }));
+  writeFileSync('results/a11y.json', JSON.stringify({ keyboardJourney, seriousViolations: rider.length + arena.length, pages: 2, details: { rider, arena }, ranAt: new Date().toISOString() }, null, 2));
+  expect([...rider, ...arena]).toEqual([]);
+});

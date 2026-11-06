@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: koottu
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
