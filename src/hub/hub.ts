@@ -10,6 +10,7 @@ import { EventEmitter } from 'node:events';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { allocate, type OptionIn, type PoolIn, type UnitIn } from '../core/allocator.ts';
+import { chooseBid, parseOnSearch, type BidResult, type DriverBid } from '../core/bids.ts';
 import { auditPods, certify, type PodAudit } from '../core/certify.ts';
 import { adapt, MAPPING_V1, proposeMapping, type Mapping } from '../core/contract.ts';
 import { advise, checkFare, fareFor, KM_PER_MIN, roundShares, type Advice, type FareCheck, type FareRule, type Travel } from '../core/fare.ts';
@@ -22,6 +23,8 @@ import { newKeyPair, signToken } from '../core/pass.ts';
 import { compare, POLICY_V1, prioritise, validatePolicy } from '../core/priority.ts';
 import { resolveQuotes, type Quote, type QuoteResult } from '../core/quotes.ts';
 import { assess } from '../core/sensors.ts';
+import { pairedGap, type GapReport } from '../core/stats.ts';
+import { backtest, forecast, type Backtest, type SurgeForecast, type SurgeModel } from '../core/surge.ts';
 import { resolveRoute } from '../core/truth.ts';
 import type {
   Alternative, Belief, CabSlot, Certificate, CertificateCheck, Decision, Need, PassPayload, Pod, Policy, Priority, Reading, Rider, RouteRecord, SensorReport, ShareWith, Witness,
@@ -45,6 +48,8 @@ const SLOT_MIN = 5;
 const HORIZON_MIN = 60;
 const CLARIFY_DUE_MIN = 5;
 const KEY_ID = 'hub-2026';
+const UPI_RESERVE_LIMIT = 10000;
+const BRIDGE_TRANSFER_MIN = 6;
 const DEFAULT_SPOT = 'GDY-E';
 const LIVE_POD = `('FORMING','LOCKED','BOOKED','RIDING')`;
 const ACTIVE_SEAT = `('HELD','COMMITTED','BOARDED')`;
@@ -217,9 +222,9 @@ export class Hub extends EventEmitter {
   }
 
   insertRiders(list: Rider[], origin: string) {
-    const stmt = this.db.prepare(`INSERT INTO riders(pid, circle, spot, dest, need, party, share_with, deadline_kind, deadline_at, deadline_verified, checkin_at, max_wait_min, max_detour_min, solo_fare, state, displaced, origin)
-      VALUES (@pid, @circle, @spot, @dest, @need, @party, @shareWith, @deadlineKind, @deadlineAt, @verified, @checkinAt, @maxWaitMin, @maxDetourMin, @soloFare, @state, 0, @origin)`);
-    for (const p of list) stmt.run({ ...p, verified: p.deadlineVerified ? 1 : 0, origin });
+    const stmt = this.db.prepare(`INSERT INTO riders(pid, circle, spot, dest, need, party, share_with, deadline_kind, deadline_at, deadline_verified, checkin_at, max_wait_min, max_detour_min, solo_fare, state, displaced, origin, bridge_to)
+      VALUES (@pid, @circle, @spot, @dest, @need, @party, @shareWith, @deadlineKind, @deadlineAt, @verified, @checkinAt, @maxWaitMin, @maxDetourMin, @soloFare, @state, 0, @origin, @bridgeTo)`);
+    for (const p of list) stmt.run({ ...p, verified: p.deadlineVerified ? 1 : 0, origin, bridgeTo: p.bridgeTo ?? null });
   }
 
   riders(where = `state IN ('WAITING','ASSIGNED','AWAITING_INFO')`): Rider[] {
@@ -267,7 +272,7 @@ export class Hub extends EventEmitter {
 
   private toMatch(p: Rider, rank: number): MatchRider {
     return {
-      id: p.pid, spot: p.spot, node: spotOf(p.spot)!.node, circle: p.circle, dest: p.dest, party: p.party, need: p.need, shareWith: p.shareWith,
+      id: p.pid, spot: p.spot, node: spotOf(p.spot)!.node, circle: p.circle, dest: p.bridgeTo ?? p.dest, party: p.party, need: p.need, shareWith: p.shareWith,
       readyAt: p.checkinAt, maxWaitMin: p.maxWaitMin, maxDetourMin: p.maxDetourMin, soloFare: p.soloFare, rank,
     };
   }
@@ -943,6 +948,229 @@ export class Hub extends EventEmitter {
     };
   }
 
+  // ---------- the buying bloc: drivers bid for the group ----------
+
+  /** Posts one pooled request to the open network. No rider identity is in this message. */
+  async requestBids(podId: string) {
+    const pod = this.pod(podId);
+    if (!pod || !['LOCKED', 'FORMING'].includes(pod.state)) throw new HubError('BAD_POD', 'That group cannot ask for bids now');
+    const km = Math.max(1, pod.routeMin * KM_PER_MIN);
+    const body = JSON.stringify({ context: { action: 'search', domain: 'mobility' }, message: { intent: { start: pod.spot, stops: pod.stops, seats: pod.seatsTaken, km: Math.round(km * 10) / 10 } } });
+    const res = await this.egress.send('open-network', '/beckn/search', { method: 'POST', body });
+    if (res.blocked) {
+      return { ok: false as const, reason: res.blocked, message: 'Drivers cannot be reached right now. Your group and pass still work. Use a quote from your phone instead.' };
+    }
+    let raw: unknown = null;
+    try {
+      raw = JSON.parse(res.text ?? '');
+    } catch {
+      /* treated as no bids below */
+    }
+    const bids = parseOnSearch(raw);
+    const result: BidResult = chooseBid(bids, pod.seatsTaken);
+    const stmt = this.db.prepare(`INSERT OR REPLACE INTO bids(id, pod_id, driver, vehicle, seats, amount, eta_min, rating, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'OPEN')`);
+    this.db.transaction(() => {
+      for (const b of bids) stmt.run(b.id, pod.id, b.driver, b.vehicle, b.seats, b.amount, b.etaMin, b.rating);
+      this.record('BIDS_RECEIVED', 'network', { pod: pod.id, bids: bids.length, best: result.best?.amount ?? null });
+    })();
+    return { ok: true as const, ...result, soloTotal: this.podSoloTotal(pod.id), simulated: true };
+  }
+
+  private podSoloTotal(podId: string): number {
+    return (this.db.prepare(`SELECT COALESCE(SUM(solo), 0) c FROM seats WHERE pod_id = ? AND state IN ${ACTIVE_SEAT}`).get(podId) as { c: number }).c;
+  }
+
+  acceptBid(input: { opId: string; pid: string; podId: string; bidId: string }) {
+    return this.idempotent(`accept:${requireOp(input.opId)}`, { pid: input.pid, podId: input.podId, bidId: input.bidId }, () => {
+      const pod = this.pod(input.podId);
+      if (!pod || pod.state !== 'LOCKED') throw new HubError('BAD_POD', 'This group is not ready to accept a bid');
+      if (pod.lead !== input.pid) throw new HubError('NOT_LEAD', 'Only the group lead can accept a bid', 403);
+      const bid = this.db.prepare(`SELECT * FROM bids WHERE id = ? AND pod_id = ? AND state = 'OPEN'`).get(input.bidId, pod.id) as any;
+      if (!bid) throw new HubError('BAD_BID', 'That bid is no longer open');
+      this.db.prepare(`UPDATE bids SET state = CASE WHEN id = ? THEN 'WON' ELSE 'LOST' END WHERE pod_id = ?`).run(bid.id, pod.id);
+      this.db.prepare('UPDATE pods SET fare = ? WHERE id = ?').run(bid.amount, pod.id);
+      this.reshare(pod.id);
+      this.record('BID_ACCEPTED', 'rider', { pod: pod.id, bid: bid.id, fare: bid.amount });
+      return { podId: pod.id, fare: bid.amount, driver: bid.driver, shares: this.podShares(pod.id) };
+    });
+  }
+
+  podShares(podId: string) {
+    return this.db.prepare(`SELECT pid, share, solo FROM seats WHERE pod_id = ? AND state IN ${ACTIVE_SEAT} ORDER BY id`).all(podId) as { pid: string; share: number; solo: number }[];
+  }
+
+  // ---------- locked shares (no-shows are why pooling fails) ----------
+
+  /**
+   * Each rider blocks their share before anyone books. This models the UPI Reserve Pay lifecycle:
+   * reserve, then debit or release. The gateway here is simulated and moves no money.
+   */
+  lockShare(input: { opId: string; pid: string; podId: string }) {
+    return this.idempotent(`lock:${requireOp(input.opId)}`, { pid: input.pid, podId: input.podId }, () => {
+      const pod = this.pod(input.podId);
+      if (!pod || pod.state !== 'LOCKED') throw new HubError('BAD_POD', 'This group is not taking payment now');
+      const seat = this.db.prepare(`SELECT share FROM seats WHERE pid = ? AND pod_id = ? AND state = 'COMMITTED'`).get(input.pid, pod.id) as { share: number } | undefined;
+      if (!seat) throw new HubError('NOT_MEMBER', 'You are not in this group', 403);
+      if (seat.share > UPI_RESERVE_LIMIT) throw new HubError('OVER_LIMIT', 'This share is above the UPI Reserve Pay limit');
+      this.db.prepare(`INSERT INTO reservations(id, pod_id, pid, amount, state) VALUES (?, ?, ?, ?, 'RESERVED')`).run(`SIM-${randomBytes(4).toString('hex')}`, pod.id, input.pid, seat.share);
+      this.record('SHARE_LOCKED', 'rider', { pid: input.pid, pod: pod.id, amount: seat.share });
+      const settled = this.trySettle(pod.id);
+      return { locked: true, amount: seat.share, settled };
+    });
+  }
+
+  /** When every seat is locked the cab is booked and each block is debited. */
+  private trySettle(podId: string): boolean {
+    const pod = this.pod(podId)!;
+    const seats = (this.db.prepare(`SELECT COUNT(*) c FROM seats WHERE pod_id = ? AND state = 'COMMITTED'`).get(podId) as { c: number }).c;
+    const held = (this.db.prepare(`SELECT COUNT(*) c FROM reservations WHERE pod_id = ? AND state = 'RESERVED'`).get(podId) as { c: number }).c;
+    if (seats === 0 || held < seats) return false;
+    const won = this.db.prepare(`SELECT driver FROM bids WHERE pod_id = ? AND state = 'WON'`).get(podId) as { driver: string } | undefined;
+    this.db.prepare(`UPDATE reservations SET state = 'DEBITED' WHERE pod_id = ? AND state = 'RESERVED'`).run(podId);
+    this.db.prepare(`UPDATE pods SET state = 'BOOKED', booked_app = ? WHERE id = ?`).run(won ? 'Open network' : 'App quote', podId);
+    this.record('GROUP_BOOKED', 'gateway', { pod: podId, fare: pod.fare, riders: seats });
+    return true;
+  }
+
+  /** Anyone who has not locked in time loses their seat. Everyone else's block is released, because their share changes. */
+  dropUnlocked(podId: string) {
+    const pod = this.pod(podId);
+    if (!pod || pod.state !== 'LOCKED') throw new HubError('BAD_POD', 'This group is not waiting on payment');
+    const dropped: string[] = [];
+    this.db.transaction(() => {
+      const seats = this.db.prepare(`SELECT id, pid, units FROM seats WHERE pod_id = ? AND state = 'COMMITTED'`).all(podId) as any[];
+      for (const s of seats) {
+        if (this.db.prepare(`SELECT 1 FROM reservations WHERE pod_id = ? AND pid = ? AND state = 'RESERVED'`).get(podId, s.pid)) continue;
+        dropped.push(s.pid);
+        this.db.prepare(`UPDATE seats SET state = 'RELEASED' WHERE id = ?`).run(s.id);
+        this.db.prepare('UPDATE pods SET seats_taken = seats_taken - ? WHERE id = ?').run(s.units, podId);
+        this.db.prepare(`UPDATE riders SET state = 'WAITING' WHERE pid = ?`).run(s.pid);
+      }
+      this.db.prepare(`UPDATE reservations SET state = 'RELEASED' WHERE pod_id = ? AND state = 'RESERVED'`).run(podId);
+      this.reshare(podId);
+      this.record('NO_SHOW', 'gateway', { pod: podId, dropped: dropped.length });
+    })();
+    return { dropped, shares: this.podShares(podId) };
+  }
+
+  reservationsFor(podId: string) {
+    return this.db.prepare('SELECT pid, amount, state, gateway FROM reservations WHERE pod_id = ? ORDER BY rowid').all(podId) as any[];
+  }
+
+  // ---------- bridge mode ----------
+
+  /** The best working station for one trip when rail at `node` has failed, or null if none helps. */
+  bridgeFor(node: string, dest: string, failed: Set<string>): { station: string; rideMin: number; metroMin: number; totalMin: number } | null {
+    const closed = new Set([...this.closedEdges(), ...failed]);
+    const stations = [...new Set(EDGES.filter((e) => e.mode === 'METRO' && !failed.has(e.id)).flatMap((e) => [e.a, e.b]))].filter((n) => n !== node && n !== dest);
+    const direct = shortest(node, dest, closed)?.min ?? Infinity;
+    let best: { station: string; rideMin: number; metroMin: number; totalMin: number } | null = null;
+    for (const station of stations) {
+      const ride = shortest(node, station, closed);
+      const metro = shortest(station, dest, closed, ['METRO']);
+      if (!ride || !metro || ride.min >= direct) continue;
+      const totalMin = ride.min + BRIDGE_TRANSFER_MIN + metro.min;
+      if (!best || totalMin < best.totalMin || (totalMin === best.totalMin && ride.min < best.rideMin)) best = { station, rideMin: ride.min, metroMin: metro.min, totalMin };
+    }
+    return best;
+  }
+
+  /**
+   * A train line fails. Instead of everyone booking the whole trip home, people are grouped for the
+   * short ride to the nearest station still running.
+   */
+  triggerBridge(node: string, reason: string) {
+    const failed = new Set(EDGES.filter((e) => e.mode === 'METRO' && (e.a === node || e.b === node)).map((e) => e.id));
+    const closed = this.closedEdges();
+    const spots = SPOTS.filter((s) => s.node === node).map((s) => s.id);
+    const riders = this.riders().filter((r) => spots.includes(r.spot) && r.state !== 'AWAITING_INFO');
+    const locked = new Set((this.db.prepare(`SELECT pid FROM seats WHERE state IN ('COMMITTED','BOARDED')`).all() as any[]).map((r) => r.pid));
+    let bridged = 0;
+    let fullTotal = 0;
+    let hopTotal = 0;
+    const byStation = new Map<string, number>();
+    this.db.transaction(() => {
+      this.setMeta('rail_down', node);
+      for (const r of riders) {
+        if (locked.has(r.pid)) continue;
+        const plan = this.bridgeFor(node, r.dest, failed);
+        if (!plan) continue;
+        const surge = spotOf(r.spot)!.surge;
+        const hop = fareFor(plan.rideMin * KM_PER_MIN, surge);
+        const full = fareFor((shortest(node, r.dest, closed)?.min ?? 20) * KM_PER_MIN, surge);
+        this.db.prepare('UPDATE riders SET bridge_to = ?, full_fare = ?, solo_fare = ? WHERE pid = ?').run(plan.station, full, hop, r.pid);
+        bridged++;
+        fullTotal += full;
+        hopTotal += hop;
+        byStation.set(plan.station, (byStation.get(plan.station) ?? 0) + 1);
+      }
+      this.record('BRIDGE_MODE', 'operator', { node, reason, bridged });
+    })();
+    const epoch = this.matchEpoch('Bridge mode');
+    return { node, bridged, fullTotal, hopTotal, stations: [...byStation.entries()].map(([station, riders]) => ({ station: nodeName(station), riders })), epoch };
+  }
+
+  // ---------- surge forecast ----------
+
+  private surge: { model: SurgeModel; report: Backtest } | null = null;
+
+  surgeModel() {
+    this.surge ??= backtest();
+    return this.surge;
+  }
+
+  setAlert(kind: 'RAIN' | 'TRANSIT', on: boolean) {
+    this.setMeta(`alert_${kind}`, on ? 1 : 0);
+    if (on) this.setMeta('alert_since', this.now);
+    this.record('ALERT', 'operator', { kind, on });
+    this.changed();
+  }
+
+  surgeForecast(spotId: string): SurgeForecast & { spot: string; current: number; synthetic: true } {
+    const spot = spotOf(String(spotId).toUpperCase());
+    if (!spot) throw new HubError('BAD_SPOT', 'That is not a pickup spot');
+    const n = (sql: string, ...a: unknown[]) => (this.db.prepare(sql).get(...a) as { c: number }).c;
+    const waiting = n(`SELECT COALESCE(SUM(party), 0) c FROM riders WHERE spot = ? AND state IN ('WAITING','ASSIGNED','AWAITING_INFO')`, spot.id);
+    const cabs = n(`SELECT COALESCE(SUM(cars_total + access_total), 0) c FROM cab_slots WHERE spot = ? AND at > ? AND at <= ?`, spot.id, this.now, this.now + 15);
+    const hour = ((BASE_MS + this.now * 60000 + 5.5 * 3600000) / 3600000) % 24;
+    const rain = this.meta('alert_RAIN') === '1';
+    const transit = this.meta('alert_TRANSIT') === '1';
+    const f = forecast(this.surgeModel().model, {
+      hour, weekend: false, rain, transit, newAlert: (rain || transit) && this.now - Number(this.meta('alert_since') ?? -999) <= 15,
+      ratio: waiting / Math.max(1, cabs * MAX_SEATS), trend: 0, current: spot.surge,
+    });
+    return { ...f, spot: spot.id, current: spot.surge, synthetic: true };
+  }
+
+  // ---------- evidence ----------
+
+  /** Compares quotes two phone types saw at the same moment. A pattern, never a verdict on why. */
+  priceGapReport(): GapReport {
+    const rows = this.db.prepare(`SELECT a.amount x, b.amount y FROM quotes a JOIN quotes b ON a.pod_id = b.pod_id AND a.app = b.app AND a.observed_at = b.observed_at
+      WHERE a.device = 'iPhone' AND b.device = 'Android'`).all() as { x: number; y: number }[];
+    return pairedGap(rows.map((r) => [r.x, r.y]), 1, ['iPhone', 'Android']);
+  }
+
+  /** A draft a rider can review and file. Only offered when a verified fare rule shows an overcharge. */
+  complaintDraft(input: { spot: string; dest: string; app: string; amount: number }) {
+    const { check, km } = this.checkQuote({ ...input, share: false });
+    if (check.status !== 'OVER_CAP') return { ready: false, reason: check.message, draft: null };
+    const spot = spotOf(String(input.spot).toUpperCase())!;
+    const rule = this.fareRule('MINI')!;
+    const draft = [
+      'Subject: Fare above the permitted limit',
+      '',
+      `On ${toIso(this.now).slice(0, 10)} at about ${clockLabel(this.now)}, ${input.app} quoted me Rs ${Math.round(input.amount)} from ${spot.name} to ${nodeName(String(input.dest).toUpperCase())}, about ${km.toFixed(1)} km.`,
+      `Using the base fare from ${rule.source}, the most this trip should cost at the ${rule.capMultiplier}x cap is Rs ${check.maxLegal}. The quote was ${check.multiple}x the base fare.`,
+      '',
+      'I request that you review this fare.',
+      '',
+      '[Add your name, contact details and a screenshot of the quote before filing.]',
+    ].join('\n');
+    this.record('COMPLAINT_DRAFTED', 'rider', { spot: spot.id, app: input.app });
+    return { ready: true, reason: check.message, draft };
+  }
+
   // ---------- escrow and field sync (C01) ----------
 
   grantEscrow(input: { opId: string; podId: string; device: string; seats: number }) {
@@ -1302,6 +1530,8 @@ export class Hub extends EventEmitter {
       explanation: decision ? this.explain(decision, p, pod, seat?.share ?? null) : null,
       alternatives: seat ? [] : this.alternatives(p),
       clarification: open,
+      bridge: p.bridgeTo ? { station: nodeName(p.bridgeTo), fullFare: (this.db.prepare('SELECT full_fare f FROM riders WHERE pid = ?').get(pid) as { f: number | null }).f } : null,
+      locked: seat ? !!this.db.prepare(`SELECT 1 FROM reservations WHERE pid = ? AND pod_id = ? AND state IN ('RESERVED','DEBITED')`).get(pid, seat.pod_id) : false,
       publicKeys: this.publicKeys,
       // Every phone keeps a copy of the head it saw, so the ledger's tail cannot quietly vanish.
       ledgerHead: { seq: this.seq, hash: this.lastHash },
@@ -1350,6 +1580,7 @@ export class Hub extends EventEmitter {
       clockLabel: clockLabel(this.now),
       offline: this.offline,
       policy: { version: this.policy().version, name: this.policy().name },
+      alerts: { rain: this.meta('alert_RAIN') === '1', transit: this.meta('alert_TRANSIT') === '1', railDown: this.meta('rail_down') },
       kpis: {
         waiting: people(`state IN ('WAITING','ASSIGNED','AWAITING_INFO')`),
         waitlisted: epoch ? n(`SELECT COUNT(*) c FROM decisions WHERE epoch = ? AND outcome = 'WAITLISTED'`, epoch.id) : 0,
@@ -1404,7 +1635,7 @@ function decisionLeaves(list: Decision[]): string[] {
 function rowToRider(r: any): Rider {
   return {
     pid: r.pid, circle: r.circle, spot: r.spot, dest: r.dest, need: r.need, party: r.party, shareWith: r.share_with, deadlineKind: r.deadline_kind, deadlineAt: r.deadline_at,
-    deadlineVerified: !!r.deadline_verified, checkinAt: r.checkin_at, maxWaitMin: r.max_wait_min, maxDetourMin: r.max_detour_min, soloFare: r.solo_fare, state: r.state, displaced: !!r.displaced,
+    deadlineVerified: !!r.deadline_verified, checkinAt: r.checkin_at, maxWaitMin: r.max_wait_min, maxDetourMin: r.max_detour_min, soloFare: r.solo_fare, state: r.state, displaced: !!r.displaced, bridgeTo: r.bridge_to,
   };
 }
 

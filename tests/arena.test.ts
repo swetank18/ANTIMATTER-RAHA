@@ -23,7 +23,7 @@ beforeAll(async () => {
   hub = new Hub({ file: join(dir, 'hub.db'), riders: 1200 });
   outside = new Outside();
   const url = await outside.start();
-  hub.egress.allowlist = { 'transit-feed': url, analytics: url };
+  hub.egress.allowlist = { 'transit-feed': url, analytics: url, 'open-network': url };
   server = buildServer(hub, outside);
   await server.app.listen({ port: 0, host: '127.0.0.1' });
   const addr = server.app.server.address() as { port: number };
@@ -189,4 +189,15 @@ describe('restart', () => {
     expect(b.ledger(0, 100000).length).toBe(seq + 1);
     b.close();
   });
+});
+
+describe('product demos', () => {
+  for (const id of ['bloc', 'bridge', 'surge', 'evidence']) {
+    it(id, async () => {
+      const { json } = await post(`/api/demo/${id}/run`);
+      expect(failed(json)).toEqual([]);
+      expect(json.status).toBe('PASS');
+      console.log(id, json.summary);
+    }, 60000);
+  }
 });

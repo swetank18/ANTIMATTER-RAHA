@@ -26,6 +26,8 @@ export interface Rider {
   soloFare: number;
   state: RiderState;
   displaced: boolean;
+  /** A working station this rider is taking a short ride to, instead of the whole trip. */
+  bridgeTo?: string | null;
 }
 
 export interface Pod {

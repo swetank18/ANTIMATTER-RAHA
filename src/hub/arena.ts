@@ -110,6 +110,7 @@ const c01: Card = async ({ hub, baseUrl }, r) => {
   let socketDead = true;
   if (baseUrl) socketDead = (await loopback(baseUrl, `/api/field/group/${pod.id}?device=${device}`)).status === null;
   const feed = await hub.pollFeed();
+  const driversDown = await hub.requestBids(pod.id);
   const ai = await hub.egress.send('cloud-llm', '/v1/chat', { method: 'POST', body: '{"prompt":"hello"}' });
 
   // The essential journey on local data alone.
@@ -138,6 +139,7 @@ const c01: Card = async ({ hub, baseUrl }, r) => {
 
   r.check('socket', 'Connections really are down during the outage', socketDead, baseUrl ? (socketDead ? 'Connection dropped at the socket' : 'Request still succeeded') : 'Not tested: no HTTP listener');
   r.check('third-party', 'Third-party APIs are unavailable and last good data is kept', feed.reason === 'OFFLINE' && feed.keptLastGood === true, `Feed poll: ${feed.reason}`);
+  r.check('open-network', 'Driver bidding stops cleanly and says so', driversDown.ok === false && driversDown.reason === 'OFFLINE', driversDown.ok ? 'Bids still arrived' : driversDown.message);
   r.check('no-hosted-ai', 'No hosted AI is used or reachable', ai.blocked === 'OFFLINE', `Blocked: ${ai.blocked}`);
   r.check('journey-check', 'A rider can still check a fare', check.samples > 0, `Checked from ${check.samples} saved local fares, ${check.advice.length} options offered`);
   r.check('journey-match', 'Groups still form with no internet', rematch.certificate.ok, `${rematch.pods} groups, certified on this machine`);
@@ -163,6 +165,8 @@ const c01: Card = async ({ hub, baseUrl }, r) => {
     { function: 'See my fair share and saved route', offline: 'Works' },
     { function: 'Check a fare against saved local fares', offline: 'Works, using recent saved quotes' },
     { function: 'Ask for a new group', offline: 'Queued, sends on reconnection' },
+    { function: 'Surge forecast', offline: 'Works: the model runs on this machine' },
+    { function: 'Drivers bidding on the open network', offline: 'Unavailable, the group keeps its saved plan' },
     { function: 'Live fares from other apps', offline: 'Unavailable, shown as last known' },
     { function: 'Booking in Uber or Ola', offline: 'Unavailable: those apps need the internet' },
   ]);

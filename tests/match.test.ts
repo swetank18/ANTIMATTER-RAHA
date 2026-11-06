@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { advise, bestRoute, checkFare, fareFor, KM_PER_MIN, roundShares, shapley, type FareRule, type FareSample, type Travel } from '../src/core/fare.ts';
 import { rng } from '../src/core/hash.ts';
 import { evaluate, formPods, MAX_SEATS, shareable, type MatchContext, type MatchRider } from '../src/core/match.ts';
+import { chooseBid, parseOnSearch, type DriverBid } from '../src/core/bids.ts';
 import { resolveQuotes, type Quote } from '../src/core/quotes.ts';
+import { pairedGap } from '../src/core/stats.ts';
+import { backtest, forecast, type SurgeSample } from '../src/core/surge.ts';
 
 const line: Record<string, number> = { A: 0, B: 10, C: 20, D: 30, E: 40 };
 const travel: Travel = (a, b) => Math.abs(line[a] - line[b]);
@@ -218,5 +221,85 @@ describe('four phones, four quotes', () => {
 
   it('asks for a quote when there are none', () => {
     expect(resolveQuotes([], 100)).toMatchObject({ best: null, needsRecheck: true });
+  });
+});
+
+describe('driver bids', () => {
+  const bid = (o: Partial<DriverBid>): DriverBid => ({ id: 'b', driver: 'D', vehicle: 'CAB', seats: 4, amount: 300, etaMin: 6, rating: 4.6, ...o });
+
+  it('takes the lowest bid that can really carry the group', () => {
+    const r = chooseBid([bid({ id: 'cheap-small', amount: 100, seats: 3 }), bid({ id: 'low-rated', amount: 120, rating: 3.2 }), bid({ id: 'far', amount: 130, etaMin: 45 }), bid({ id: 'good', amount: 280 }), bid({ id: 'dear', amount: 340 })], 4);
+    expect(r.best!.id).toBe('good');
+    expect(r.rejected.length).toBe(3);
+  });
+
+  it('says so when nobody can take the group', () => expect(chooseBid([bid({ seats: 2 })], 4).best).toBeNull());
+
+  it('drops malformed bids instead of guessing', () => {
+    const raw = { message: { catalog: { providers: [
+      { rating: 4.5, descriptor: { name: 'Good' }, items: [{ id: 'a', price: { value: '280' }, fulfillment: { etaMinutes: 5, vehicle: { capacity: 4, category: 'AUTO' } } }] },
+      { rating: 4.5, items: [{ id: 'b', price: { value: 'free' }, fulfillment: { etaMinutes: 5, vehicle: { capacity: 4 } } }] },
+      { rating: 'great', items: [{ id: 'c' }] },
+    ] } } };
+    expect(parseOnSearch(raw).map((b) => b.id)).toEqual(['a']);
+    for (const g of [null, 1, {}, { message: {} }, { message: { catalog: { providers: 'x' } } }]) expect(parseOnSearch(g)).toEqual([]);
+  });
+});
+
+describe('price gap statistics', () => {
+  it('refuses to conclude from too little data', () => {
+    expect(pairedGap([[400, 380], [410, 395]]).verdict).toBe('NOT_ENOUGH_DATA');
+  });
+
+  it('finds a consistent gap and gives an interval', () => {
+    const r = rng(3);
+    const pairs = Array.from({ length: 40 }, (): [number, number] => { const base = 300 + r() * 200; return [base + 20 + (r() - 0.5) * 8, base]; });
+    const g = pairedGap(pairs, 1, ['iPhone', 'Android']);
+    expect(g.verdict).toBe('CONSISTENT_GAP');
+    expect(g.ci95![0]).toBeGreaterThan(0);
+    expect(g.meanGap).toBeGreaterThan(15);
+  });
+
+  it('does not invent a gap in random noise', () => {
+    let falseAlarms = 0;
+    for (let s = 1; s <= 200; s++) {
+      const r = rng(s);
+      const pairs = Array.from({ length: 30 }, (): [number, number] => { const base = 400; return [base + (r() - 0.5) * 60, base + (r() - 0.5) * 60]; });
+      if (pairedGap(pairs, s).verdict === 'CONSISTENT_GAP') falseAlarms++;
+    }
+    expect(falseAlarms).toBeLessThan(25);
+  });
+});
+
+describe('surge forecast', () => {
+  const { model, report } = backtest();
+  const calm: SurgeSample = { hour: 14, weekend: false, rain: false, transit: false, newAlert: false, ratio: 0.8, trend: 0, current: 1.05 };
+
+  it('beats the simple baselines on unseen days', () => {
+    console.log('surge backtest', JSON.stringify(report));
+    expect(report.maeModel).toBeLessThan(report.maeNoChange);
+    expect(report.maeModel).toBeLessThan(report.maeHourAverage);
+    expect(report.note).toMatch(/synthetic/);
+  });
+
+  it('never trains on the days it is tested on', () => {
+    expect(report.trainDays + report.testDays).toBe(120);
+  });
+
+  it('responds to a rain and transit alert', () => {
+    const storm = { ...calm, rain: true, transit: true, newAlert: true, ratio: 3, trend: 0.2 };
+    expect(forecast(model, storm).multiple).toBeGreaterThan(forecast(model, calm).multiple);
+    expect(forecast(model, storm).advice).toBe('FORM_GROUPS_NOW');
+  });
+
+  it('stays inside the legal range and explains itself', () => {
+    const f = forecast(model, { ...calm, ratio: 50, current: 2, rain: true });
+    expect(f.multiple).toBeLessThanOrEqual(2);
+    expect(f.multiple).toBeGreaterThanOrEqual(1);
+    expect(f.drivers.length).toBeGreaterThan(0);
+  });
+
+  it('is reproducible', () => {
+    expect(backtest().report).toEqual(report);
   });
 });

@@ -6,6 +6,7 @@ import { coverage } from '../core/i18n.ts';
 import { verifyChain } from '../core/ledger.ts';
 import { DESTINATIONS, EDGES, NODES, SPOTS } from '../core/world.ts';
 import { Arena, CARDS, type ArenaContext } from './arena.ts';
+import { DEMOS, runDemo } from './demos.ts';
 import { Hub, HubError } from './hub.ts';
 import type { Outside } from './outside.ts';
 
@@ -88,6 +89,11 @@ export function buildServer(hub: Hub, outside: Outside): Server {
     return hub.markPaid(b.opId, b.pid, b.podId);
   });
   app.post('/api/field/check', async (req) => hub.checkQuote(body(req)));
+  app.post('/api/field/bids', async (req) => hub.requestBids(body(req).podId));
+  app.post('/api/field/accept', async (req) => hub.acceptBid(body(req)));
+  app.post('/api/field/lock', async (req) => hub.lockShare(body(req)));
+  app.post('/api/field/complaint', async (req) => hub.complaintDraft(body(req)));
+  app.get('/api/field/surge/:spot', async (req) => hub.surgeForecast((req.params as { spot: string }).spot));
   app.get('/api/field/ping', async () => ({ ok: true }));
   app.get('/api/field/offline-pack', async () => hub.offlinePack());
   app.get('/api/field/group/:podId', async (req) => {
@@ -169,6 +175,24 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   app.get('/api/egress', async () => hub.db.prepare('SELECT at, dest, decision, reason, bytes FROM egress_log ORDER BY id DESC LIMIT 200').all());
   app.get('/api/i18n', async () => hub.packs().map((pack) => ({ pack, coverage: coverage(pack) })));
   app.post('/api/i18n/pack', async (req) => hub.loadPack(req.body));
+
+  app.post('/api/alerts', async (req) => {
+    const b = body(req);
+    if (b.kind !== 'RAIN' && b.kind !== 'TRANSIT') throw new HubError('BAD_ALERT', 'kind must be RAIN or TRANSIT');
+    hub.setAlert(b.kind, b.on !== false);
+    return hub.state().alerts;
+  });
+  app.post('/api/bridge', async (req) => hub.triggerBridge(String(body(req).node ?? 'GDY').toUpperCase(), 'Rail failure'));
+  app.get('/api/surge/backtest', async () => hub.surgeModel().report);
+  app.get('/api/evidence/price-gap', async () => hub.priceGapReport());
+
+  // Product demos
+  app.get('/api/demo', async () => DEMOS);
+  app.post('/api/demo/:id/run', async (req) => {
+    const id = (req.params as { id: string }).id;
+    if (!DEMOS.some((d) => d.id === id)) throw new HubError('NOT_FOUND', 'No such demo', 404);
+    return runDemo(ctx, id);
+  });
 
   // Arena
   app.get('/api/arena', async () => arena.list());

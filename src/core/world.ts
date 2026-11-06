@@ -160,7 +160,7 @@ export function makeRiders(seed: number, opt: GenOptions): Rider[] {
       pid: `${opt.idPrefix ?? 'R'}-${String(i).padStart(5, '0')}`,
       circle: spot.circle, spot: spot.id, dest, need, party: Math.min(party, opt.count - people), shareWith,
       deadlineKind: kind, deadlineAt: kind === 'NONE' ? null : arrive + span, deadlineVerified: kind === 'NONE' ? false : r() < 0.6,
-      checkinAt: arrive, maxWaitMin: 10 + Math.round(r() * 10), maxDetourMin: 8 + Math.round(r() * 10), soloFare: solo, state: 'WAITING', displaced: false,
+      checkinAt: arrive, maxWaitMin: 10 + Math.round(r() * 10), maxDetourMin: 8 + Math.round(r() * 10), soloFare: solo, state: 'WAITING', displaced: false, bridgeTo: null,
     });
     people += out[out.length - 1].party;
     i++;

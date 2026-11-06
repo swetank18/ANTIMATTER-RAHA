@@ -134,6 +134,16 @@ function checkOffline(spotId: string, dest: string, app: string, amount: number)
   };
 }
 
+async function surgeLine(spot: string) {
+  try {
+    if (!online) return '';
+    const f = await api(`/api/field/surge/${spot}`);
+    return `<p><strong>Next 15 minutes:</strong> ${esc(f.message)} <span class="sub">Forecast from a model trained on synthetic data.</span></p>`;
+  } catch {
+    return '';
+  }
+}
+
 function renderCheck(res: Any, fromSaved: boolean) {
   const moves = res.advice.length
     ? `<ul>${res.advice.map((a: Any) => `<li><strong>${esc(a.title)}</strong>: save about Rs ${esc(a.saveRs)}. ${esc(a.basis)}.</li>`).join('')}</ul>`
@@ -160,7 +170,12 @@ function renderRider() {
       <p class="big">You pay Rs ${esc(v.seat.share)}</p>
       <p>Alone it would cost Rs ${esc(v.seat.solo)}. You save Rs ${esc(v.seat.saved)}.</p>
       <p>Meet at <strong>${esc(v.pod.spotName)}</strong>, leaving ${esc(v.pod.leavesLabel)}. ${esc(v.pod.members)} in this group, stops: ${esc(v.pod.stopNames.join(', '))}.</p>
+      ${v.bridge ? `<p>Rail is down. This short ride takes you to <strong>${esc(v.bridge.station)}</strong>, where trains are running. The whole trip would cost Rs ${esc(v.bridge.fullFare)}.</p>` : ''}
       ${v.pod.isLead ? '<p><strong>This phone books the cab.</strong></p>' : ''}
+      ${v.pod.state === 'BOOKED' ? '<p><strong>Booked. Your share is paid.</strong></p>' : v.pod.state === 'LOCKED' ? `<div class="bar">
+        ${v.pod.isLead ? `<button class="btn" id="bids" ${online ? '' : 'disabled'}>Ask drivers to bid</button>` : ''}
+        <button class="btn alt" id="lock" ${v.locked || !online ? 'disabled' : ''}>${v.locked ? 'Your share is locked' : `Lock my share (Rs ${esc(v.seat.share)})`}</button></div>
+        <div id="bid-out" tabindex="-1"></div>` : ''}
       ${qr}
       ${check ? `<p>${check.ok ? 'Pass checked on this phone: valid. This pass works without internet.' : 'This pass could not be verified.'}</p>` : '<p>Your pass appears shortly before leaving.</p>'}
     </section>`;
@@ -175,7 +190,7 @@ function renderRider() {
 
   main().innerHTML = `
     <h1>Is this fare fair?</h1>
-    <p class="lede">Check a fare, then find people going your way. Surge is charged per car, so sharing divides it.</p>
+    <p class="lede">Uber prices one rider at a time. Koottu turns a crowd into one buyer: check your fare, join people going your way, and let drivers bid for your group.</p>
     ${hasPack ? '' : '<p class="note">Saving local data. Keep this page open for a moment while you have a connection.</p>'}
     <form id="check" class="form" aria-label="Check a fare">
       <label>Pickup spot <select name="spot" required>${spotOptions()}</select></label>
@@ -214,6 +229,7 @@ function renderRider() {
     try {
       if (!online) throw new Error('offline');
       renderCheck(await api('/api/field/check', input), false);
+      $('check-out').insertAdjacentHTML('beforeend', `<div class="note">${await surgeLine(input.spot)}</div>`);
     } catch {
       if (pack) renderCheck(checkOffline(input.spot, input.dest, input.app, input.amount), true);
       else $('check-out').textContent = 'No saved fares on this phone yet. Reconnect once to save them.';
@@ -238,6 +254,35 @@ function renderRider() {
     renderRider();
     $('ride').focus();
   };
+
+  const bidsBtn = document.getElementById('bids');
+  if (bidsBtn) {
+    bidsBtn.onclick = async () => {
+      const res = await api('/api/field/bids', { podId: view.pod.id });
+      const out = $('bid-out');
+      if (!res.ok) {
+        out.textContent = res.message;
+        return;
+      }
+      out.innerHTML = `<p>${esc(res.because)} Simulated drivers.</p><ul>${res.ranked.map((b: Any) => `<li>${esc(b.driver)}: Rs ${esc(b.amount)}, ${esc(b.etaMin)} min <button class="btn alt" data-bid="${esc(b.id)}">Accept</button></li>`).join('')}</ul>`;
+      out.focus();
+      out.querySelectorAll<HTMLButtonElement>('[data-bid]').forEach((x) => {
+        x.onclick = async () => {
+          await api('/api/field/accept', { opId: opId(), pid: store.get('pid', ''), podId: view.pod.id, bidId: x.dataset.bid });
+          await refreshRider();
+          renderRider();
+        };
+      });
+    };
+  }
+  const lockBtn = document.getElementById('lock');
+  if (lockBtn) {
+    lockBtn.onclick = async () => {
+      await api('/api/field/lock', { opId: opId(), pid: store.get('pid', ''), podId: view.pod.id });
+      await refreshRider();
+      renderRider();
+    };
+  }
 
   document.querySelectorAll<HTMLButtonElement>('[data-answer]').forEach((b) => {
     b.onclick = async () => {
@@ -293,7 +338,13 @@ async function renderArena() {
   }
   const ours = cards.filter((c) => c.assigned);
   const rest = cards.filter((c) => !c.assigned);
-  main().innerHTML = `<h1>Run any constraint against the live system</h1>
+  const demos: Any[] = await api('/api/demo').catch(() => []);
+  main().innerHTML = `<h1>Uber prices one rider at a time. Koottu turns a crowd into one buyer.</h1>
+    <p class="lede">Riders lock their share, open network drivers bid for the group, and when a train fails we bridge you to the next working station instead of all the way home.</p>
+    <p class="sub">Demo data is synthetic. Drivers and payments are simulated, and every run says so.</p>
+    <h2>See it work</h2>
+    ${demos.map((d) => `<article class="card ours"><div class="row"><span class="code" aria-hidden="true">▶</span><div><p class="title">${esc(d.title)}</p><p class="sub">${esc(d.blurb)}</p></div><button class="btn" data-demo="${esc(d.id)}">Run</button></div><div id="d-${esc(d.id)}" aria-live="polite"></div></article>`).join('')}
+    <h2>Run any constraint against the live system</h2>
     <p class="lede">Each card attacks the running app, then judges it by checking real data afterwards. A card can fail.</p>
     <div class="bar"><button class="btn" id="all">Run all 12</button>
       <button class="btn warn" id="cut">Cut the network</button>
@@ -312,6 +363,19 @@ async function renderArena() {
       slot.innerHTML = '<p>Running…</p>';
       try {
         slot.innerHTML = renderResult(await api(`/api/arena/${id}/run`, { params }));
+      } catch (e: Any) {
+        slot.textContent = e.message;
+      }
+      b.disabled = false;
+    };
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-demo]').forEach((b) => {
+    b.onclick = async () => {
+      const slot = $(`d-${b.dataset.demo}`);
+      b.disabled = true;
+      slot.innerHTML = '<p>Running…</p>';
+      try {
+        slot.innerHTML = renderResult(await api(`/api/demo/${b.dataset.demo}/run`, {}));
       } catch (e: Any) {
         slot.textContent = e.message;
       }

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS riders(
   deadline_kind TEXT NOT NULL, deadline_at INTEGER, deadline_verified INTEGER NOT NULL DEFAULT 0,
   checkin_at INTEGER NOT NULL, max_wait_min INTEGER NOT NULL, max_detour_min INTEGER NOT NULL,
   solo_fare INTEGER NOT NULL, state TEXT NOT NULL, displaced INTEGER NOT NULL DEFAULT 0,
-  origin TEXT NOT NULL DEFAULT 'SEED');
+  origin TEXT NOT NULL DEFAULT 'SEED', bridge_to TEXT, full_fare INTEGER);
 CREATE INDEX IF NOT EXISTS riders_state ON riders(state);
 
 CREATE TABLE IF NOT EXISTS cab_slots(
@@ -40,6 +40,15 @@ CREATE UNIQUE INDEX IF NOT EXISTS seats_one_per_person ON seats(pid)
   WHERE state IN ('HELD','COMMITTED','BOARDED');
 CREATE UNIQUE INDEX IF NOT EXISTS seats_pass ON seats(pass_id) WHERE pass_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS seats_pod ON seats(pod_id, state);
+
+CREATE TABLE IF NOT EXISTS bids(
+  id TEXT PRIMARY KEY, pod_id TEXT NOT NULL REFERENCES pods(id), driver TEXT NOT NULL, vehicle TEXT NOT NULL,
+  seats INTEGER NOT NULL, amount INTEGER NOT NULL, eta_min INTEGER NOT NULL, rating REAL NOT NULL, state TEXT NOT NULL DEFAULT 'OPEN');
+
+CREATE TABLE IF NOT EXISTS reservations(
+  id TEXT PRIMARY KEY, pod_id TEXT NOT NULL REFERENCES pods(id), pid TEXT NOT NULL, amount INTEGER NOT NULL,
+  state TEXT NOT NULL, gateway TEXT NOT NULL DEFAULT 'SIMULATED');
+CREATE UNIQUE INDEX IF NOT EXISTS one_block_each ON reservations(pod_id, pid) WHERE state = 'RESERVED';
 
 CREATE TABLE IF NOT EXISTS quotes(
   id INTEGER PRIMARY KEY AUTOINCREMENT, pod_id TEXT NOT NULL, pid TEXT NOT NULL, app TEXT NOT NULL,
@@ -124,7 +133,7 @@ CREATE TABLE IF NOT EXISTS lang_packs(code TEXT PRIMARY KEY, doc TEXT NOT NULL);
 `;
 
 const TABLES = ['lang_packs', 'egress_log', 'field_ops', 'idempotency', 'escrow', 'clarifications', 'adapters', 'telemetry',
-  'verifications', 'route_records', 'quarantine', 'approvals', 'policies', 'ledger', 'epochs', 'decisions', 'quotes', 'fare_obs',
+  'verifications', 'route_records', 'quarantine', 'approvals', 'policies', 'ledger', 'epochs', 'decisions', 'quotes', 'fare_obs', 'reservations', 'bids',
   'fare_rules', 'seats', 'pods', 'cab_slots', 'riders', 'meta'];
 
 export function openDb(file: string): DB {

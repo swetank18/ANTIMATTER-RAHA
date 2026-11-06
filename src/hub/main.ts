@@ -7,7 +7,7 @@ const host = process.env.HOST ?? '127.0.0.1';
 const hub = new Hub({ file: 'data/koottu.db', keyFile: 'data/hub-key.json', logFile: 'logs/hub.log' });
 const outside = new Outside();
 const outsideUrl = await outside.start();
-hub.egress.allowlist = { 'transit-feed': outsideUrl, analytics: outsideUrl };
+hub.egress.allowlist = { 'transit-feed': outsideUrl, analytics: outsideUrl, 'open-network': outsideUrl };
 
 const { app, ctx } = buildServer(hub, outside);
 await app.listen({ port, host });
