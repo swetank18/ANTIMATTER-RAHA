@@ -217,7 +217,7 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   app.get('/api/stream', (req, reply) => {
     reply.hijack();
     const res = reply.raw;
-    res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive' });
+    res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive', 'x-accel-buffering': 'no' });
     res.write('retry: 2000\n\n');
     let timer: NodeJS.Timeout | null = null;
     const ping = () => {

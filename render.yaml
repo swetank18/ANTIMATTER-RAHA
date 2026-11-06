@@ -1,9 +1,13 @@
+# One-click deploy: https://render.com/deploy?repo=https://github.com/swetank18/ANTIMATTER-RAHA
 services:
   - type: web
     name: koottu
     runtime: docker
     plan: free
+    # Closest Render region to riders and judges in India.
+    region: singapore
     healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: HOST
         value: 0.0.0.0

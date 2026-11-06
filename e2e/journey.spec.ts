@@ -58,6 +58,23 @@ test('C01: a hard outage from the Arena is shown the same way', async ({ page, r
   await expect(page.locator('#net')).toBeEmpty({ timeout: 8000 });
 });
 
+// Behind a host's proxy a cut socket comes back as a 502, not a network error. A request sent in
+// that moment must stay queued and arrive once, not be counted as sent and lost.
+test('C01: a request sent as the outage starts is kept and arrives once', async ({ page, request }) => {
+  await settle(page);
+  const before = await requests(page);
+  await request.post('/api/arena/offline', { data: { on: true } });
+  await page.getByRole('button', { name: 'Find my group' }).click();
+  await expect(page.getByText('Waiting to send')).toBeVisible();
+  expect(await requests(page)).toBe(before);
+
+  await request.post('/api/arena/offline', { data: { on: false } });
+  await expect(page.getByText('Sent', { exact: true })).toBeVisible({ timeout: 10000 });
+  expect(await requests(page)).toBe(before + 1);
+  await page.waitForTimeout(3000);
+  expect(await requests(page)).toBe(before + 1);
+});
+
 test('C06: keyboard only, no colour, no serious accessibility issues', async ({ page }) => {
   await settle(page);
   await page.goto('/#/rider?mode=keyboard');
