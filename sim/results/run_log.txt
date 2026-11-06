@@ -1,0 +1,6 @@
+tambaram: N=1890 bound=61min | worst wait FFA 224 FCFS 213 OMNI 199 | turned away FFA 10354 OMNI 0 | riders/cab FFA 1.00 OMNI 3.41 (63s)
+ndls: N=6000 bound=0min | worst wait FFA 420 FCFS 339 OMNI 328 | turned away FFA 19982 OMNI 0 | riders/cab FFA 0.00 OMNI 0.00 (95s)
+kurla: N=5000 bound=133min | worst wait FFA 238 FCFS 193 OMNI 176 | turned away FFA 10109 OMNI 0 | riders/cab FFA 1.00 OMNI 3.64 (235s)
+jurong: N=9000 bound=48min | worst wait FFA 198 FCFS 86 OMNI 66 | turned away FFA 24292 OMNI 0 | riders/cab FFA 1.00 OMNI 3.90 (399s)
+atocha: N=6000 bound=42min | worst wait FFA 223 FCFS 105 OMNI 87 | turned away FFA 11626 OMNI 0 | riders/cab FFA 1.00 OMNI 3.85 (491s)
+done 491.0 s

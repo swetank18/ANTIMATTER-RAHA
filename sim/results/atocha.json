@@ -1,0 +1,4554 @@
+{
+ "stamp": {
+  "seeds": 200,
+  "commit": "33f3600",
+  "date": "2026-11-06T06:34:02.766Z",
+  "engine": "src/sim/engine.js"
+ },
+ "N": 6000,
+ "sanityBoundMin": 42.06914285714286,
+ "main": {
+  "FREE_FOR_ALL": {
+   "clearanceMin": [
+    233.9979,
+    233.0288,
+    235.0793
+   ],
+   "meanWait": [
+    45.2813,
+    45.1875,
+    45.3882
+   ],
+   "medianWait": [
+    32.2547,
+    32.1794,
+    32.3267
+   ],
+   "p95Wait": [
+    119.6792,
+    119.2025,
+    120.164
+   ],
+   "worstWait": [
+    223.4129,
+    222.4993,
+    224.2744
+   ],
+   "wheelchairP95": [
+    130.2837,
+    126.5749,
+    134.315
+   ],
+   "deadlinesMet": [
+    0.7927,
+    0.7915,
+    0.7941
+   ],
+   "gini": [
+    0.3893,
+    0.3886,
+    0.39
+   ],
+   "seatUtil": [
+    0.7903,
+    0.786,
+    0.7942
+   ],
+   "turnedAway": [
+    11625.545,
+    11582.35,
+    11674.975
+   ],
+   "overbooked": [
+    0,
+    0,
+    0
+   ],
+   "emptyDepartures": [
+    11.265,
+    10.91,
+    11.7
+   ],
+   "peakDoorCrowd": [
+    516.64,
+    512.98,
+    520.16
+   ],
+   "peakDoorDensity": [
+    12.916,
+    12.822,
+    13.0121
+   ],
+   "unserved": [
+    0,
+    0,
+    0
+   ],
+   "cabTrips": [
+    188.82,
+    188.765,
+    188.875
+   ],
+   "ridersPerCab": [
+    1,
+    1,
+    1
+   ],
+   "cabFarePerRider": [
+    19.3175,
+    19.1967,
+    19.4294
+   ],
+   "cabSoloPerRider": [
+    19.3175,
+    19.1901,
+    19.443
+   ],
+   "maxShareRatio": [
+    1,
+    1,
+    1
+   ],
+   "peakSurge": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "peakGateCrowd": [
+    1476.27,
+    1471.42,
+    1481.245
+   ],
+   "allocatorDownEvents": [
+    0,
+    0,
+    0
+   ],
+   "bikeRiders": [
+    0,
+    0,
+    0
+   ],
+   "bikeFarePerRider": [
+    0,
+    0,
+    0
+   ],
+   "dropsForGuarantee": [
+    0,
+    0,
+    0
+   ],
+   "essentialsDrops": [
+    2135.83,
+    2128.85,
+    2142.645
+   ]
+  },
+  "FCFS": {
+   "clearanceMin": [
+    205.803,
+    205.2354,
+    206.3627
+   ],
+   "meanWait": [
+    42.9938,
+    42.835,
+    43.1507
+   ],
+   "medianWait": [
+    42.8459,
+    42.6481,
+    43.0287
+   ],
+   "p95Wait": [
+    65.1017,
+    64.7528,
+    65.4277
+   ],
+   "worstWait": [
+    104.7817,
+    103.0176,
+    106.6153
+   ],
+   "wheelchairP95": [
+    84.09,
+    81.9847,
+    86.2729
+   ],
+   "deadlinesMet": [
+    0.7518,
+    0.7496,
+    0.7539
+   ],
+   "gini": [
+    0.174,
+    0.173,
+    0.175
+   ],
+   "seatUtil": [
+    0.95,
+    0.9472,
+    0.9525
+   ],
+   "turnedAway": [
+    0,
+    0,
+    0
+   ],
+   "overbooked": [
+    0,
+    0,
+    0
+   ],
+   "emptyDepartures": [
+    0,
+    0,
+    0
+   ],
+   "peakDoorCrowd": [
+    90,
+    90,
+    90
+   ],
+   "peakDoorDensity": [
+    2.25,
+    2.25,
+    2.25
+   ],
+   "unserved": [
+    0,
+    0,
+    0
+   ],
+   "cabTrips": [
+    188.775,
+    188.705,
+    188.84
+   ],
+   "ridersPerCab": [
+    1,
+    1,
+    1
+   ],
+   "cabFarePerRider": [
+    15.4165,
+    15.1901,
+    15.6616
+   ],
+   "cabSoloPerRider": [
+    15.4165,
+    15.1961,
+    15.6595
+   ],
+   "maxShareRatio": [
+    1,
+    1,
+    1
+   ],
+   "peakSurge": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "peakGateCrowd": [
+    1508.815,
+    1502.71,
+    1514.845
+   ],
+   "allocatorDownEvents": [
+    0,
+    0,
+    0
+   ],
+   "bikeRiders": [
+    0,
+    0,
+    0
+   ],
+   "bikeFarePerRider": [
+    0,
+    0,
+    0
+   ],
+   "dropsForGuarantee": [
+    0,
+    0,
+    0
+   ],
+   "essentialsDrops": [
+    2612.57,
+    2577.98,
+    2648.87
+   ]
+  },
+  "SURGE": {
+   "clearanceMin": [
+    202.7327,
+    202.2945,
+    203.2035
+   ],
+   "meanWait": [
+    41.8853,
+    41.7383,
+    42.0422
+   ],
+   "medianWait": [
+    23.0283,
+    22.9764,
+    23.0822
+   ],
+   "p95Wait": [
+    150.497,
+    149.9353,
+    150.976
+   ],
+   "worstWait": [
+    198.4136,
+    198.064,
+    198.7951
+   ],
+   "wheelchairP95": [
+    137.3866,
+    133.2949,
+    141.8495
+   ],
+   "deadlinesMet": [
+    0.78,
+    0.7784,
+    0.7818
+   ],
+   "gini": [
+    0.4571,
+    0.4562,
+    0.4579
+   ],
+   "seatUtil": [
+    0.9547,
+    0.9528,
+    0.9568
+   ],
+   "turnedAway": [
+    0,
+    0,
+    0
+   ],
+   "overbooked": [
+    0,
+    0,
+    0
+   ],
+   "emptyDepartures": [
+    0,
+    0,
+    0
+   ],
+   "peakDoorCrowd": [
+    90,
+    90,
+    90
+   ],
+   "peakDoorDensity": [
+    2.25,
+    2.25,
+    2.25
+   ],
+   "unserved": [
+    0,
+    0,
+    0
+   ],
+   "cabTrips": [
+    183.175,
+    182.72,
+    183.63
+   ],
+   "ridersPerCab": [
+    1,
+    1,
+    1
+   ],
+   "cabFarePerRider": [
+    22.9305,
+    22.7862,
+    23.0881
+   ],
+   "cabSoloPerRider": [
+    22.9305,
+    22.7664,
+    23.0924
+   ],
+   "maxShareRatio": [
+    1,
+    1,
+    1
+   ],
+   "peakSurge": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "peakGateCrowd": [
+    1533.605,
+    1526.89,
+    1540.285
+   ],
+   "allocatorDownEvents": [
+    0,
+    0,
+    0
+   ],
+   "bikeRiders": [
+    0,
+    0,
+    0
+   ],
+   "bikeFarePerRider": [
+    0,
+    0,
+    0
+   ],
+   "dropsForGuarantee": [
+    0,
+    0,
+    0
+   ],
+   "essentialsDrops": [
+    1651,
+    1642.38,
+    1660.17
+   ]
+  },
+  "UTILITARIAN": {
+   "clearanceMin": [
+    271.5447,
+    269.0716,
+    274.3728
+   ],
+   "meanWait": [
+    43.5364,
+    43.3876,
+    43.6866
+   ],
+   "medianWait": [
+    42.6904,
+    42.4869,
+    42.8646
+   ],
+   "p95Wait": [
+    67.6131,
+    67.1754,
+    68.0135
+   ],
+   "worstWait": [
+    217.7425,
+    215.552,
+    220.2279
+   ],
+   "wheelchairP95": [
+    207.8285,
+    206.2626,
+    209.4224
+   ],
+   "deadlinesMet": [
+    0.7474,
+    0.7454,
+    0.7492
+   ],
+   "gini": [
+    0.1981,
+    0.1971,
+    0.1991
+   ],
+   "seatUtil": [
+    0.7107,
+    0.7048,
+    0.7169
+   ],
+   "turnedAway": [
+    0,
+    0,
+    0
+   ],
+   "overbooked": [
+    0,
+    0,
+    0
+   ],
+   "emptyDepartures": [
+    0,
+    0,
+    0
+   ],
+   "peakDoorCrowd": [
+    90,
+    90,
+    90
+   ],
+   "peakDoorDensity": [
+    2.25,
+    2.25,
+    2.25
+   ],
+   "unserved": [
+    0.31,
+    0.175,
+    0.465
+   ],
+   "cabTrips": [
+    188.8,
+    188.735,
+    188.855
+   ],
+   "ridersPerCab": [
+    1,
+    1,
+    1
+   ],
+   "cabFarePerRider": [
+    8.6435,
+    8.6341,
+    8.6517
+   ],
+   "cabSoloPerRider": [
+    8.6435,
+    8.6348,
+    8.6521
+   ],
+   "maxShareRatio": [
+    1,
+    1,
+    1
+   ],
+   "peakSurge": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "peakGateCrowd": [
+    1552.435,
+    1547.445,
+    1557.975
+   ],
+   "allocatorDownEvents": [
+    0,
+    0,
+    0
+   ],
+   "bikeRiders": [
+    0,
+    0,
+    0
+   ],
+   "bikeFarePerRider": [
+    0,
+    0,
+    0
+   ],
+   "dropsForGuarantee": [
+    0,
+    0,
+    0
+   ],
+   "essentialsDrops": [
+    2592.275,
+    2563.275,
+    2627.14
+   ]
+  },
+  "RAHA": {
+   "clearanceMin": [
+    186.5565,
+    186.0555,
+    187.1645
+   ],
+   "meanWait": [
+    32.4116,
+    32.2869,
+    32.5295
+   ],
+   "medianWait": [
+    31.3282,
+    31.1469,
+    31.511
+   ],
+   "p95Wait": [
+    62.1146,
+    61.8493,
+    62.3563
+   ],
+   "worstWait": [
+    87.2754,
+    86.2567,
+    88.3789
+   ],
+   "wheelchairP95": [
+    54.7018,
+    53.1236,
+    56.5017
+   ],
+   "deadlinesMet": [
+    0.9336,
+    0.9321,
+    0.9349
+   ],
+   "gini": [
+    0.3036,
+    0.3029,
+    0.3043
+   ],
+   "seatUtil": [
+    0.7611,
+    0.7589,
+    0.7632
+   ],
+   "turnedAway": [
+    0,
+    0,
+    0
+   ],
+   "overbooked": [
+    0,
+    0,
+    0
+   ],
+   "emptyDepartures": [
+    0,
+    0,
+    0
+   ],
+   "peakDoorCrowd": [
+    40,
+    40,
+    40
+   ],
+   "peakDoorDensity": [
+    1,
+    1,
+    1
+   ],
+   "unserved": [
+    0,
+    0,
+    0
+   ],
+   "cabTrips": [
+    163.585,
+    162.48,
+    164.805
+   ],
+   "ridersPerCab": [
+    3.8512,
+    3.8422,
+    3.8592
+   ],
+   "cabFarePerRider": [
+    9.7318,
+    9.7002,
+    9.7634
+   ],
+   "cabSoloPerRider": [
+    32.6688,
+    32.5852,
+    32.7585
+   ],
+   "maxShareRatio": [
+    0.9898,
+    0.98,
+    0.9977
+   ],
+   "peakSurge": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "peakGateCrowd": [
+    481.475,
+    478.46,
+    484.45
+   ],
+   "allocatorDownEvents": [
+    0,
+    0,
+    0
+   ],
+   "bikeRiders": [
+    0,
+    0,
+    0
+   ],
+   "bikeFarePerRider": [
+    0,
+    0,
+    0
+   ],
+   "dropsForGuarantee": [
+    330.33,
+    319.555,
+    341.59
+   ],
+   "essentialsDrops": [
+    1559.655,
+    1539.495,
+    1580.495
+   ]
+  }
+ },
+ "sensitivity": {
+  "doorCrush0": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     231.6757,
+     229.8757,
+     233.6042
+    ],
+    "meanWait": [
+     43.9138,
+     43.7169,
+     44.1285
+    ],
+    "medianWait": [
+     31.0748,
+     30.9662,
+     31.1831
+    ],
+    "p95Wait": [
+     116.7429,
+     115.5515,
+     118.0563
+    ],
+    "worstWait": [
+     220.8878,
+     219.2406,
+     222.8192
+    ],
+    "wheelchairP95": [
+     132.3555,
+     124.5955,
+     139.84
+    ],
+    "deadlinesMet": [
+     0.8031,
+     0.8003,
+     0.8059
+    ],
+    "gini": [
+     0.3946,
+     0.393,
+     0.3963
+    ],
+    "seatUtil": [
+     0.7905,
+     0.782,
+     0.798
+    ],
+    "turnedAway": [
+     11501.06,
+     11409.02,
+     11588.28
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.2,
+     10.54,
+     11.98
+    ],
+    "peakDoorCrowd": [
+     517.86,
+     509.6,
+     526.8
+    ],
+    "peakDoorDensity": [
+     12.9465,
+     12.7465,
+     13.1865
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.78,
+     188.66,
+     188.9
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.2169,
+     18.9387,
+     19.5362
+    ],
+    "cabSoloPerRider": [
+     19.2169,
+     18.9343,
+     19.469
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1466.96,
+     1458.4,
+     1474.96
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2057.8,
+     2048.66,
+     2066.9
+    ]
+   },
+   "FCFS": {
+    "clearanceMin": [
+     205.9789,
+     204.9453,
+     206.9657
+    ],
+    "meanWait": [
+     43.0003,
+     42.6333,
+     43.3483
+    ],
+    "medianWait": [
+     42.8756,
+     42.516,
+     43.246
+    ],
+    "p95Wait": [
+     65.0641,
+     64.0649,
+     65.976
+    ],
+    "worstWait": [
+     105.6504,
+     101.6838,
+     109.3193
+    ],
+    "wheelchairP95": [
+     85.6981,
+     82.1626,
+     90.2316
+    ],
+    "deadlinesMet": [
+     0.751,
+     0.7454,
+     0.7564
+    ],
+    "gini": [
+     0.1744,
+     0.1722,
+     0.1767
+    ],
+    "seatUtil": [
+     0.9514,
+     0.9473,
+     0.9551
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     90,
+     90,
+     90
+    ],
+    "peakDoorDensity": [
+     2.25,
+     2.25,
+     2.25
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.76,
+     188.64,
+     188.88
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     15.1464,
+     14.691,
+     15.5343
+    ],
+    "cabSoloPerRider": [
+     15.1464,
+     14.6929,
+     15.5731
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1500.82,
+     1490.18,
+     1510.08
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2612.6,
+     2541.94,
+     2688.7
+    ]
+   },
+   "RAHA": {
+    "clearanceMin": [
+     186.6445,
+     185.6838,
+     187.7679
+    ],
+    "meanWait": [
+     32.4308,
+     32.1917,
+     32.6489
+    ],
+    "medianWait": [
+     31.3677,
+     31.0345,
+     31.6831
+    ],
+    "p95Wait": [
+     62.1148,
+     61.5454,
+     62.6999
+    ],
+    "worstWait": [
+     88.3789,
+     85.7294,
+     91.2953
+    ],
+    "wheelchairP95": [
+     56.5371,
+     52.8392,
+     61.0466
+    ],
+    "deadlinesMet": [
+     0.9332,
+     0.9303,
+     0.9362
+    ],
+    "gini": [
+     0.3035,
+     0.3021,
+     0.3049
+    ],
+    "seatUtil": [
+     0.7599,
+     0.7557,
+     0.7651
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     164.18,
+     161.6,
+     166.72
+    ],
+    "ridersPerCab": [
+     3.8472,
+     3.8324,
+     3.8613
+    ],
+    "cabFarePerRider": [
+     9.7319,
+     9.6754,
+     9.7873
+    ],
+    "cabSoloPerRider": [
+     32.6254,
+     32.4694,
+     32.8048
+    ],
+    "maxShareRatio": [
+     0.9922,
+     0.9765,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     480.44,
+     473.56,
+     487.3
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     326.44,
+     303.26,
+     351
+    ],
+    "essentialsDrops": [
+     1565.16,
+     1527.76,
+     1604.82
+    ]
+   }
+  },
+  "demandHalf": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     174.1368,
+     173.1091,
+     175.3173
+    ],
+    "meanWait": [
+     20.0897,
+     20.0303,
+     20.1537
+    ],
+    "medianWait": [
+     18.619,
+     18.5745,
+     18.6627
+    ],
+    "p95Wait": [
+     33.3886,
+     33.1603,
+     33.6312
+    ],
+    "worstWait": [
+     68.0221,
+     66.8203,
+     69.2239
+    ],
+    "wheelchairP95": [
+     40.2494,
+     37.9114,
+     43.0878
+    ],
+    "deadlinesMet": [
+     0.9763,
+     0.9751,
+     0.9775
+    ],
+    "gini": [
+     0.1858,
+     0.1844,
+     0.1872
+    ],
+    "seatUtil": [
+     0.5397,
+     0.5364,
+     0.5426
+    ],
+    "turnedAway": [
+     307.26,
+     289.44,
+     324.64
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0.38,
+     0.16,
+     0.64
+    ],
+    "peakDoorCrowd": [
+     165.12,
+     160.66,
+     169.78
+    ],
+    "peakDoorDensity": [
+     4.128,
+     4.005,
+     4.2405
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     162.6,
+     162.32,
+     162.92
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     18.1058,
+     17.8727,
+     18.3487
+    ],
+    "cabSoloPerRider": [
+     18.1058,
+     17.8443,
+     18.3294
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     359.16,
+     353.52,
+     365.18
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     29.72,
+     26.84,
+     32.58
+    ]
+   },
+   "FCFS": {
+    "clearanceMin": [
+     173.7149,
+     173.0102,
+     174.5402
+    ],
+    "meanWait": [
+     18.8758,
+     18.7962,
+     18.9566
+    ],
+    "medianWait": [
+     17.8939,
+     17.8344,
+     17.952
+    ],
+    "p95Wait": [
+     30.0139,
+     29.751,
+     30.3078
+    ],
+    "worstWait": [
+     53.84,
+     51.1222,
+     56.5966
+    ],
+    "wheelchairP95": [
+     36.5783,
+     34.0847,
+     39.1398
+    ],
+    "deadlinesMet": [
+     0.9801,
+     0.9785,
+     0.9816
+    ],
+    "gini": [
+     0.1679,
+     0.1661,
+     0.1698
+    ],
+    "seatUtil": [
+     0.5619,
+     0.5587,
+     0.5647
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     90,
+     90,
+     90
+    ],
+    "peakDoorDensity": [
+     2.25,
+     2.25,
+     2.25
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     164.04,
+     163.38,
+     164.68
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     16.9894,
+     16.7014,
+     17.2774
+    ],
+    "cabSoloPerRider": [
+     16.9894,
+     16.6705,
+     17.2677
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     286.24,
+     282.36,
+     290.66
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     5.14,
+     3.5,
+     6.74
+    ]
+   },
+   "RAHA": {
+    "clearanceMin": [
+     167.0987,
+     166.524,
+     167.6755
+    ],
+    "meanWait": [
+     18.9031,
+     18.8069,
+     18.9959
+    ],
+    "medianWait": [
+     16.1263,
+     16.0745,
+     16.1744
+    ],
+    "p95Wait": [
+     36.5411,
+     36.1464,
+     36.942
+    ],
+    "worstWait": [
+     50.63,
+     49.5506,
+     52.0146
+    ],
+    "wheelchairP95": [
+     34.4968,
+     32.1725,
+     37.3296
+    ],
+    "deadlinesMet": [
+     0.9863,
+     0.9851,
+     0.9875
+    ],
+    "gini": [
+     0.2237,
+     0.2212,
+     0.226
+    ],
+    "seatUtil": [
+     0.3152,
+     0.3129,
+     0.3173
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     151.12,
+     149.6,
+     152.42
+    ],
+    "ridersPerCab": [
+     3.8175,
+     3.8008,
+     3.834
+    ],
+    "cabFarePerRider": [
+     7.5197,
+     7.4563,
+     7.583
+    ],
+    "cabSoloPerRider": [
+     24.9941,
+     24.8003,
+     25.183
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     161.68,
+     158.38,
+     164.98
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     112.5,
+     103.16,
+     121.44
+    ],
+    "essentialsDrops": [
+     20.56,
+     17.22,
+     23.68
+    ]
+   }
+  },
+  "demandDouble": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     123.9823,
+     123.8745,
+     124.0868
+    ],
+    "medianWait": [
+     111.6595,
+     111.4252,
+     111.8634
+    ],
+    "p95Wait": [
+     271.0341,
+     270.7851,
+     271.2817
+    ],
+    "worstWait": [
+     300.1596,
+     300.06,
+     300.2752
+    ],
+    "wheelchairP95": [
+     274.9408,
+     272.29,
+     277.4482
+    ],
+    "deadlinesMet": [
+     0.3653,
+     0.363,
+     0.3675
+    ],
+    "gini": [
+     0.3855,
+     0.3852,
+     0.3859
+    ],
+    "seatUtil": [
+     0.9773,
+     0.9753,
+     0.9793
+    ],
+    "turnedAway": [
+     91528.6,
+     91421.68,
+     91647.14
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     1.46,
+     1.24,
+     1.72
+    ],
+    "peakDoorCrowd": [
+     1965.38,
+     1954.32,
+     1978.46
+    ],
+    "peakDoorDensity": [
+     49.1345,
+     48.8065,
+     49.465
+    ],
+    "unserved": [
+     2707.7,
+     2697,
+     2719.52
+    ],
+    "cabTrips": [
+     188.94,
+     188.86,
+     189
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     18.2035,
+     18.0415,
+     18.3713
+    ],
+    "cabSoloPerRider": [
+     18.2035,
+     18.0271,
+     18.3828
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     6721.6,
+     6715.86,
+     6727.6
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     9042.86,
+     9033.46,
+     9051.74
+    ]
+   },
+   "FCFS": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     130.5177,
+     130.2067,
+     130.8531
+    ],
+    "medianWait": [
+     153.2486,
+     152.7899,
+     153.6989
+    ],
+    "p95Wait": [
+     206.3794,
+     205.792,
+     207.0216
+    ],
+    "worstWait": [
+     240.8344,
+     239.4636,
+     242.2866
+    ],
+    "wheelchairP95": [
+     216.4933,
+     214.518,
+     218.8382
+    ],
+    "deadlinesMet": [
+     0.1895,
+     0.1875,
+     0.1915
+    ],
+    "gini": [
+     0.2554,
+     0.255,
+     0.256
+    ],
+    "seatUtil": [
+     1,
+     1,
+     1
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     90,
+     90,
+     90
+    ],
+    "peakDoorDensity": [
+     2.25,
+     2.25,
+     2.25
+    ],
+    "unserved": [
+     2884.86,
+     2863.24,
+     2908.22
+    ],
+    "cabTrips": [
+     188.94,
+     188.88,
+     189
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     11.6769,
+     11.5429,
+     11.8275
+    ],
+    "cabSoloPerRider": [
+     11.6769,
+     11.5403,
+     11.8195
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     7027.6,
+     7005.3,
+     7050.02
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     10526.14,
+     10506.02,
+     10545.64
+    ]
+   },
+   "RAHA": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     86.7913,
+     86.4901,
+     87.0774
+    ],
+    "medianWait": [
+     67.8802,
+     67.5917,
+     68.1308
+    ],
+    "p95Wait": [
+     201.0188,
+     200.4766,
+     201.6483
+    ],
+    "worstWait": [
+     242.4387,
+     241.2374,
+     243.767
+    ],
+    "wheelchairP95": [
+     163.929,
+     159.9363,
+     167.5637
+    ],
+    "deadlinesMet": [
+     0.516,
+     0.5135,
+     0.5185
+    ],
+    "gini": [
+     0.4334,
+     0.4328,
+     0.434
+    ],
+    "seatUtil": [
+     0.9617,
+     0.96,
+     0.9632
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     1491.16,
+     1465.24,
+     1516.64
+    ],
+    "cabTrips": [
+     159.12,
+     155.14,
+     162.94
+    ],
+    "ridersPerCab": [
+     3.8676,
+     3.8511,
+     3.8845
+    ],
+    "cabFarePerRider": [
+     9.625,
+     9.5583,
+     9.7056
+    ],
+    "cabSoloPerRider": [
+     32.2465,
+     32.0633,
+     32.4221
+    ],
+    "maxShareRatio": [
+     0.9913,
+     0.9651,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1731.26,
+     1724.22,
+     1739.2
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     475.76,
+     448.04,
+     503.76
+    ],
+    "essentialsDrops": [
+     7274.84,
+     7261.28,
+     7289.16
+    ]
+   }
+  },
+  "fleetHalf": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     107.233,
+     107.0937,
+     107.3654
+    ],
+    "medianWait": [
+     85.7749,
+     85.446,
+     86.082
+    ],
+    "p95Wait": [
+     260.6285,
+     260.2281,
+     260.9959
+    ],
+    "worstWait": [
+     299.7163,
+     299.6323,
+     299.7861
+    ],
+    "wheelchairP95": [
+     255.1575,
+     249.8793,
+     260.2266
+    ],
+    "deadlinesMet": [
+     0.46,
+     0.4572,
+     0.4624
+    ],
+    "gini": [
+     0.4333,
+     0.4328,
+     0.4338
+    ],
+    "seatUtil": [
+     0.9578,
+     0.9563,
+     0.9597
+    ],
+    "turnedAway": [
+     17613.52,
+     17583.04,
+     17648.8
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     1.26,
+     1.1,
+     1.4
+    ],
+    "peakDoorCrowd": [
+     979.54,
+     969.62,
+     988.3
+    ],
+    "peakDoorDensity": [
+     24.4885,
+     24.25,
+     24.762
+    ],
+    "unserved": [
+     1250.96,
+     1242.28,
+     1259.62
+    ],
+    "cabTrips": [
+     94,
+     94,
+     94
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     18.1518,
+     17.7762,
+     18.5163
+    ],
+    "cabSoloPerRider": [
+     18.1518,
+     17.7836,
+     18.5096
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     3144.9,
+     3141.64,
+     3148.44
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     3860.24,
+     3855.7,
+     3865.34
+    ]
+   },
+   "FCFS": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     113.0042,
+     112.3395,
+     113.6424
+    ],
+    "medianWait": [
+     127.2456,
+     126.0635,
+     128.5406
+    ],
+    "p95Wait": [
+     193.2372,
+     192.0185,
+     194.3511
+    ],
+    "worstWait": [
+     229.2226,
+     226.1775,
+     232.0253
+    ],
+    "wheelchairP95": [
+     206.9821,
+     203.3602,
+     211.2009
+    ],
+    "deadlinesMet": [
+     0.2788,
+     0.2748,
+     0.2828
+    ],
+    "gini": [
+     0.3104,
+     0.3093,
+     0.3116
+    ],
+    "seatUtil": [
+     1,
+     1,
+     1
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     90,
+     90,
+     90
+    ],
+    "peakDoorDensity": [
+     2.25,
+     2.25,
+     2.25
+    ],
+    "unserved": [
+     1109,
+     1080.2,
+     1136
+    ],
+    "cabTrips": [
+     94,
+     94,
+     94
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     12.5595,
+     12.0129,
+     13.1424
+    ],
+    "cabSoloPerRider": [
+     12.5595,
+     12.0516,
+     13.1262
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     3247.26,
+     3229.08,
+     3264.9
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     4382.88,
+     4366.8,
+     4399.42
+    ]
+   },
+   "RAHA": {
+    "clearanceMin": [
+     300,
+     300,
+     300
+    ],
+    "meanWait": [
+     78.3149,
+     77.7738,
+     78.964
+    ],
+    "medianWait": [
+     51.4292,
+     50.6583,
+     52.1694
+    ],
+    "p95Wait": [
+     191.034,
+     189.7162,
+     192.3562
+    ],
+    "worstWait": [
+     233.4182,
+     231.5459,
+     235.2876
+    ],
+    "wheelchairP95": [
+     159.1514,
+     152.3795,
+     166.8542
+    ],
+    "deadlinesMet": [
+     0.5711,
+     0.5664,
+     0.5766
+    ],
+    "gini": [
+     0.4564,
+     0.4553,
+     0.4574
+    ],
+    "seatUtil": [
+     0.8761,
+     0.8715,
+     0.8809
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     530.48,
+     505.6,
+     557.46
+    ],
+    "cabTrips": [
+     81.44,
+     79.3,
+     83.7
+    ],
+    "ridersPerCab": [
+     3.8757,
+     3.8544,
+     3.8967
+    ],
+    "cabFarePerRider": [
+     10.0788,
+     10.0166,
+     10.141
+    ],
+    "cabSoloPerRider": [
+     33.7783,
+     33.6297,
+     33.9447
+    ],
+    "maxShareRatio": [
+     0.8314,
+     0.7773,
+     0.8837
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     787.52,
+     782.22,
+     794.06
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     223.18,
+     209.58,
+     238.86
+    ],
+    "essentialsDrops": [
+     3247.16,
+     3218.74,
+     3277.68
+    ]
+   }
+  }
+ },
+ "c1": {
+  "reach_1": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     233.7696,
+     232.1822,
+     235.6273
+    ],
+    "meanWait": [
+     45.2608,
+     45.0698,
+     45.4511
+    ],
+    "medianWait": [
+     32.1599,
+     32.0445,
+     32.2747
+    ],
+    "p95Wait": [
+     120.047,
+     118.9598,
+     121.1333
+    ],
+    "worstWait": [
+     223.414,
+     221.6668,
+     225.2045
+    ],
+    "wheelchairP95": [
+     124.9923,
+     117.5638,
+     132.7034
+    ],
+    "deadlinesMet": [
+     0.7918,
+     0.7896,
+     0.7942
+    ],
+    "gini": [
+     0.3898,
+     0.3882,
+     0.3915
+    ],
+    "seatUtil": [
+     0.7901,
+     0.7832,
+     0.7981
+    ],
+    "turnedAway": [
+     11620.1,
+     11526.34,
+     11708.6
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.26,
+     10.62,
+     11.96
+    ],
+    "peakDoorCrowd": [
+     517.56,
+     509.26,
+     526.42
+    ],
+    "peakDoorDensity": [
+     12.939,
+     12.717,
+     13.194
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.78,
+     188.66,
+     188.9
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.3181,
+     19.0979,
+     19.5594
+    ],
+    "cabSoloPerRider": [
+     19.3181,
+     19.0738,
+     19.5549
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1468.86,
+     1460.84,
+     1476.42
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2133.4,
+     2122.12,
+     2145.64
+    ]
+   },
+   "FCFS_app": {
+    "clearanceMin": [
+     205.9789,
+     204.9951,
+     206.9912
+    ],
+    "meanWait": [
+     43.0003,
+     42.6645,
+     43.3699
+    ],
+    "medianWait": [
+     42.8756,
+     42.4954,
+     43.2519
+    ],
+    "p95Wait": [
+     65.0641,
+     64.1293,
+     65.9119
+    ],
+    "worstWait": [
+     105.6504,
+     102.1365,
+     109.2734
+    ],
+    "wheelchairP95": [
+     85.6981,
+     81.947,
+     89.3378
+    ],
+    "deadlinesMet": [
+     0.751,
+     0.7456,
+     0.7564
+    ],
+    "gini": [
+     0.1744,
+     0.1723,
+     0.1765
+    ],
+    "seatUtil": [
+     0.9514,
+     0.9472,
+     0.9556
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     90,
+     90,
+     90
+    ],
+    "peakDoorDensity": [
+     2.25,
+     2.25,
+     2.25
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.76,
+     188.64,
+     188.88
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     15.1464,
+     14.7025,
+     15.5832
+    ],
+    "cabSoloPerRider": [
+     15.1464,
+     14.7488,
+     15.6119
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1500.82,
+     1489.42,
+     1510.3
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2612.6,
+     2534.52,
+     2683.76
+    ]
+   },
+   "RAHA_cloud": {
+    "clearanceMin": [
+     186.6445,
+     185.5736,
+     187.6647
+    ],
+    "meanWait": [
+     32.4308,
+     32.1913,
+     32.6763
+    ],
+    "medianWait": [
+     31.3677,
+     31.0328,
+     31.7259
+    ],
+    "p95Wait": [
+     62.1148,
+     61.5892,
+     62.6649
+    ],
+    "worstWait": [
+     88.3789,
+     86.0268,
+     91.5965
+    ],
+    "wheelchairP95": [
+     56.5371,
+     52.5939,
+     60.8336
+    ],
+    "deadlinesMet": [
+     0.9332,
+     0.9305,
+     0.9363
+    ],
+    "gini": [
+     0.3035,
+     0.302,
+     0.305
+    ],
+    "seatUtil": [
+     0.7599,
+     0.7552,
+     0.7644
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     164.18,
+     162,
+     166.84
+    ],
+    "ridersPerCab": [
+     3.8472,
+     3.8337,
+     3.8629
+    ],
+    "cabFarePerRider": [
+     9.7319,
+     9.6704,
+     9.786
+    ],
+    "cabSoloPerRider": [
+     32.6254,
+     32.4591,
+     32.7833
+    ],
+    "maxShareRatio": [
+     0.9922,
+     0.9765,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     480.44,
+     474.2,
+     486.84
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     326.44,
+     306.18,
+     350.44
+    ],
+    "essentialsDrops": [
+     1565.16,
+     1526.98,
+     1600.3
+    ]
+   },
+   "RAHA_local": {
+    "clearanceMin": [
+     186.6445,
+     185.5418,
+     187.6603
+    ],
+    "meanWait": [
+     32.4308,
+     32.1925,
+     32.6691
+    ],
+    "medianWait": [
+     31.3677,
+     31.0455,
+     31.7098
+    ],
+    "p95Wait": [
+     62.1148,
+     61.5957,
+     62.6672
+    ],
+    "worstWait": [
+     88.3789,
+     86.0054,
+     91.0598
+    ],
+    "wheelchairP95": [
+     56.5371,
+     52.7897,
+     60.9386
+    ],
+    "deadlinesMet": [
+     0.9332,
+     0.9304,
+     0.936
+    ],
+    "gini": [
+     0.3035,
+     0.302,
+     0.3049
+    ],
+    "seatUtil": [
+     0.7599,
+     0.7555,
+     0.7648
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     164.18,
+     161.62,
+     166.72
+    ],
+    "ridersPerCab": [
+     3.8472,
+     3.8326,
+     3.8619
+    ],
+    "cabFarePerRider": [
+     9.7319,
+     9.6767,
+     9.7864
+    ],
+    "cabSoloPerRider": [
+     32.6254,
+     32.457,
+     32.7883
+    ],
+    "maxShareRatio": [
+     0.9922,
+     0.9765,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     480.44,
+     474.6,
+     487.14
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     326.44,
+     300.16,
+     350.36
+    ],
+    "essentialsDrops": [
+     1565.16,
+     1528.02,
+     1600.6
+    ]
+   }
+  },
+  "reach_0.7": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     232.3248,
+     230.8292,
+     234.0632
+    ],
+    "meanWait": [
+     45.2805,
+     45.0863,
+     45.4911
+    ],
+    "medianWait": [
+     32.1732,
+     32.054,
+     32.2883
+    ],
+    "p95Wait": [
+     119.9079,
+     118.6887,
+     121.0487
+    ],
+    "worstWait": [
+     223.436,
+     221.5144,
+     225.5946
+    ],
+    "wheelchairP95": [
+     132.4699,
+     123.1269,
+     141.9934
+    ],
+    "deadlinesMet": [
+     0.794,
+     0.7915,
+     0.7964
+    ],
+    "gini": [
+     0.3899,
+     0.3884,
+     0.3916
+    ],
+    "seatUtil": [
+     0.7967,
+     0.7891,
+     0.804
+    ],
+    "turnedAway": [
+     11627.12,
+     11538.34,
+     11719.56
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     10.74,
+     10.16,
+     11.42
+    ],
+    "peakDoorCrowd": [
+     516.62,
+     508.5,
+     526.3
+    ],
+    "peakDoorDensity": [
+     12.9155,
+     12.693,
+     13.137
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.64,
+     188.5,
+     188.76
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.382,
+     19.1587,
+     19.6179
+    ],
+    "cabSoloPerRider": [
+     19.382,
+     19.1644,
+     19.5948
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1021.98,
+     1014.54,
+     1029.38
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2133.96,
+     2123.46,
+     2145.46
+    ]
+   },
+   "FCFS_app": {
+    "clearanceMin": [
+     235.2317,
+     232.6881,
+     238.3578
+    ],
+    "meanWait": [
+     45.2714,
+     45.0566,
+     45.4837
+    ],
+    "medianWait": [
+     32.2166,
+     32.0917,
+     32.3514
+    ],
+    "p95Wait": [
+     119.995,
+     118.8868,
+     121.2112
+    ],
+    "worstWait": [
+     225.1511,
+     222.8733,
+     227.7107
+    ],
+    "wheelchairP95": [
+     134.4207,
+     127.4631,
+     141.975
+    ],
+    "deadlinesMet": [
+     0.7927,
+     0.7908,
+     0.7947
+    ],
+    "gini": [
+     0.3902,
+     0.3886,
+     0.3919
+    ],
+    "seatUtil": [
+     0.7862,
+     0.7761,
+     0.7961
+    ],
+    "turnedAway": [
+     11623.22,
+     11515.62,
+     11713.46
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.72,
+     10.88,
+     12.68
+    ],
+    "peakDoorCrowd": [
+     517.28,
+     508.42,
+     526.1
+    ],
+    "peakDoorDensity": [
+     12.932,
+     12.727,
+     13.166
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.64,
+     188.5,
+     188.76
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.2931,
+     19.0793,
+     19.5328
+    ],
+    "cabSoloPerRider": [
+     19.2931,
+     19.0915,
+     19.5351
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1022.1,
+     1014.68,
+     1029.22
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2130.62,
+     2120.28,
+     2142.66
+    ]
+   },
+   "RAHA_cloud": {
+    "clearanceMin": [
+     233.0557,
+     231.8951,
+     234.5333
+    ],
+    "meanWait": [
+     45.2773,
+     45.1024,
+     45.4865
+    ],
+    "medianWait": [
+     32.2259,
+     32.1125,
+     32.344
+    ],
+    "p95Wait": [
+     119.6299,
+     118.4464,
+     120.7233
+    ],
+    "worstWait": [
+     223.3532,
+     221.3446,
+     225.4298
+    ],
+    "wheelchairP95": [
+     137.4215,
+     129.2857,
+     145.5762
+    ],
+    "deadlinesMet": [
+     0.7944,
+     0.7916,
+     0.7972
+    ],
+    "gini": [
+     0.3899,
+     0.3881,
+     0.3917
+    ],
+    "seatUtil": [
+     0.793,
+     0.7867,
+     0.7994
+    ],
+    "turnedAway": [
+     11625.28,
+     11534.52,
+     11720.34
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.02,
+     10.42,
+     11.6
+    ],
+    "peakDoorCrowd": [
+     516.04,
+     507.7,
+     524.94
+    ],
+    "peakDoorDensity": [
+     12.901,
+     12.6845,
+     13.114
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.64,
+     188.5,
+     188.76
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.3198,
+     19.0523,
+     19.5702
+    ],
+    "cabSoloPerRider": [
+     19.3198,
+     19.0821,
+     19.5933
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     1022.12,
+     1014.56,
+     1029.08
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2131.86,
+     2121.38,
+     2142.28
+    ]
+   },
+   "RAHA_local": {
+    "clearanceMin": [
+     186.4423,
+     185.6378,
+     187.26
+    ],
+    "meanWait": [
+     31.0066,
+     30.7123,
+     31.252
+    ],
+    "medianWait": [
+     28.972,
+     28.5486,
+     29.4331
+    ],
+    "p95Wait": [
+     58.8983,
+     58.3714,
+     59.4709
+    ],
+    "worstWait": [
+     82.8427,
+     80.1597,
+     85.8313
+    ],
+    "wheelchairP95": [
+     55.03,
+     51.5468,
+     58.535
+    ],
+    "deadlinesMet": [
+     0.9443,
+     0.9417,
+     0.9469
+    ],
+    "gini": [
+     0.2908,
+     0.2893,
+     0.2923
+    ],
+    "seatUtil": [
+     0.7984,
+     0.7945,
+     0.8026
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     160.2,
+     157.62,
+     162.8
+    ],
+    "ridersPerCab": [
+     3.8806,
+     3.8672,
+     3.8928
+    ],
+    "cabFarePerRider": [
+     9.8603,
+     9.79,
+     9.933
+    ],
+    "cabSoloPerRider": [
+     32.7107,
+     32.5296,
+     32.8897
+    ],
+    "maxShareRatio": [
+     0.9387,
+     0.8995,
+     0.976
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     453.96,
+     448.24,
+     459.82
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     317.7,
+     296.06,
+     339.72
+    ],
+    "essentialsDrops": [
+     1314.1,
+     1274.08,
+     1358.04
+    ]
+   }
+  },
+  "reach_0.3": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     234.321,
+     232.2749,
+     236.7612
+    ],
+    "meanWait": [
+     45.3064,
+     45.1039,
+     45.4798
+    ],
+    "medianWait": [
+     32.1915,
+     32.0789,
+     32.3005
+    ],
+    "p95Wait": [
+     120.0199,
+     118.8429,
+     121.3526
+    ],
+    "worstWait": [
+     224.036,
+     222.1992,
+     226.302
+    ],
+    "wheelchairP95": [
+     132.5323,
+     124.1057,
+     141.7223
+    ],
+    "deadlinesMet": [
+     0.7931,
+     0.7905,
+     0.7958
+    ],
+    "gini": [
+     0.3906,
+     0.3888,
+     0.3922
+    ],
+    "seatUtil": [
+     0.789,
+     0.78,
+     0.7983
+    ],
+    "turnedAway": [
+     11637.26,
+     11545.1,
+     11724.66
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.3,
+     10.62,
+     12.18
+    ],
+    "peakDoorCrowd": [
+     518.18,
+     508.6,
+     528.3
+    ],
+    "peakDoorDensity": [
+     12.9545,
+     12.719,
+     13.1765
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.36,
+     188.22,
+     188.5
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.2211,
+     19.0302,
+     19.4259
+    ],
+    "cabSoloPerRider": [
+     19.2211,
+     19.0234,
+     19.4311
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     426.92,
+     423.02,
+     430.78
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2135.28,
+     2124.1,
+     2146.14
+    ]
+   },
+   "FCFS_app": {
+    "clearanceMin": [
+     234.3838,
+     232.3821,
+     236.6935
+    ],
+    "meanWait": [
+     45.3016,
+     45.0837,
+     45.4923
+    ],
+    "medianWait": [
+     32.159,
+     32.0215,
+     32.2881
+    ],
+    "p95Wait": [
+     120.3302,
+     119.1103,
+     121.673
+    ],
+    "worstWait": [
+     223.4511,
+     221.6518,
+     225.256
+    ],
+    "wheelchairP95": [
+     138.628,
+     131.9658,
+     146.1651
+    ],
+    "deadlinesMet": [
+     0.7935,
+     0.7911,
+     0.7959
+    ],
+    "gini": [
+     0.3909,
+     0.389,
+     0.3927
+    ],
+    "seatUtil": [
+     0.7891,
+     0.7812,
+     0.7974
+    ],
+    "turnedAway": [
+     11636.9,
+     11549.88,
+     11721.6
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.42,
+     10.6,
+     12.16
+    ],
+    "peakDoorCrowd": [
+     517.58,
+     509.52,
+     525.5
+    ],
+    "peakDoorDensity": [
+     12.9395,
+     12.7125,
+     13.162
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.36,
+     188.24,
+     188.48
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.1095,
+     18.9013,
+     19.3196
+    ],
+    "cabSoloPerRider": [
+     19.1095,
+     18.8952,
+     19.3064
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     428.74,
+     424.5,
+     432.9
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2132.92,
+     2121.18,
+     2144.78
+    ]
+   },
+   "RAHA_cloud": {
+    "clearanceMin": [
+     234.2407,
+     232.1366,
+     236.6795
+    ],
+    "meanWait": [
+     45.2985,
+     45.1192,
+     45.494
+    ],
+    "medianWait": [
+     32.1832,
+     32.0702,
+     32.2849
+    ],
+    "p95Wait": [
+     119.9686,
+     118.8456,
+     121.1873
+    ],
+    "worstWait": [
+     222.9991,
+     221.1401,
+     224.8061
+    ],
+    "wheelchairP95": [
+     131.7903,
+     123.6844,
+     139.7148
+    ],
+    "deadlinesMet": [
+     0.7925,
+     0.7903,
+     0.7948
+    ],
+    "gini": [
+     0.3903,
+     0.3883,
+     0.3922
+    ],
+    "seatUtil": [
+     0.791,
+     0.7814,
+     0.8005
+    ],
+    "turnedAway": [
+     11633.52,
+     11538.82,
+     11726.32
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.24,
+     10.42,
+     12.08
+    ],
+    "peakDoorCrowd": [
+     516.34,
+     507.72,
+     524.8
+    ],
+    "peakDoorDensity": [
+     12.9085,
+     12.683,
+     13.1365
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     188.36,
+     188.24,
+     188.48
+    ],
+    "ridersPerCab": [
+     1,
+     1,
+     1
+    ],
+    "cabFarePerRider": [
+     19.3715,
+     19.1317,
+     19.6267
+    ],
+    "cabSoloPerRider": [
+     19.3715,
+     19.1611,
+     19.6204
+    ],
+    "maxShareRatio": [
+     1,
+     1,
+     1
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     427,
+     422.58,
+     431.68
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2130.46,
+     2120.4,
+     2142
+    ]
+   },
+   "RAHA_local": {
+    "clearanceMin": [
+     189.1974,
+     188.3294,
+     190.1167
+    ],
+    "meanWait": [
+     31.5564,
+     31.3007,
+     31.8656
+    ],
+    "medianWait": [
+     28.6573,
+     28.2818,
+     29.0542
+    ],
+    "p95Wait": [
+     59.6166,
+     58.9816,
+     60.236
+    ],
+    "worstWait": [
+     81.1129,
+     79.7568,
+     82.992
+    ],
+    "wheelchairP95": [
+     53.7819,
+     50.7416,
+     57.0846
+    ],
+    "deadlinesMet": [
+     0.9433,
+     0.941,
+     0.9457
+    ],
+    "gini": [
+     0.2811,
+     0.2794,
+     0.2827
+    ],
+    "seatUtil": [
+     0.8633,
+     0.859,
+     0.8675
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     112,
+     108.52,
+     115.76
+    ],
+    "ridersPerCab": [
+     3.9259,
+     3.9162,
+     3.9353
+    ],
+    "cabFarePerRider": [
+     10.0392,
+     9.9696,
+     10.1107
+    ],
+    "cabSoloPerRider": [
+     32.8068,
+     32.5903,
+     33.0277
+    ],
+    "maxShareRatio": [
+     0.8632,
+     0.815,
+     0.9149
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     446.48,
+     442.54,
+     450.64
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     194.96,
+     179.2,
+     213.56
+    ],
+    "essentialsDrops": [
+     1367.54,
+     1326.16,
+     1410.56
+    ]
+   }
+  },
+  "reach_0": {
+   "FREE_FOR_ALL": {
+    "clearanceMin": [
+     238.8951,
+     236.9988,
+     241.189
+    ],
+    "meanWait": [
+     48.5297,
+     48.3144,
+     48.7255
+    ],
+    "medianWait": [
+     33.9973,
+     33.8924,
+     34.1102
+    ],
+    "p95Wait": [
+     131.6547,
+     130.605,
+     132.7457
+    ],
+    "worstWait": [
+     228.7559,
+     227.306,
+     230.4443
+    ],
+    "wheelchairP95": [
+     139.6713,
+     131.5115,
+     147.3019
+    ],
+    "deadlinesMet": [
+     0.7745,
+     0.7722,
+     0.7773
+    ],
+    "gini": [
+     0.4,
+     0.3984,
+     0.4015
+    ],
+    "seatUtil": [
+     0.7952,
+     0.787,
+     0.8029
+    ],
+    "turnedAway": [
+     12899.62,
+     12798.2,
+     12994.06
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.8,
+     11.06,
+     12.66
+    ],
+    "peakDoorCrowd": [
+     542.44,
+     532.12,
+     554.42
+    ],
+    "peakDoorDensity": [
+     13.561,
+     13.3045,
+     13.8225
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     0,
+     0,
+     0
+    ],
+    "ridersPerCab": [
+     0,
+     0,
+     0
+    ],
+    "cabFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "cabSoloPerRider": [
+     0,
+     0,
+     0
+    ],
+    "maxShareRatio": [
+     0,
+     0,
+     0
+    ],
+    "peakSurge": [
+     1,
+     1,
+     1
+    ],
+    "peakGateCrowd": [
+     0,
+     0,
+     0
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2301.28,
+     2290.38,
+     2311.8
+    ]
+   },
+   "FCFS_app": {
+    "clearanceMin": [
+     239.6733,
+     237.7989,
+     242.0284
+    ],
+    "meanWait": [
+     48.5339,
+     48.3187,
+     48.7415
+    ],
+    "medianWait": [
+     34.0755,
+     33.9548,
+     34.2033
+    ],
+    "p95Wait": [
+     131.7756,
+     130.6652,
+     133.0461
+    ],
+    "worstWait": [
+     228.8492,
+     227.0265,
+     230.5504
+    ],
+    "wheelchairP95": [
+     136.514,
+     129.5175,
+     143.4805
+    ],
+    "deadlinesMet": [
+     0.774,
+     0.7714,
+     0.7769
+    ],
+    "gini": [
+     0.3996,
+     0.3981,
+     0.4013
+    ],
+    "seatUtil": [
+     0.7921,
+     0.7841,
+     0.8003
+    ],
+    "turnedAway": [
+     12902.56,
+     12806.52,
+     12995.68
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.92,
+     11.16,
+     12.74
+    ],
+    "peakDoorCrowd": [
+     542.44,
+     532.4,
+     552.04
+    ],
+    "peakDoorDensity": [
+     13.561,
+     13.3255,
+     13.8065
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     0,
+     0,
+     0
+    ],
+    "ridersPerCab": [
+     0,
+     0,
+     0
+    ],
+    "cabFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "cabSoloPerRider": [
+     0,
+     0,
+     0
+    ],
+    "maxShareRatio": [
+     0,
+     0,
+     0
+    ],
+    "peakSurge": [
+     1,
+     1,
+     1
+    ],
+    "peakGateCrowd": [
+     0,
+     0,
+     0
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2303.04,
+     2293.76,
+     2313.36
+    ]
+   },
+   "RAHA_cloud": {
+    "clearanceMin": [
+     238.5364,
+     237.155,
+     240.0581
+    ],
+    "meanWait": [
+     48.5321,
+     48.3102,
+     48.7514
+    ],
+    "medianWait": [
+     34.013,
+     33.9117,
+     34.1253
+    ],
+    "p95Wait": [
+     131.6895,
+     130.6187,
+     132.8872
+    ],
+    "worstWait": [
+     229.1256,
+     227.5437,
+     230.6716
+    ],
+    "wheelchairP95": [
+     141.5722,
+     135.0156,
+     147.2715
+    ],
+    "deadlinesMet": [
+     0.773,
+     0.7703,
+     0.7761
+    ],
+    "gini": [
+     0.4002,
+     0.3988,
+     0.402
+    ],
+    "seatUtil": [
+     0.7956,
+     0.7882,
+     0.8022
+    ],
+    "turnedAway": [
+     12900.08,
+     12808.66,
+     13000.22
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     11.68,
+     11,
+     12.3
+    ],
+    "peakDoorCrowd": [
+     542.52,
+     533.52,
+     552.14
+    ],
+    "peakDoorDensity": [
+     13.563,
+     13.2945,
+     13.823
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     0,
+     0,
+     0
+    ],
+    "ridersPerCab": [
+     0,
+     0,
+     0
+    ],
+    "cabFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "cabSoloPerRider": [
+     0,
+     0,
+     0
+    ],
+    "maxShareRatio": [
+     0,
+     0,
+     0
+    ],
+    "peakSurge": [
+     1,
+     1,
+     1
+    ],
+    "peakGateCrowd": [
+     0,
+     0,
+     0
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2303.76,
+     2293.78,
+     2313.04
+    ]
+   },
+   "RAHA_local": {
+    "clearanceMin": [
+     203.3478,
+     202.2529,
+     204.3996
+    ],
+    "meanWait": [
+     37.4787,
+     37.2689,
+     37.7001
+    ],
+    "medianWait": [
+     34.089,
+     33.6871,
+     34.4247
+    ],
+    "p95Wait": [
+     75.4018,
+     74.6532,
+     76.2399
+    ],
+    "worstWait": [
+     99.0738,
+     97.9551,
+     100.2913
+    ],
+    "wheelchairP95": [
+     54.1249,
+     51.2417,
+     56.9544
+    ],
+    "deadlinesMet": [
+     0.8932,
+     0.8901,
+     0.8961
+    ],
+    "gini": [
+     0.3037,
+     0.3023,
+     0.3051
+    ],
+    "seatUtil": [
+     0.9169,
+     0.9139,
+     0.9201
+    ],
+    "turnedAway": [
+     0,
+     0,
+     0
+    ],
+    "overbooked": [
+     0,
+     0,
+     0
+    ],
+    "emptyDepartures": [
+     0,
+     0,
+     0
+    ],
+    "peakDoorCrowd": [
+     40,
+     40,
+     40
+    ],
+    "peakDoorDensity": [
+     1,
+     1,
+     1
+    ],
+    "unserved": [
+     0,
+     0,
+     0
+    ],
+    "cabTrips": [
+     0,
+     0,
+     0
+    ],
+    "ridersPerCab": [
+     0,
+     0,
+     0
+    ],
+    "cabFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "cabSoloPerRider": [
+     0,
+     0,
+     0
+    ],
+    "maxShareRatio": [
+     0,
+     0,
+     0
+    ],
+    "peakSurge": [
+     2.5,
+     2.5,
+     2.5
+    ],
+    "peakGateCrowd": [
+     481.76,
+     477.4,
+     486.26
+    ],
+    "allocatorDownEvents": [
+     0,
+     0,
+     0
+    ],
+    "bikeRiders": [
+     0,
+     0,
+     0
+    ],
+    "bikeFarePerRider": [
+     0,
+     0,
+     0
+    ],
+    "dropsForGuarantee": [
+     0,
+     0,
+     0
+    ],
+    "essentialsDrops": [
+     2034.52,
+     2014.64,
+     2059.06
+    ]
+   }
+  }
+ },
+ "c3": null
+}

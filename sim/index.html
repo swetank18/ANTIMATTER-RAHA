@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAHA: stranded network simulator</title>
+  <meta name="description" content="RAHA replays five real transit disruptions on floating islands built from real map data, and compares free-for-all recovery with RAHA's fair, capacity-exact, offline-first recovery." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='26' r='18' fill='%237aa7ff'/%3E%3Cpath d='M14 34 L50 34 L32 62 Z' fill='%23463a52'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three/build/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }
+  </script>
+</head>
+<body>
+  <canvas id="gl" aria-label="3D simulation view"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="fade"></div>
+
+  <header id="topbar" class="ui">
+    <div class="brand"><span class="logo">RAHA</span><span class="sub">stranded network simulator</span></div>
+    <div id="where"><span id="sc-title">Five real disruptions</span><span id="sc-date"></span><span id="clock" class="mono"></span></div>
+    <div class="badges">
+      <span class="badge ok" title="Constraint 1: no internet or third-party APIs. The whole simulation runs from local files.">C1 OFFLINE ✓</span>
+      <span class="badge ok" title="Constraint 3: API response changes are absorbed by RAHA's tolerant reader.">C3 API DRIFT ✓</span>
+      <span id="net-badge" class="badge ok" title="Every request this page makes to another host is counted and blocked (Constraint 1)">EXTERNAL REQUESTS <b class="mono" id="net-count">0</b></span>
+      <span id="sw-badge" class="badge ok" hidden title="All files are cached on this device: switch off the network and reload, it still works">OFFLINE READY</span>
+      <span id="schema-badge" class="badge" hidden>FEED <b id="schema-text">v1</b></span>
+      <span id="cut-badge" class="badge warn" hidden>INTERNET CUT</span>
+    </div>
+  </header>
+
+  <nav id="rail" class="ui" aria-label="Chapters"></nav>
+
+  <aside id="panel" class="ui glass" aria-live="polite">
+    <div id="panel-head"><span id="lh">As it happened</span><span id="rh"></span></div>
+    <div id="kpis"></div>
+    <div id="koottu" hidden></div>
+  </aside>
+
+  <section id="casefile" class="ui glass" hidden>
+    <div class="tabs" role="tablist">
+      <button data-tab="what" role="tab">What happened</button>
+      <button data-tab="why" role="tab">Why</button>
+      <button data-tab="raha" role="tab">RAHA</button>
+      <button data-tab="data" role="tab">Data</button>
+    </div>
+    <div id="tab-body"></div>
+  </section>
+
+  <section id="json-panel" class="ui glass mono" hidden></section>
+  <section id="results" class="ui glass" hidden></section>
+
+  <footer id="bottom" class="ui">
+    <div id="caption" class="glass"><div id="cap-title"></div><div id="cap-text"></div><div id="cap-src"></div></div>
+    <div id="controls">
+      <button id="prev" title="Previous (Left arrow)">&#9664;</button>
+      <button id="play" title="Play or pause (P)">&#10073;&#10073;</button>
+      <button id="next" title="Next (Right arrow or Space)">&#9654;</button>
+      <select id="speed" title="Simulation speed"><option value="0.5">0.5 min/s</option><option value="1">1 min/s</option><option value="2" selected>2 min/s</option><option value="4">4 min/s</option><option value="8">8 min/s</option></select>
+      <button id="btn-case" title="Case file (C)">Case file</button>
+      <button id="btn-src" title="Sources (S)">Sources</button>
+      <button id="btn-data" title="Data provenance (D)">Data tiers</button>
+      <button id="btn-judge" title="Run the constraint checks live (J)" class="primary" style="padding:6px 12px">Judge check</button>
+      <span class="hint">&larr; &rarr; chapters &middot; 1-5 cities &middot; H hide UI</span>
+    </div>
+    <div id="progress"><div id="progress-bar"></div></div>
+  </footer>
+
+  <div id="choice" class="modal" hidden><div class="card glass"><div class="kicker" id="choice-kicker"></div><h2 id="choice-title"></h2><p id="choice-text"></p><div class="row" id="choice-buttons"></div></div></div>
+  <aside id="drawer" class="glass" hidden><button class="close" id="drawer-close" aria-label="Close">&times;</button><div id="drawer-body"></div></aside>
+
+  <div id="title" class="modal">
+    <div class="card hero">
+      <div class="kicker">Team Antimatter &middot; PS2 The Stranded Network</div>
+      <h1>RAHA</h1>
+      <p class="lede">Five real transit disruptions, rebuilt from real map data and replayed twice: once as it happened, once with RAHA.</p>
+      <p class="small">Bridging buses with capacity-exact passes &middot; Koottu shared cabs at geofenced gates &middot; two-wheeler and essentials dispatch &middot; works with the internet cut &middot; survives API changes</p>
+      <button id="begin" class="primary">Begin</button>
+      <p class="small dim">Runs fully offline. Map data &copy; OpenStreetMap contributors (ODbL) &middot; Natural Earth</p>
+    </div>
+  </div>
+  <div id="loading">Building islands from OpenStreetMap&hellip;</div>
+  <script type="module" src="./src/netguard.js"></script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
