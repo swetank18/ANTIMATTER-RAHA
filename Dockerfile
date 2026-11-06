@@ -16,6 +16,8 @@ COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/src/core ./src/core
 COPY --from=build --chown=node:node /app/src/hub ./src/hub
+# The team's simulation, a static app served under /sim/.
+COPY --from=build --chown=node:node /app/sim ./sim
 # The C06 card reads the last real-browser accessibility report from here.
 COPY --from=build --chown=node:node /app/results ./results
 USER node

@@ -6,15 +6,17 @@
   <meta name="theme-color" content="#F5C400">
   <title>Koottu</title>
   <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5C400'/%3E%3Crect x='3' y='19' width='26' height='4' fill='%23000'/%3E%3Ccircle cx='10' cy='12' r='3.5' fill='%23000'/%3E%3Ccircle cx='22' cy='12' r='3.5' fill='%23000'/%3E%3C/svg%3E">
 </head>
 <body>
   <a class="skip" href="#main">Skip to main content</a>
   <header class="board">
-    <p class="name" lang="ta">கூட்டு</p>
-    <p class="name-en">Koottu</p>
+    <div class="mark"><p class="name" lang="ta">கூட்டு</p><p class="name-en">Koottu</p></div>
     <nav aria-label="Main">
-      <a href="#/arena" data-nav="arena">Constraints</a>
+      <a href="#/" data-nav="stage">Live demo</a>
+      <a href="#/sim" data-nav="sim">Simulation</a>
       <a href="#/rider" data-nav="rider">Rider app</a>
+      <a href="#/arena" data-nav="arena">All 12 constraints</a>
     </nav>
   </header>
   <div id="net" role="status" aria-live="polite"></div>

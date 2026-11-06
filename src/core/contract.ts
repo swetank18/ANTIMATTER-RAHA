@@ -195,9 +195,9 @@ export function proposeMapping(raw: unknown, version: string): MappingProposal |
   const routeT: Transform = typeof routeV === 'number' ? 'toString' : 'identity';
 
   const notes: MappingProposal['notes'] = [
-    { field: 'route', path: routeBest.path, transform: routeT, confidence: routeBest.c, why: 'Name resembles a route id and values are distinct' },
-    { field: 'status', path: statusBest.path, transform: 'upper', confidence: statusBest.c, why: 'Values match the known status words' },
-    { field: 'observedAtIso', path: timeBest.path, transform: timeT, confidence: timeBest.c, why: timeT === 'isoDate' ? 'Values are ISO dates' : 'Values are numeric timestamps, converted to ISO' },
+    { field: 'route', path: routeBest.path, transform: routeT, confidence: Math.min(1, routeBest.c), why: 'Name resembles a route id and values are distinct' },
+    { field: 'status', path: statusBest.path, transform: 'upper', confidence: Math.min(1, statusBest.c), why: 'Values match the known status words' },
+    { field: 'observedAtIso', path: timeBest.path, transform: timeT, confidence: Math.min(1, timeBest.c), why: timeT === 'isoDate' ? 'Values are ISO dates' : 'Values are numeric timestamps, converted to ISO' },
   ];
   const complete = notes.every((n) => n.path && n.confidence >= 0.5);
   return {

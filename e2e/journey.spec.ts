@@ -106,9 +106,10 @@ test('C06: keyboard only, no colour, no serious accessibility issues', async ({ 
   };
   const rider = await audit('/#/rider');
   const arena = await audit('/#/arena');
-  console.log('serious issues', JSON.stringify({ rider, arena }));
-  writeFileSync('results/a11y.json', JSON.stringify({ keyboardJourney, seriousViolations: rider.length + arena.length, pages: 2, details: { rider, arena }, ranAt: new Date().toISOString() }, null, 2));
-  expect([...rider, ...arena]).toEqual([]);
+  const demo = await audit('/#/');
+  console.log('serious issues', JSON.stringify({ rider, arena, demo }));
+  writeFileSync('results/a11y.json', JSON.stringify({ keyboardJourney, seriousViolations: rider.length + arena.length + demo.length, pages: 3, details: { rider, arena, demo }, ranAt: new Date().toISOString() }, null, 2));
+  expect([...rider, ...arena, ...demo]).toEqual([]);
 });
 
 test('A fare is read from a screenshot on the phone, even offline', async ({ page, context }) => {

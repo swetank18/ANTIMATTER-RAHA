@@ -1,4 +1,4 @@
-// Judges' Arena and a working rider app. The rider side is built to keep going with no network:
+// The live demo, the judges' constraint board and a working rider app. The rider side is built to keep going with no network:
 // it uses the same core code as the hub, a saved pack of local data, and a persistent queue.
 
 import '@fontsource-variable/anek-latin/wdth.css';
@@ -7,6 +7,7 @@ import qrcode from 'qrcode-generator';
 import { advise, checkFare, fareFor, fareFromText, KM_PER_MIN } from '../core/fare.ts';
 import { verifyPass } from '../core/pass.ts';
 import { shortest } from '../core/world.ts';
+import { renderStage } from './stage.ts';
 import './style.css';
 
 type Any = any;
@@ -389,20 +390,18 @@ async function renderArena() {
   }
   const ours = cards.filter((c) => c.assigned);
   const rest = cards.filter((c) => !c.assigned);
-  const demos: Any[] = await api('/api/demo').catch(() => []);
-  main().innerHTML = `<h1>Uber prices one rider at a time. Koottu turns a crowd into one buyer.</h1>
-    <p class="lede">Riders lock their share, open network drivers bid for the group, and when a train fails we bridge you to the next working station instead of all the way home.</p>
-    <p class="sub">Demo data is synthetic. Drivers and payments are simulated, and every run says so.</p>
-    <h2>See it work</h2>
-    ${demos.map((d) => `<article class="card ours"><div class="row"><span class="code" aria-hidden="true">▶</span><div><p class="title">${esc(d.title)}</p><p class="sub">${esc(d.blurb)}</p></div><button class="btn" data-demo="${esc(d.id)}">Run</button></div><div id="d-${esc(d.id)}" aria-live="polite"></div></article>`).join('')}
-    <h2>Run any constraint against the live system</h2>
-    <p class="lede">Each card attacks the running app, then judges it by checking real data afterwards. A card can fail.</p>
+  // Sharing and Bridge mode live on the demo page. The other two features are shown here.
+  const demos: Any[] = (await api('/api/demo').catch(() => [])).filter((d: Any) => d.id !== 'bloc' && d.id !== 'bridge');
+  main().innerHTML = `<h1>All 12 constraints, run live</h1>
+    <p class="lede">Each card attacks the running app, then judges it by checking the stored data afterwards. A card can fail. The two we were dealt come first.</p>
     <div class="bar"><button class="btn" id="all">Run all 12</button>
       <button class="btn warn" id="cut">Cut the network</button>
       <button class="btn alt" id="restore">Restore the network</button></div>
     <p id="all-out" role="status"></p>
     <h2>The constraints we were dealt</h2>${ours.map(cardHtml).join('')}
-    <h2>All other constraints</h2>${rest.map(cardHtml).join('')}`;
+    <h2>All other constraints</h2>${rest.map(cardHtml).join('')}
+    <h2>Two more things it does</h2>
+    ${demos.map((d) => `<article class="card"><div class="row"><span class="code" aria-hidden="true">▶</span><div><p class="title">${esc(d.title)}</p><p class="sub">${esc(d.blurb)}</p></div><button class="btn" data-demo="${esc(d.id)}">Run</button></div><div id="d-${esc(d.id)}" aria-live="polite"></div></article>`).join('')}`;
 
   document.querySelectorAll<HTMLButtonElement>('[data-run]').forEach((b) => {
     b.onclick = async () => {
@@ -449,12 +448,30 @@ async function renderArena() {
   };
 }
 
+// ---------- simulation ----------
+
+async function renderSim() {
+  // The simulation cannot start without its data files, so say that plainly instead of showing a blank frame.
+  const ready = await fetch('/sim/data/scenarios.json', { method: 'HEAD' }).then((r) => r.ok).catch(() => false);
+  if (location.hash !== '#/sim') return;
+  main().innerHTML = ready
+    ? `<div class="sim-head"><div><h1>Five real disruptions, replayed</h1>
+        <p class="lede">Real stations rebuilt from OpenStreetMap. Each disruption plays twice: once as it happened, once with our recovery. It runs entirely on this device.</p></div>
+        <a class="go alt" href="/sim/" target="_blank" rel="noopener">Open full screen</a></div>
+       <iframe class="sim-frame" src="/sim/" title="Simulation of five real transit disruptions" allow="fullscreen"></iframe>`
+    : `<h1>The simulation is not in this build yet</h1>
+       <p class="lede">Its data files are missing from the repository (the <code>sim/data</code> folder). Once they are pushed, it appears here.</p>`;
+}
+
 // ---------- routing ----------
 
 function route() {
-  const hash = location.hash || '#/arena';
-  const name = hash.startsWith('#/rider') ? 'rider' : 'arena';
+  const hash = location.hash || '#/';
+  const name = hash.startsWith('#/rider') ? 'rider' : hash.startsWith('#/arena') ? 'arena' : hash.startsWith('#/sim') ? 'sim' : 'stage';
   document.documentElement.dataset.mode = hash.includes('mode=keyboard') ? 'keyboard' : '';
+  document.documentElement.dataset.route = name;
+  document.documentElement.dataset.embed = hash.includes('embed=1') ? 'yes' : '';
+  main().classList.toggle('wide', name === 'stage' || name === 'sim');
   document.querySelectorAll<HTMLAnchorElement>('[data-nav]').forEach((a) => {
     if (a.dataset.nav === name) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
@@ -462,8 +479,10 @@ function route() {
   if (name === 'rider') {
     renderRider();
     void warmOffline();
-  } else void renderArena();
-  main().focus();
+  } else if (name === 'arena') void renderArena();
+  else if (name === 'sim') void renderSim();
+  else renderStage(main(), { api, esc, renderResult });
+  main().focus({ preventScroll: true });
 }
 
 window.addEventListener('hashchange', route);

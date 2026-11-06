@@ -224,4 +224,6 @@ export interface CardResult {
   checks: CardCheck[];
   evidence: { label: string; rows: Record<string, string | number | boolean | null>[] }[];
   tryIt?: { label: string; href: string }[];
+  /** Plain numbers behind the summary, for the live demo page to draw. */
+  facts?: Record<string, unknown>;
 }

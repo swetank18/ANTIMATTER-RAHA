@@ -45,8 +45,9 @@ export class Outside {
 
   /**
    * A sandbox standing in for drivers on an open mobility network. Drivers here are simulated, and
-   * their prices are an assumption: per-km rates with no platform commission and no surge. One
-   * driver is deliberately unsuitable, so the filter has something to reject.
+   * their prices are an assumption: the normal metered fare for the trip plus 10 to 40 percent,
+   * because a full cab is worth more to a driver and there is no platform commission. They never bid
+   * below a normal fare. One driver is deliberately unsuitable, so the filter has something to reject.
    */
   private onSearch(body: string): string {
     let intent: any = {};
@@ -68,7 +69,7 @@ export class Outside {
         descriptor: { name: `${names[i]} (simulated driver)` },
         items: [{
           id: `BID-${hashOf(body).slice(0, 6)}-${i + 1}`,
-          price: { currency: 'INR', value: String(Math.round((40 + 15 * km) * (0.9 + r() * 0.3))) },
+          price: { currency: 'INR', value: String(Math.round((50 + 18 * km) * (1.1 + r() * 0.3))) },
           fulfillment: { etaMinutes: 3 + Math.floor(r() * 9), vehicle: { category: 'CAB', capacity: small ? Math.max(1, seats - 1) : Math.max(4, seats) } },
         }],
       };
