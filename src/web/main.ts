@@ -146,7 +146,7 @@ async function surgeLine(spot: string) {
 
 function renderCheck(res: Any, fromSaved: boolean) {
   const moves = res.advice.length
-    ? `<ul>${res.advice.map((a: Any) => `<li><strong>${esc(a.title)}</strong>: save about Rs ${esc(a.saveRs)}. ${esc(a.basis)}.</li>`).join('')}</ul>`
+    ? `<ul>${res.advice.map((a: Any) => `<li><strong>${esc(a.title)}</strong>: save about Rs ${esc(a.saveRs)}. ${esc(String(a.basis).replace(/\.$/, ''))}.</li>`).join('')}</ul>`
     : '<p>Not enough recent fares here to compare yet.</p>';
   $('check-out').innerHTML = `<div class="note"><p>${esc(res.check.message)}</p>${moves}
     <p class="sub">${fromSaved ? `Using fares saved at ${esc(pack.savedAtLabel)}. Live fares are unavailable offline.` : `Compared with ${esc(res.samples)} recent fares here.`}</p></div>`;
