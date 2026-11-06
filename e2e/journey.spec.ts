@@ -93,3 +93,27 @@ test('C06: keyboard only, no colour, no serious accessibility issues', async ({ 
   writeFileSync('results/a11y.json', JSON.stringify({ keyboardJourney, seriousViolations: rider.length + arena.length, pages: 2, details: { rider, arena }, ranAt: new Date().toISOString() }, null, 2));
   expect([...rider, ...arena]).toEqual([]);
 });
+
+test('A fare is read from a screenshot on the phone, even offline', async ({ page, context }) => {
+  await settle(page);
+  const png = await page.evaluate(() => {
+    const c = document.createElement('canvas');
+    c.width = 700;
+    c.height = 300;
+    const g = c.getContext('2d')!;
+    g.fillStyle = '#fff';
+    g.fillRect(0, 0, 700, 300);
+    g.fillStyle = '#000';
+    g.font = 'bold 44px Arial';
+    g.fillText('Uber Go', 40, 90);
+    g.fillText('Rs 437', 40, 170);
+    g.font = '30px Arial';
+    g.fillText('3 min away', 40, 240);
+    return c.toDataURL('image/png').split(',')[1];
+  });
+  await expect(page.locator('html')).toHaveAttribute('data-offline-ready', 'yes', { timeout: 30000 });
+  await context.setOffline(true);
+  await page.locator('#shot').setInputFiles({ name: 'fare.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+  await expect(page.locator('#shot-out')).toContainText('Read Rs 437', { timeout: 30000 });
+  await expect(page.locator('#amount')).toHaveValue('437');
+});

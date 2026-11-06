@@ -9,7 +9,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener('message', (e) => {
-  if (e.data?.type === 'CACHE') caches.open(CACHE).then((c) => c.addAll(e.data.urls).catch(() => {}));
+  if (e.data?.type === 'CACHE') caches.open(CACHE).then((c) => Promise.all(e.data.urls.map((u) => c.add(u).catch(() => {}))));
 });
 
 self.addEventListener('fetch', (e) => {
@@ -18,8 +18,8 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.open(CACHE).then(async (cache) => {
       const hit = await cache.match(e.request, { ignoreSearch: true });
-      const fresh = fetch(e.request).then((res) => {
-        if (res.ok) cache.put(e.request, res.clone());
+      const fresh = fetch(e.request).then(async (res) => {
+        if (res.ok) await cache.put(e.request, res.clone());
         return res;
       }).catch(() => hit ?? cache.match('/'));
       return hit ?? fresh;

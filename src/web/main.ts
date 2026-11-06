@@ -4,7 +4,7 @@
 import '@fontsource-variable/anek-latin/wdth.css';
 import '@fontsource-variable/anek-tamil/wdth.css';
 import qrcode from 'qrcode-generator';
-import { advise, checkFare, fareFor, KM_PER_MIN } from '../core/fare.ts';
+import { advise, checkFare, fareFor, fareFromText, KM_PER_MIN } from '../core/fare.ts';
 import { verifyPass } from '../core/pass.ts';
 import { shortest } from '../core/world.ts';
 import './style.css';
@@ -196,7 +196,9 @@ function renderRider() {
       <label>Pickup spot <select name="spot" required>${spotOptions()}</select></label>
       <label>Destination <select name="dest" required>${placeOptions('MAA')}</select></label>
       <label>App <select name="app"><option>Uber</option><option>Ola</option><option>Namma Yatri</option></select></label>
-      <label>Fare shown in your app (Rs) <input name="amount" type="number" min="1" required value="420"></label>
+      <label>Screenshot of your fare (read on this phone, never uploaded) <input id="shot" type="file" accept="image/*"></label>
+      <p id="shot-out" class="sub" role="status"></p>
+      <label>Fare shown in your app (Rs) <input id="amount" name="amount" type="number" min="1" required value="420"></label>
       <button class="btn">Check this fare</button>
     </form>
     <div id="check-out" tabindex="-1"></div>
@@ -255,6 +257,28 @@ function renderRider() {
     $('ride').focus();
   };
 
+  ($('shot') as HTMLInputElement).onchange = async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const out = $('shot-out');
+    out.textContent = 'Reading your screenshot on this phone…';
+    try {
+      const { createWorker } = await import('tesseract.js');
+      const worker = await createWorker('eng', 1, { workerPath: '/ocr/worker.min.js', corePath: '/ocr/', langPath: '/ocr/', gzip: true, workerBlobURL: false });
+      const { data } = await worker.recognize(file);
+      await worker.terminate();
+      const fare = fareFromText(data.text);
+      if (fare === null) {
+        out.textContent = 'No fare found in that screenshot. Type it in instead.';
+        return;
+      }
+      ($('amount') as HTMLInputElement).value = String(fare);
+      out.textContent = `Read Rs ${fare} from your screenshot. Check it before continuing.`;
+    } catch {
+      out.textContent = 'That screenshot could not be read. Type the fare in instead.';
+    }
+  };
+
   const bidsBtn = document.getElementById('bids');
   if (bidsBtn) {
     bidsBtn.onclick = async () => {
@@ -291,6 +315,24 @@ function renderRider() {
       renderRider();
     };
   });
+}
+
+// While there is signal, pull everything screenshot reading needs through the service worker, so it
+// keeps working later with none. These are fetched at runtime, so the app shell alone would not
+// include them.
+const OCR_FILES = ['/ocr/worker.min.js', '/ocr/tesseract-core-lstm.wasm.js', '/ocr/tesseract-core-simd-lstm.wasm.js', '/ocr/tesseract-core-relaxedsimd-lstm.wasm.js', '/ocr/eng.traineddata.gz'];
+let warmed = false;
+
+async function warmOffline() {
+  if (warmed || !navigator.serviceWorker?.controller) return;
+  warmed = true;
+  try {
+    await import('tesseract.js');
+    await Promise.all(OCR_FILES.map((u) => fetch(u).then((r) => r.arrayBuffer())));
+    document.documentElement.dataset.offlineReady = 'yes';
+  } catch {
+    warmed = false;
+  }
 }
 
 // ---------- arena ----------
@@ -408,14 +450,20 @@ function route() {
     if (a.dataset.nav === name) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
-  if (name === 'rider') renderRider();
-  else void renderArena();
+  if (name === 'rider') {
+    renderRider();
+    void warmOffline();
+  } else void renderArena();
   main().focus();
 }
 
 window.addEventListener('hashchange', route);
 window.addEventListener('online', () => void heartbeat());
 window.addEventListener('offline', () => void heartbeat());
+
+navigator.serviceWorker?.addEventListener('controllerchange', () => {
+  if (location.hash.startsWith('#/rider')) void warmOffline();
+});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').then(async () => {

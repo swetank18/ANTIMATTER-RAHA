@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { advise, bestRoute, checkFare, fareFor, KM_PER_MIN, roundShares, shapley, type FareRule, type FareSample, type Travel } from '../src/core/fare.ts';
+import { advise, bestRoute, checkFare, fareFor, fareFromText, KM_PER_MIN, roundShares, shapley, type FareRule, type FareSample, type Travel } from '../src/core/fare.ts';
 import { rng } from '../src/core/hash.ts';
 import { evaluate, formPods, MAX_SEATS, shareable, type MatchContext, type MatchRider } from '../src/core/match.ts';
 import { chooseBid, parseOnSearch, type DriverBid } from '../src/core/bids.ts';
@@ -301,5 +301,20 @@ describe('surge forecast', () => {
 
   it('is reproducible', () => {
     expect(backtest().report).toEqual(report);
+  });
+});
+
+describe('reading a fare from a screenshot', () => {
+  it('prefers a marked amount', () => {
+    expect(fareFromText('Uber Go 4 seats\n₹420.50\n3 min away')).toBe(421);
+    expect(fareFromText('Ola Mini Rs. 1,250')).toBe(1250);
+    expect(fareFromText('Uber Go % 380')).toBe(380);
+  });
+  it('ignores times, distances and small numbers', () => {
+    expect(fareFromText('18:42 arrival, 12 km, 9 min\nGo 4\n315')).toBe(315);
+  });
+  it('says nothing rather than guess', () => {
+    expect(fareFromText('Choose a ride')).toBeNull();
+    expect(fareFromText('')).toBeNull();
   });
 });

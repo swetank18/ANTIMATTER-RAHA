@@ -7,9 +7,9 @@
   "scripts": {
     "dev:hub": "tsx watch src/hub/main.ts",
     "dev:web": "vite",
-    "build": "vite build",
+    "build": "node scripts/copy-ocr.mjs && vite build",
     "start": "tsx src/hub/main.ts",
-    "demo": "vite build && tsx src/hub/main.ts",
+    "demo": "npm run build && tsx src/hub/main.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "sim": "tsx scripts/montecarlo.ts",
@@ -25,12 +25,14 @@
     "@fontsource-variable/anek-tamil": "^5.3.0",
     "@noble/ed25519": "^3.2.0",
     "@noble/hashes": "^2.4.0",
+    "@tesseract.js-data/eng": "^1.0.0",
     "axe-core": "^4.14.0",
     "better-sqlite3": "^12.11.1",
     "fastify": "^5.12.8",
     "qrcode-generator": "^2.0.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",

@@ -177,3 +177,17 @@ export function advise(input: { spot: string; app: string; amount: number; km: n
   }
   return out.sort((a, b) => b.saveRs - a.saveRs);
 }
+
+/**
+ * Finds the fare in text read from a screenshot. OCR often misreads the rupee sign, so a marked
+ * amount wins, then the largest plausible number. It only ever fills a field the rider confirms.
+ */
+export function fareFromText(text: string): number | null {
+  const plausible = (n: number) => n >= 20 && n <= 9999;
+  const clean = (s: string) => Number(s.replace(/,/g, ''));
+  const marked = [...text.matchAll(/(?:₹|rs\.?|inr|%|\?)\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?)/gi)].map((m) => clean(m[1])).filter(plausible);
+  if (marked.length) return Math.round(Math.max(...marked));
+  const noTimes = text.replace(/\b\d{1,2}:\d{2}\b/g, ' ').replace(/\b\d+(\.\d+)?\s*(km|min|mins|m)\b/gi, ' ');
+  const numbers = [...noTimes.matchAll(/(?<![\d.,])[0-9][0-9,]*(?:\.[0-9]{1,2})?(?![\d])/g)].map((m) => clean(m[0])).filter(plausible);
+  return numbers.length ? Math.round(Math.max(...numbers)) : null;
+}

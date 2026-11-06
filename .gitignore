@@ -14,3 +14,6 @@ playwright-report/
 *.md
 *.MD
 *.markdown
+
+# Copied from node_modules at build time.
+src/web/public/ocr/
