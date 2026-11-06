@@ -118,3 +118,21 @@ table.params td.v { font-family: JBM, monospace; white-space: nowrap; }
 .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
 @media (max-width: 900px) { #rail { display: none; } #casefile, #json-panel { left: 10px; width: calc(100vw - 20px); } #panel { width: 260px; } #caption { width: calc(100vw - 30px); min-width: 0; } .hero h1 { font-size: 56px; } .hint { display: none; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* close buttons, collapsible KPI panel, side-docked overlays, pitch show HUD */
+.close-x { position: absolute; top: 6px; right: 8px; z-index: 3; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: rgba(8,12,30,.85); color: var(--ink); font-size: 17px; line-height: 22px; cursor: pointer; padding: 0; }
+.close-x:hover { border-color: var(--warm); color: var(--warm); }
+#casefile .tabs { padding-right: 36px; }
+#panel { position: fixed; } #panel.collapsed { max-height: 40px; overflow: hidden; } #panel.collapsed #kpis, #panel.collapsed #koottu { display: none; }
+#panel.collapsed .close-x { transform: rotate(45deg); }
+#results { left: auto; right: 360px; top: 64px; transform: none; width: min(860px, calc(100vw - 620px)); max-height: calc(100vh - 250px); }
+#json-panel, #results, #casefile { padding-top: 34px; }
+#casefile { padding-top: 0; }
+@media (max-width: 1200px) { #results { right: 14px; left: 14px; width: auto; } }
+#show-hud { position: fixed; top: 58px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; align-items: center; gap: 10px; padding: 6px 12px 10px; border-radius: 12px; background: rgba(10,14,34,.9); border: 1px solid var(--warm); font-size: 12px; }
+#show-hud .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5a4e; animation: pulse 1s infinite; }
+#show-hud b { color: var(--warm); letter-spacing: .1em; }
+#show-hud button { background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 8px; padding: 2px 8px; cursor: pointer; }
+#show-bar { position: absolute; left: 10px; right: 10px; bottom: 4px; height: 2px; background: rgba(255,255,255,.1); }
+#show-bar i { display: block; height: 100%; width: 0; background: var(--warm); }
+body.showing #rail { opacity: .35; }

@@ -60,8 +60,9 @@
       <button id="btn-case" title="Case file (C)">Case file</button>
       <button id="btn-src" title="Sources (S)">Sources</button>
       <button id="btn-data" title="Data provenance (D)">Data tiers</button>
+      <button id="btn-show" title="Auto-play the 1.5-minute pitch show (T)">&#9654; Pitch show</button>
       <button id="btn-judge" title="Run the constraint checks live (J)" class="primary" style="padding:6px 12px">Judge check</button>
-      <span class="hint">&larr; &rarr; chapters &middot; 1-5 cities &middot; H hide UI</span>
+      <span class="hint">&larr; &rarr; chapters &middot; 1-5 cities &middot; T show &middot; Esc close &middot; H hide UI</span>
     </div>
     <div id="progress"><div id="progress-bar"></div></div>
   </footer>
@@ -75,12 +76,13 @@
       <h1>RAHA</h1>
       <p class="lede">Five real transit disruptions, rebuilt from real map data and replayed twice: once as it happened, once with RAHA.</p>
       <p class="small">Bridging buses with capacity-exact passes &middot; Koottu shared cabs at geofenced gates &middot; two-wheeler and essentials dispatch &middot; works with the internet cut &middot; survives API changes</p>
-      <button id="begin" class="primary">Begin</button>
+      <div class="row"><button id="begin" class="primary">Begin</button><button id="begin-show" class="primary">&#9654; Pitch show (1:30)</button></div>
       <p class="small dim">Runs fully offline. Map data &copy; OpenStreetMap contributors (ODbL) &middot; Natural Earth</p>
     </div>
   </div>
   <div id="loading">Building islands from OpenStreetMap&hellip;</div>
   <script type="module" src="./src/netguard.js"></script>
   <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/show.js"></script>
 </body>
 </html>

@@ -38,6 +38,7 @@ def walk_imports(entry, seen):
 files = set()
 walk_imports("src/app.js", files)
 walk_imports("src/netguard.js", files)
+walk_imports("src/show.js", files)
 files |= {"index.html", "src/style.css"}
 for d in ("data", "vendor/fonts"):
     for dp, _, fns in os.walk(os.path.join(ROOT, d)):
