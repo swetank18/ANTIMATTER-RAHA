@@ -1,0 +1,2762 @@
+{
+ "meta": {
+  "title": "RAHA",
+  "tagline": "Five real stranded cities. One recovery engine: bridging buses, Koottu shared cabs, geofenced two-wheeler and essentials dispatch.",
+  "tiers": {
+   "T1": "Observed: official, open or primary source",
+   "T2": "Derived from T1 with a written formula",
+   "T3": "Published research constant",
+   "T4": "Assumption: no data exists; stated and stress-tested"
+  },
+  "weights": {
+   "v": 35,
+   "d": 30,
+   "w": 25,
+   "c": 10
+  },
+  "fist": {
+   "Force": "Crowd pressure builds when density passes about 2.17 persons per square metre (Fruin LOS F); forces chain through bodies.",
+   "Information": "What people are told, when, and whether it is true. Fruin: real-time information is the key preventive factor.",
+   "Space": "Width of stairs, bridges, bays and gates, and where the crowd is allowed to wait.",
+   "Time": "How long the overload lasts: simultaneous arrivals, delays and surges."
+  }
+ },
+ "sources": {
+  "dtnext_tam": {
+   "t": "Signal snag halts EMUs on same track near Tambaram, hundreds forced to walk",
+   "o": "DT Next",
+   "d": "2026-02-28",
+   "u": "https://www.dtnext.in/news/chennai/signal-failure-halts-emu-services-near-tambaram-commuters-stranded"
+  },
+  "dtnext_egmore": {
+   "t": "Fry-day glitches on Egmore EMU section leave thousands stranded (services 204 to 164, 20 Feb to 5 Apr)",
+   "o": "DT Next",
+   "d": "2026-02",
+   "u": "https://www.dtnext.in/news/chennai/fry-day-glitches-on-egmore-emu-section-leave-thousands-stranded"
+  },
+  "dtnext_footfall": {
+   "t": "Footfall at infra-short Tambaram overtakes MGR Central's volume (about 1.5 lakh a day)",
+   "o": "DT Next",
+   "d": "2026",
+   "u": "https://www.dtnext.in/news/chennai/footfall-at-infra-short-tambaram-overtakes-mgr-centrals-volume"
+  },
+  "sr_12car": {
+   "t": "Chennai Division: all major suburban routes on 12-car EMU rakes",
+   "o": "Southern Railway",
+   "d": "2025-06-18",
+   "u": "https://sr.indianrailways.gov.in/cris//uploads/files/1750755379977-No.PUB-MAS-2025-06-18.pdf"
+  },
+  "wiki_12car": {
+   "t": "12-car EMU capacity 3,504 (1,168 seated, 2,336 standing)",
+   "o": "Wikipedia: Mumbai Suburban Railway",
+   "d": "2026",
+   "u": "https://en.wikipedia.org/wiki/Mumbai_Suburban_Railway"
+  },
+  "gtfs_mtc": {
+   "t": "Chennai MTC GTFS (community feed): 901 Saturday trips call at Tambaram stops 08:45 to 10:30",
+   "o": "Mobility Database mdb-3360",
+   "d": "downloaded 2026-11-06",
+   "u": "https://mobilitydatabase.org/feeds/gtfs/mdb-3360"
+  },
+  "census_dis": {
+   "t": "Census 2011: 2.21% of population has a disability; 20.3% of them 'in movement'",
+   "o": "Office of the Registrar General, India",
+   "d": "2013",
+   "u": "https://punarbhava.in/index.php/disability-register/census-2011-disability-data"
+  },
+  "census_age": {
+   "t": "Census 2011: 103.8 million people aged 60+ (8.6%)",
+   "o": "MoSPI, Elderly in India 2016",
+   "d": "2016",
+   "u": "https://mospi.gov.in/sites/default/files/publication_reports/ElderlyinIndia_2016.pdf"
+  },
+  "pender": {
+   "t": "Disruption Recovery in Passenger Railways: International Survey (bus bridging is the most common response; few agencies hold bus reserves)",
+   "o": "Pender, Currie, Delbosc, Shiwakoti, TRR 2353",
+   "d": "2013",
+   "u": "https://www.worldtransitresearch.info/research/4970"
+  },
+  "jin2016": {
+   "t": "Optimizing bus bridging services in response to disruptions of urban transit rail networks",
+   "o": "Jin, Teo, Odoni, Transportation Science 50(3)",
+   "d": "2016",
+   "u": "https://econpapers.repec.org/RePEc:inm:ortrsc:v:50:y:2016:i:3:p:790-804"
+  },
+  "fruin": {
+   "t": "The causes and prevention of crowd disasters (FIST: Force, Information, Space, Time)",
+   "o": "John J. Fruin",
+   "d": "1993",
+   "u": "https://gkstill.com/Support/crowd-flow/fruin/Fruin2.html"
+  },
+  "fruin_los": {
+   "t": "Fruin level of service: LOS F above 2.17 persons per square metre",
+   "o": "G. Keith Still, Crowd Dynamics ch. 3",
+   "d": "2000",
+   "u": "https://gkstill.com/CV/PhD/Chapter3.html"
+  },
+  "helbing2012": {
+   "t": "Crowd disasters as systemic failures: analysis of the Love Parade disaster",
+   "o": "Helbing and Mukerji, EPJ Data Science",
+   "d": "2012",
+   "u": "https://www.epj.org/113-epj-ds/537-epj-data-science-countering-crowd-control-collapse"
+  },
+  "ndls_scroll": {
+   "t": "Delhi stampede: delays of 15 trains (8.30 to 10.30 pm) may have contributed to crowd surge",
+   "o": "Scroll",
+   "d": "2025-02-16",
+   "u": "https://scroll.in/article/1079313/delhi-stampede-delays-of-15-trains-may-have-contributed-to-crowd-surge-at-station"
+  },
+  "ndls_week": {
+   "t": "1,500 tickets were sold every hour: what caused the stampede at Delhi railway station",
+   "o": "The Week",
+   "d": "2025-02-16",
+   "u": "https://www.theweek.in/news/india/2025/02/16/1500-tickets-were-sold-every-hour-what-caused-the-stampede-at-delhi-railway-station.html"
+  },
+  "ndls_print": {
+   "t": "Delayed trains, rumours, mismanagement: how the stampede unfolded at New Delhi station",
+   "o": "ThePrint",
+   "d": "2025-02-16",
+   "u": "https://theprint.in/india/delayed-trains-rumours-mismanagement-how-stampede-unfolded-at-new-delhi-railway-station/2497424"
+  },
+  "ndls_police": {
+   "t": "Confusion over two Prayagraj-bound trains with similar names and delays led to chaos, says police",
+   "o": "Free Press Journal",
+   "d": "2025-02-16",
+   "u": "https://www.freepressjournal.in/amp/india/new-delhi-railway-station-stampede-confusion-over-two-prayagraj-bound-trains-delays-led-to-chaos-says-police"
+  },
+  "ndls_inquiry": {
+   "t": "Probe found a person with a big headload fell on others on FOB-3 stairs (platforms 14/15)",
+   "o": "The Week / PTI",
+   "d": "2025-08-01",
+   "u": "https://www.theweek.in/wire-updates/national/2025/08/01/del85-rsq-rail-delhi-station-stampede.html"
+  },
+  "ndls_holding": {
+   "t": "Railways to set up holding areas at 60 high-footfall stations after the stampede",
+   "o": "Deccan Herald",
+   "d": "2025-02",
+   "u": "https://www.deccanherald.com/amp/story/india%2Fdelhi%2Fdelhi-stampede-station-holding-area-crowd-control-manual-among-railway-ministers-steps-to-prevent-untoward-incidents-3409488"
+  },
+  "gtfs_ir": {
+   "t": "Indian Railways GTFS: Saturday NDLS to Prayagraj departures (current timetable used as proxy)",
+   "o": "Mobility Database mdb-2867",
+   "d": "downloaded 2026-11-06",
+   "u": "https://mobilitydatabase.org/feeds/gtfs/mdb-2867"
+  },
+  "mum_suspend": {
+   "t": "Central Railway suspends all trains from Thane to CSMT amid heavy rainfall",
+   "o": "Free Press Journal",
+   "d": "2025-08-19",
+   "u": "https://www.freepressjournal.in/mumbai/mumbai-rains-central-railway-suspends-all-trains-from-thane-to-csmt-amid-heavy-rainfall"
+  },
+  "mum_stranded": {
+   "t": "Relentless rains paralyse Central Railway, thousands stranded (CSMT, Byculla, Dadar, Kurla, Ghatkopar)",
+   "o": "Free Press Journal",
+   "d": "2025-08-19",
+   "u": "https://www.freepressjournal.in/mumbai/mumbai-monsoon-fury-relentless-rains-paralyse-central-railway-thousands-stranded"
+  },
+  "mum_ridership": {
+   "t": "Central Railway average daily suburban ridership 38.70 lakh (2025-26)",
+   "o": "Free Press Journal",
+   "d": "2026",
+   "u": "https://www.freepressjournal.in/mumbai/mumbai-suburban-rail-earns-more-despite-lower-ridership-post-pandemic-travel-shift"
+  },
+  "mum_drains": {
+   "t": "CAG: Mumbai drains handle about 25 mm of rain per hour at low tide; only 3 of 45 outfalls have floodgates",
+   "o": "Scroll / Mongabay",
+   "d": "2019",
+   "u": "https://india.mongabay.com/2019/07/why-the-city-that-never-stops-comes-to-a-standstill-when-it-rains/"
+  },
+  "mum_brims": {
+   "t": "BRIMSTOWAD: plan to double storm-drain capacity to 50 mm per hour",
+   "o": "Wikipedia",
+   "d": "2026",
+   "u": "https://en.wikipedia.org/wiki/Brihanmumbai_Storm_Water_Disposal_System"
+  },
+  "elph": {
+   "t": "Elphinstone Road stampede: death toll rises to 23",
+   "o": "The Statesman",
+   "d": "2017-09-30",
+   "u": "https://www.thestatesman.com/india/mumbai-death-toll-rises-23-elphinstone-stampede-1502502716.html"
+  },
+  "elph_fob": {
+   "t": "Spot check: Elphinstone FOB about 2.4 m wide at entry and exit; CAG minimum is 6 m",
+   "o": "The Quint",
+   "d": "2017-10",
+   "u": "https://www.thequint.com/news/india/elphinstone-stampede-spot-check-of-foot-over-bridges"
+  },
+  "sg_mot": {
+   "t": "Ministerial statement on the East-West Line disruption (bridging buses 39 rising to 70)",
+   "o": "Ministry of Transport, Singapore",
+   "d": "2024-10",
+   "u": "https://mot.gov.sg/news/details/parliamentary-ministerial-statement-by-minister-for-transport--mr-chee-hong-tat"
+  },
+  "sg_ltg": {
+   "t": "EWL train disruption due to power fault: timeline, shuttle trains, 8-minute walk to Jurong East bridging point",
+   "o": "Land Transport Guru",
+   "d": "2024-09",
+   "u": "https://landtransportguru.net/sep24-ewl-train-disruption-power-fault"
+  },
+  "sg_wiki": {
+   "t": "2024 East-West MRT line disruption (about 358,000 affected on day 1; over 2.1 million by 30 Sep)",
+   "o": "Wikipedia",
+   "d": "2026",
+   "u": "https://wiki.krisyotam.com/content/wikipedia_en_all_nopic_2026-03/2024_East-West_MRT_line_disruption"
+  },
+  "sg_fine": {
+   "t": "LTA: degraded axle-box grease most likely caused the failure; overhaul interval extended without assessment; fine cut from S$3m to S$2.4m",
+   "o": "The Star / SGTrains",
+   "d": "2025-07-26",
+   "u": "https://www.thestar.com.my/aseanplus/aseanplus-news/2025/07/26/singapore-rail-operator-to-pay-lower-fine-of-s24m-for-line-disruption-must-invest-at-least-s600k-to-boost-reliability"
+  },
+  "sg_review": {
+   "t": "LTA and bus operators to review management of free bus services during EWL disruption",
+   "o": "Tower Transit",
+   "d": "2024-10",
+   "u": "https://www.towertransit.sg/media/lta-bus-operators-to-review-management-of-free-bus-services-during-ewl-disruption"
+  },
+  "sgbusdata": {
+   "t": "Singapore bus stops and services (derived from LTA DataMall)",
+   "o": "data.busrouter.sg (cheeaun)",
+   "d": "downloaded 2026-11-06",
+   "u": "https://data.busrouter.sg/v1/stops.min.json"
+  },
+  "es_entsoe": {
+   "t": "28 April 2025 Iberian blackout: factual report (3 Oct 2025) and final report (20 Mar 2026)",
+   "o": "ENTSO-E",
+   "d": "2026-03-20",
+   "u": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/"
+  },
+  "es_cause": {
+   "t": "Final report: uncontrolled voltage rise and loss of voltage control; generators below reactive-power set points",
+   "o": "pv magazine",
+   "d": "2026-03-23",
+   "u": "https://www.pv-magazine.com/2026/03/23/entso-e-report-finds-systemic-failures-behind-2025-iberian-blackout/"
+  },
+  "es_riskline": {
+   "t": "Advisory: about 35,000 rail passengers stranded; services fully restored by 30 April",
+   "o": "Riskline",
+   "d": "2025",
+   "u": "https://riskline.com/wp-content/uploads/2025/10/Advisory-Spain-Portugal-Blackout.pdf"
+  },
+  "es_reuters": {
+   "t": "Madrid metro evacuated; 11 trains still awaiting evacuation late Monday",
+   "o": "Reuters via Tribune India",
+   "d": "2025-04-29",
+   "u": "https://www.tribuneindia.com/news/world/spain-portugal-scramble-to-restore-electricity-after-still-unexplained-power-outage"
+  },
+  "es_atocha": {
+   "t": "Atocha tries to return to normal: 'we have been waiting for hours'",
+   "o": "elDiario.es",
+   "d": "2025-04-29",
+   "u": "https://www.eldiario.es/economia/atocha-trata-volver-normalidad-llevamos-horas-esperando-no-si-tendremos-tren_1_12256167.html"
+  },
+  "es_net": {
+   "t": "Vodafone Spain at about 70% capacity; MEO outages in Portugal",
+   "o": "idealista",
+   "d": "2025-04-29",
+   "u": "https://www.idealista.com/en/news/lifestyle-in-spain/2025/04/29/842724-unprecedented-blackout-hits-spain-and-portugal-everything-we-know-so-far"
+  },
+  "es_emt": {
+   "t": "EMT reinforced lines 203, 101 and 200 to pick up at Atocha and Chamartin",
+   "o": "Periodico Avenida (Madrid tourism notice)",
+   "d": "2025-04-28",
+   "u": "https://www.periodicoavenida.com/?p=89221"
+  },
+  "optus": {
+   "t": "Optus outage stopped all Melbourne Metro trains (drivers could not reach control)",
+   "o": "Wikipedia",
+   "d": "2023-11-08",
+   "u": "https://en.wikipedia.org/wiki/2023_Optus_outage"
+  },
+  "crowdstrike": {
+   "t": "DOT investigates Delta over 6,000+ cancellations after the CrowdStrike outage",
+   "o": "AZFamily",
+   "d": "2024-07-23",
+   "u": "https://www.azfamily.com/2024/07/23/delta-under-investigation-its-response-crowdstrike-tech-outage-difficulties-dot-announces/"
+  },
+  "localfirst": {
+   "t": "Local-first software: you own your data, in spite of the cloud",
+   "o": "Kleppmann et al., Onward! 2019",
+   "d": "2019",
+   "u": "https://martin.kleppmann.com/2019/10/23/local-first-at-onward.html"
+  },
+  "fowler": {
+   "t": "Tolerant Reader",
+   "o": "Martin Fowler",
+   "d": "2011",
+   "u": "https://www.martinfowler.com/bliki/TolerantReader.html"
+  },
+  "espinha": {
+   "t": "Web API growing pains: stories from client developers and their code",
+   "o": "Espinha, Zaidman, Gross, CSMR-WCRE",
+   "d": "2014",
+   "u": "https://azaidman.github.io/publications/espinhaCSMRWCRE2014.pdf"
+  },
+  "mta": {
+   "t": "Upcoming change to stop sequence indexing in MTA real-time bus feeds (0-based to 1-based)",
+   "o": "MTA developer resources",
+   "d": "2025-05",
+   "u": "https://groups.google.com/g/mtadeveloperresources/c/86q6uBj3g4M"
+  },
+  "sydney_rt": {
+   "t": "Sydney Buses GTFS-RT broken for 3 days (trip IDs missing)",
+   "o": "Transport for NSW open data forum",
+   "d": "",
+   "u": "https://opendataforum.transport.nsw.gov.au/t/sydneybuses-gtfs-rt-broken-for-3-days-now/309"
+  },
+  "surge_cap": {
+   "t": "Motor Vehicle Aggregator Guidelines 2025: surge capped at 2x base fare",
+   "o": "Business Standard",
+   "d": "2025-07-02",
+   "u": "https://www.business-standard.com/india-news/cab-aggregators-surge-pricing-rapido-uber-ola-125070200228_1.html"
+  },
+  "sydney_siege": {
+   "t": "Uber sorry for hiking fares (up to 4x) amid Sydney siege",
+   "o": "Al Jazeera",
+   "d": "2014-12-24",
+   "u": "https://www.aljazeera.com/news/2014/12/24/uber-sorry-for-hiking-fares-amid-sydney-siege"
+  },
+  "pnas2014": {
+   "t": "Quantifying the benefits of vehicle pooling with shareability networks (about 40% less taxi travel in Manhattan, simulated)",
+   "o": "Santi et al., PNAS",
+   "d": "2014",
+   "u": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4169909"
+  },
+  "zimride": {
+   "t": "Zimride: launched at Cornell in 2007 with closed campus networks; became Lyft",
+   "o": "Wikipedia",
+   "d": "2026",
+   "u": "https://en.wikipedia.org/wiki/Zimride"
+  },
+  "shapley_rs": {
+   "t": "Shapley value for fair cost sharing in ride-sharing",
+   "o": "arXiv 1909.04713",
+   "d": "2019",
+   "u": "https://arxiv.org/abs/1909.04713v1"
+  },
+  "airport_game": {
+   "t": "Airport game: Shapley value of nested costs equals sequential equal sharing of each increment (Littlechild and Owen, 1973)",
+   "o": "Management Science 20(3)",
+   "d": "1973",
+   "u": "https://doi.org/10.1287/mnsc.20.3.370"
+  },
+  "pool_suspend": {
+   "t": "Ola and Uber suspend shared rides in India (COVID-19)",
+   "o": "TechCrunch",
+   "d": "2020-03-20",
+   "u": "https://techcrunch.com/2020/03/20/ola-suspends-shared-ride-option-in-india/amp/"
+  },
+  "osm": {
+   "t": "OpenStreetMap geometry via Overpass API (ODbL)",
+   "o": "OpenStreetMap contributors",
+   "d": "downloaded 2026-11-06",
+   "u": "https://www.openstreetmap.org/copyright"
+  },
+  "ne": {
+   "t": "Natural Earth 1:110m land and populated places (public domain)",
+   "o": "Natural Earth",
+   "d": "",
+   "u": "https://www.naturalearthdata.com/"
+  },
+  "lead_sim": {
+   "t": "Team SIMULATION.md: baselines, assumption ranges, sanity bound",
+   "o": "Team Antimatter (lead)",
+   "d": "2026-11",
+   "u": ""
+  },
+  "bertsimas": {
+   "t": "The Price of Fairness",
+   "o": "Bertsimas, Farias, Trichakis, Operations Research 59(1)",
+   "d": "2011",
+   "u": "https://www.mit.edu/~dbertsim/papers/Fairness/The%20Price%20of%20Fairness.pdf"
+  },
+  "bike_ban": {
+   "t": "Karnataka High Court upholds ban on bike taxis (2025): two-wheeler rides are legal only where state rules allow",
+   "o": "News reports",
+   "d": "2025-06",
+   "u": "https://www.google.com/search?q=Karnataka+bike+taxi+ban+high+court+2025"
+  },
+  "michaung": {
+   "t": "Cyclone Michaung: stranded passengers at Chennai Central left braving hunger and thirst",
+   "o": "The Week",
+   "d": "2023-12-04",
+   "u": "https://www.theweek.in/news/india/2023/12/04/cyclone-michaung-train-air-services-affected-in-chennai.html"
+  },
+  "via_ipo": {
+   "t": "Via Transportation IPO on NYSE values transit-software firm at about $3.5bn; government agencies provide over 90% of revenue",
+   "o": "The Star (Reuters) / IPOScoop",
+   "d": "2025-09-13",
+   "u": "https://www.thestar.com.my/tech/tech-news/2025/09/13/transit-tech-firm-via-valued-at-35-billion-as-shares-fall-in-nyse-debut"
+  },
+  "chalo": {
+   "t": "Chalo works with state transport undertakings including TNSTC Tamil Nadu, DTC Delhi and KSRTC Kerala",
+   "o": "Google Cloud case study",
+   "d": "2024",
+   "u": "https://cloud.google.com/customers/chalo"
+  },
+  "ir_amenities": {
+   "t": "Indian Railways allotted Rs 9,392 cr (2023-24), Rs 12,884 cr (2024-25), Rs 12,018 cr (2025-26) for passenger amenities incl. crowd management",
+   "o": "Kashmir Despatch (govt statement)",
+   "d": "2026",
+   "u": "https://kashmirdespatch.com/indian-railways-allocated-over-%e2%82%b934000-crore-in-last-three-years-for-passenger-amenities-including-crowd-management/"
+  },
+  "ir_76": {
+   "t": "Indian Railways to deploy holding areas, AI surveillance and access control across 76 stations",
+   "o": "Angel One / Construction World",
+   "d": "2026-05",
+   "u": "https://www.constructionworld.in/transport-infrastructure/metro-rail-and-railways-infrastructure/indian-railways-to-add-holding-areas-and-ai-monitoring-at-76-stations/91296"
+  },
+  "railtel": {
+   "t": "RailTel wins AI surveillance order at New Delhi station (value undisclosed)",
+   "o": "Sahi / Indian Masterminds",
+   "d": "2026",
+   "u": "https://sahi.com/news/railtel-wins-new-delhi-station-ai-surveillance-order-order-book-hits-11-466-crore-peak-3293-PE1_COR"
+  },
+  "pids_tender": {
+   "t": "Solapur division tender: passenger information boards with announcements for crowd control, est. Rs 2.13 cr",
+   "o": "Infralens tender listing",
+   "d": "2026",
+   "u": "https://tenders.infralens.in/tender/railways-provision-of-passenger-information-display-boards-with-announcement-sy"
+  }
+ },
+ "scenarios": [
+  {
+   "id": "tambaram",
+   "title": "Chennai",
+   "country": "India",
+   "flag": "IN",
+   "date": "2026-02-28",
+   "weekday": "Saturday",
+   "tz": "IST",
+   "lat": 12.92579,
+   "lon": 80.11792,
+   "currency": "Rs",
+   "archetype": "Equipment failure",
+   "fidelity": "A",
+   "hero": true,
+   "headline": "A signal fails south of Tambaram. Trains stop on one track. The promised buses never come.",
+   "what": [
+    {
+     "t": "20 Feb",
+     "x": "Egmore works cut Beach-Tambaram-Chengalpattu EMU services from 204 to 164 a day until 5 April.",
+     "s": [
+      "dtnext_egmore"
+     ]
+    },
+    {
+     "t": "~08:50",
+     "x": "Signal failure between Perungalathur and Irumbuliyur. Several EMUs halt on the same track, Chennai-bound, from Chengalpattu and Guduvanchery.",
+     "s": [
+      "dtnext_tam"
+     ]
+    },
+    {
+     "t": "+60 min",
+     "x": "Trains stay stationary for over an hour. Office-goers, factory workers and students climb down and walk along the tracks to Tambaram.",
+     "s": [
+      "dtnext_tam"
+     ]
+    },
+    {
+     "t": "Tambaram",
+     "x": "Limited onward services. Special buses were announced, but commuters say they did not run at the promised frequency.",
+     "s": [
+      "dtnext_tam"
+     ]
+    },
+    {
+     "t": "after 10:00",
+     "x": "Fault rectified; services restored gradually.",
+     "s": [
+      "dtnext_tam"
+     ]
+    }
+   ],
+   "why": [
+    {
+     "k": "Space",
+     "x": "Tambaram's footfall (about 1.5 lakh a day) now exceeds MGR Central's, but its infrastructure lags: platforms and a foot-over-bridge still under construction.",
+     "s": [
+      "dtnext_footfall"
+     ]
+    },
+    {
+     "k": "Time",
+     "x": "With services already cut from 204 to 164, every train ran fuller, so one failure stranded more people at once.",
+     "s": [
+      "dtnext_egmore"
+     ]
+    },
+    {
+     "k": "Information",
+     "x": "Nobody told stranded riders what would move next or when. People self-evacuated along live tracks.",
+     "s": [
+      "dtnext_tam",
+      "fruin"
+     ]
+    },
+    {
+     "k": "System",
+     "x": "Bus bridging was improvised. Internationally, agencies rarely keep bus reserves for bridging, so buses arrive late and in the wrong place.",
+     "s": [
+      "pender"
+     ]
+    },
+    {
+     "k": "Market",
+     "x": "Everyone opens a cab app at once: per-car surge rises (capped at 2x base fare in India since July 2025) while 40 people going the same way book 40 cabs.",
+     "s": [
+      "surge_cap"
+     ]
+    }
+   ],
+   "omni": [
+    "Detect the halt, count who is affected, and split them into 5 real northbound corridors by destination.",
+    "Bridging buses get capacity-exact passes, so nobody is turned away at a door.",
+    "Koottu shared cabs: riders going the same way, inside their trusted circle, are grouped at geofenced pickup gates. Four phones compare four quotes and the cheapest books. Surge is charged per car, so sharing is cheaper than riding alone at the normal fare, and nobody is ever charged more than their solo fare (checked directly, not just by Shapley).",
+    "Wheelchair users, flight and shift deadlines go first, with an explanation on every pass.",
+    "Everything runs on the station edge node, with no internet needed.",
+    "Geofence: phones and delivery partners inside 2 km of the station get the alert. Two-wheeler partners take urgent solo riders (where state law allows) and drop water and food to anyone waiting over 45 minutes."
+   ],
+   "params": {
+    "N": {
+     "v": 1890,
+     "tier": "T2",
+     "how": "3 halted 12-car EMUs (T4, 'several') x 3,504 design capacity (T2) x 0.6 peak load (T4) x 0.3 who walk to Tambaram for road options (T4, 'hundreds walked')",
+     "range": [
+      1000,
+      4000
+     ],
+     "s": [
+      "dtnext_tam",
+      "wiki_12car",
+      "sr_12car"
+     ]
+    },
+    "horizonMin": {
+     "v": 770,
+     "tier": "T4"
+    },
+    "accessWalkMin": {
+     "v": 6,
+     "tier": "T4",
+     "how": "platform or track to GST Road bays"
+    },
+    "busSpeedKmh": {
+     "v": 17,
+     "tier": "T4",
+     "range": [
+      12,
+      25
+     ]
+    },
+    "detour": {
+     "v": 1.3,
+     "tier": "T4",
+     "range": [
+      1.2,
+      1.5
+     ],
+     "how": "road distance over straight-line distance"
+    },
+    "stopDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "wheelchair": {
+     "v": 0.0045,
+     "tier": "T2",
+     "how": "2.21% disabled x 20.3% 'in movement' (Census 2011)",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "assist": {
+     "v": 0.0176,
+     "tier": "T2",
+     "how": "other disabilities: 2.21% - 0.45%",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "elderly": {
+     "v": 0.086,
+     "tier": "T1",
+     "s": [
+      "census_age"
+     ]
+    },
+    "deadlineShare": {
+     "v": 0.35,
+     "tier": "T4",
+     "how": "office/factory shifts and exams (article names these groups)"
+    },
+    "deadlineSlackMin": {
+     "v": [
+      10,
+      70
+     ],
+     "tier": "T4"
+    },
+    "phone": {
+     "v": 0.8,
+     "tier": "T4"
+    },
+    "wtpLogMean": {
+     "v": 5.0,
+     "tier": "T4",
+     "how": "median willingness to pay about Rs 150"
+    },
+    "wtpLogSd": {
+     "v": 0.7,
+     "tier": "T4"
+    },
+    "kioskDelayMin": {
+     "v": 5,
+     "tier": "T4"
+    },
+    "lateCheckinAccessMin": {
+     "v": 6,
+     "tier": "T4",
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "doorCrush": {
+     "v": 0.5,
+     "tier": "T4",
+     "range": [
+      0,
+      1
+     ],
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "boardSec": {
+     "v": 3,
+     "tier": "T4",
+     "range": [
+      2,
+      6
+     ],
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "wheelchairBoardSec": {
+     "v": 90,
+     "tier": "T4",
+     "range": [
+      60,
+      180
+     ],
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "minDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "layoverMin": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "passLeadMin": {
+     "v": 4,
+     "tier": "T4"
+    },
+    "doorZoneM2": {
+     "v": 40,
+     "tier": "T4",
+     "how": "about 4 m around a bus door"
+    },
+    "cabBaseFare": {
+     "v": 60,
+     "tier": "T4"
+    },
+    "cabPerKm": {
+     "v": 18,
+     "tier": "T4"
+    },
+    "surgeCap": {
+     "v": 2.0,
+     "tier": "T1",
+     "s": [
+      "surge_cap"
+     ]
+    },
+    "surgeK": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "gates": {
+     "v": 3,
+     "tier": "T4",
+     "how": "geofenced pickup gates around the station"
+    },
+    "stagedDensity": {
+     "v": 1.0,
+     "tier": "T3",
+     "how": "release pass holders in waves at about 1 person per square metre (Fruin LOS D or better)",
+     "s": [
+      "fruin_los"
+     ]
+    },
+    "circles": {
+     "v": 4,
+     "tier": "T4",
+     "how": "trusted circles (campus, company, residential); Koottu only pools inside a circle (Zimride's closed-network idea)",
+     "s": [
+      "zimride"
+     ]
+    },
+    "quoteSpread": {
+     "v": 0.08,
+     "tier": "T4",
+     "how": "phone-to-phone and app-to-app quote spread; the cheapest phone books"
+    },
+    "essentialsAfterMin": {
+     "v": 45,
+     "tier": "T4",
+     "how": "riders waiting longer get water and food dropped by delivery partners inside the geofence",
+     "s": [
+      "michaung"
+     ]
+    },
+    "geofenceKm": {
+     "v": 2.0,
+     "tier": "T4",
+     "how": "alert radius around the disrupted station for stranded riders, cabs and delivery partners"
+    },
+    "bikeFareFactor": {
+     "v": 0.4,
+     "tier": "T4",
+     "how": "two-wheeler fare as a share of the cab fare"
+    },
+    "bikeMaxKm": {
+     "v": 15,
+     "tier": "T4",
+     "how": "longest corridor offered on a two-wheeler"
+    }
+   },
+   "arrivalProfile": [
+    {
+     "from": 530,
+     "to": 545,
+     "w": 0.25
+    },
+    {
+     "from": 545,
+     "to": 580,
+     "w": 0.55
+    },
+    {
+     "from": 580,
+     "to": 610,
+     "w": 0.2
+    }
+   ],
+   "corridors": [
+    {
+     "id": "pal",
+     "name": "Chromepet - Pallavaram",
+     "place": "Pallavaram",
+     "share": {
+      "v": 0.18,
+      "tier": "T4"
+     },
+     "stops": 4
+    },
+    {
+     "id": "maa",
+     "name": "Airport - Metro Blue Line",
+     "place": "Tirusulam",
+     "share": {
+      "v": 0.12,
+      "tier": "T4"
+     },
+     "stops": 2,
+     "deadlineShare": {
+      "v": 0.6,
+      "tier": "T4",
+      "how": "flights"
+     }
+    },
+    {
+     "id": "gdy",
+     "name": "Guindy (metro + suburban)",
+     "place": "Guindy",
+     "share": {
+      "v": 0.28,
+      "tier": "T4"
+     },
+     "stops": 6
+    },
+    {
+     "id": "mbm",
+     "name": "Mambalam - T. Nagar",
+     "place": "Mambalam",
+     "share": {
+      "v": 0.2,
+      "tier": "T4"
+     },
+     "stops": 8
+    },
+    {
+     "id": "ms",
+     "name": "Egmore - Central",
+     "place": "Chennai Egmore",
+     "share": {
+      "v": 0.22,
+      "tier": "T4"
+     },
+     "stops": 10
+    }
+   ],
+   "fleet": [
+    {
+     "id": "special",
+     "kind": "bus",
+     "label": "MTC special buses",
+     "count": {
+      "v": 12,
+      "tier": "T4",
+      "how": "announced, ran below promised frequency (T1, qualitative)"
+     },
+     "cap": {
+      "v": 70,
+      "tier": "T4"
+     },
+     "wcSlots": 0,
+     "doors": 2,
+     "firstAtMin": [
+      548,
+      548,
+      552,
+      556,
+      560,
+      566,
+      572,
+      578,
+      586,
+      594,
+      602,
+      610
+     ]
+    },
+    {
+     "id": "lowfloor",
+     "kind": "bus",
+     "label": "MTC low-floor (ramp)",
+     "count": {
+      "v": 3,
+      "tier": "T4"
+     },
+     "cap": {
+      "v": 70,
+      "tier": "T4"
+     },
+     "wcSlots": 1,
+     "doors": 2,
+     "firstAtMin": [
+      556,
+      574,
+      592
+     ]
+    },
+    {
+     "id": "regular",
+     "kind": "regular",
+     "label": "Regular MTC trips (spare seats)",
+     "count": {
+      "v": 270,
+      "tier": "T2",
+      "how": "901 Saturday trips at Tambaram stops 08:45-10:30 (GTFS, T1) x 0.3 into the city (T4)",
+      "s": [
+       "gtfs_mtc"
+      ]
+     },
+     "cap": {
+      "v": 4,
+      "tier": "T4",
+      "how": "spare seats on crowded peak buses"
+     },
+     "windowMin": [
+      530,
+      640
+     ]
+    },
+    {
+     "id": "cabs",
+     "kind": "cab",
+     "label": "Ride-hail cabs reaching the gates",
+     "ratePerMin": {
+      "v": 1.2,
+      "tier": "T4"
+     },
+     "windowMin": [
+      535,
+      700
+     ]
+    },
+    {
+     "id": "bikes",
+     "kind": "bike",
+     "label": "Bike taxis / delivery partners inside the geofence",
+     "ratePerMin": {
+      "v": 0.6,
+      "tier": "T4",
+      "how": "two-wheeler partners alerted inside the geofence; only where state rules allow",
+      "s": [
+       "bike_ban"
+      ]
+     },
+     "windowMin": [
+      535,
+      670
+     ]
+    }
+   ],
+   "story": {
+    "lift": "Saturday 28 February 2026, 08:50 IST. Several Chennai-bound EMUs halt on the same track south of Tambaram.",
+    "asIs": "As it happened: no plan. Buses arrive in no particular order, the crowd rushes every door, and the cab apps surge.",
+    "split": "Same people, same buses, same seed. Left: as it happened. Right: RAHA.",
+    "omni": "Passes match seats exactly, the most urgent go first, and Koottu fills cabs with riders going the same way, so sharing costs less than riding alone at the normal fare."
+   },
+   "station": "Tambaram station"
+  },
+  {
+   "id": "ndls",
+   "title": "New Delhi",
+   "country": "India",
+   "flag": "IN",
+   "date": "2025-02-15",
+   "weekday": "Saturday",
+   "tz": "IST",
+   "lat": 28.6425,
+   "lon": 77.2195,
+   "currency": "Rs",
+   "archetype": "Demand surge + information failure",
+   "fidelity": "B",
+   "headline": "Maha Kumbh rush meets delayed trains and confusing announcements. 18 people die on FOB-3 stairs.",
+   "memorial": "In memory of the 18 people who died on 15 February 2025.",
+   "what": [
+    {
+     "t": "18:00-20:00",
+     "x": "About 2,600 extra general tickets sold at New Delhi in two hours; around 1,500 general tickets an hour overall.",
+     "s": [
+      "ndls_scroll",
+      "ndls_week"
+     ]
+    },
+    {
+     "t": "20:30-22:30",
+     "x": "15 trains delayed. The Swatantrata Senani Express (sched. 21:15, Prayagraj-bound) ran over 3 hours late.",
+     "s": [
+      "ndls_scroll"
+     ]
+    },
+    {
+     "t": "~21:15-21:30",
+     "x": "Crowds build around platforms 12 to 16.",
+     "s": [
+      "ndls_print"
+     ]
+    },
+    {
+     "t": "~22:00",
+     "x": "Two trains with near-identical names (Prayagraj Express, Prayagraj Special); people move between platforms 14 and 16 over the foot-over-bridge.",
+     "s": [
+      "ndls_police"
+     ]
+    },
+    {
+     "t": "~22:00",
+     "x": "Crush on FOB-3 stairs to platforms 14/15. The inquiry cites a person with a large headload falling.",
+     "s": [
+      "ndls_inquiry"
+     ]
+    }
+   ],
+   "why": [
+    {
+     "k": "Time",
+     "x": "General (unreserved) tickets are sold with no link to seats, so the crowd grew with every hour of delay while trains ran late.",
+     "s": [
+      "ndls_week",
+      "ndls_scroll"
+     ]
+    },
+    {
+     "k": "Information",
+     "x": "Similar train names and platform information caused movement between platforms at the worst moment.",
+     "s": [
+      "ndls_police",
+      "fruin"
+     ]
+    },
+    {
+     "k": "Space",
+     "x": "Stairs of a foot-over-bridge became the only path between platforms; a single fall propagated through the crowd.",
+     "s": [
+      "ndls_inquiry",
+      "helbing2012"
+     ]
+    },
+    {
+     "k": "Force",
+     "x": "Above about 2.17 persons per square metre, forces chain through bodies; people cannot step back.",
+     "s": [
+      "fruin_los",
+      "helbing2012"
+     ]
+    },
+    {
+     "k": "System",
+     "x": "Afterwards Railways announced holding areas at 60 high-footfall stations so passengers reach platforms by departure.",
+     "s": [
+      "ndls_holding"
+     ]
+    }
+   ],
+   "omni": [
+    "Capacity-aware boarding windows for unreserved passengers: a pass exists only if a seat or standing slot exists on that train.",
+    "Holding area with countdowns instead of a platform crowd; release in coach-sized batches.",
+    "One source of truth for platform information, signed and readable offline.",
+    "FOB density alerts before LOS E, with staged release."
+   ],
+   "params": {
+    "N": {
+     "v": 6000,
+     "tier": "T2",
+     "how": "(1,500/h x 4 h + 2,600 extra 18:00-20:00) = 8,600 general tickets (T1) x 0.7 for Prayagraj-bound trains (T4)",
+     "range": [
+      4000,
+      9000
+     ],
+     "s": [
+      "ndls_week",
+      "ndls_scroll"
+     ]
+    },
+    "horizonMin": {
+     "v": 1500,
+     "tier": "T4"
+    },
+    "accessWalkMin": {
+     "v": 8,
+     "tier": "T4",
+     "how": "entry to FOB to platform"
+    },
+    "busSpeedKmh": {
+     "v": 50,
+     "tier": "T4"
+    },
+    "detour": {
+     "v": 1.3,
+     "tier": "T4"
+    },
+    "stopDwellMin": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "wheelchair": {
+     "v": 0.0045,
+     "tier": "T2",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "assist": {
+     "v": 0.0176,
+     "tier": "T2",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "elderly": {
+     "v": 0.086,
+     "tier": "T1",
+     "s": [
+      "census_age"
+     ]
+    },
+    "deadlineShare": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "deadlineSlackMin": {
+     "v": [
+      0,
+      0
+     ],
+     "tier": "T4"
+    },
+    "phone": {
+     "v": 0.7,
+     "tier": "T4"
+    },
+    "wtpLogMean": {
+     "v": 5.5,
+     "tier": "T4"
+    },
+    "wtpLogSd": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "kioskDelayMin": {
+     "v": 6,
+     "tier": "T4"
+    },
+    "lateCheckinAccessMin": {
+     "v": 6,
+     "tier": "T4",
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "doorCrush": {
+     "v": 0.5,
+     "tier": "T4",
+     "s": [
+      "lead_sim"
+     ]
+    },
+    "boardSec": {
+     "v": 2,
+     "tier": "T4"
+    },
+    "wheelchairBoardSec": {
+     "v": 90,
+     "tier": "T4"
+    },
+    "minDwellMin": {
+     "v": 5,
+     "tier": "T4"
+    },
+    "layoverMin": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "passLeadMin": {
+     "v": 20,
+     "tier": "T4"
+    },
+    "doorZoneM2": {
+     "v": 300,
+     "tier": "T4",
+     "how": "platform strip along 4 general coaches (about 100 m x 3 m)"
+    },
+    "cabBaseFare": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "cabPerKm": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "surgeCap": {
+     "v": 2.0,
+     "tier": "T1",
+     "s": [
+      "surge_cap"
+     ]
+    },
+    "surgeK": {
+     "v": 0,
+     "tier": "T4"
+    },
+    "gates": {
+     "v": 1,
+     "tier": "T4"
+    },
+    "stagedDensity": {
+     "v": 1.0,
+     "tier": "T3",
+     "how": "release pass holders in waves at about 1 person per square metre (Fruin LOS D or better)",
+     "s": [
+      "fruin_los"
+     ]
+    },
+    "circles": {
+     "v": 4,
+     "tier": "T4",
+     "how": "trusted circles (campus, company, residential); Koottu only pools inside a circle (Zimride's closed-network idea)",
+     "s": [
+      "zimride"
+     ]
+    },
+    "quoteSpread": {
+     "v": 0.08,
+     "tier": "T4",
+     "how": "phone-to-phone and app-to-app quote spread; the cheapest phone books"
+    },
+    "essentialsAfterMin": {
+     "v": 45,
+     "tier": "T4",
+     "how": "riders waiting longer get water and food dropped by delivery partners inside the geofence",
+     "s": [
+      "michaung"
+     ]
+    },
+    "geofenceKm": {
+     "v": 2.0,
+     "tier": "T4",
+     "how": "alert radius around the disrupted station for stranded riders, cabs and delivery partners"
+    },
+    "bikeFareFactor": {
+     "v": 0.4,
+     "tier": "T4",
+     "how": "two-wheeler fare as a share of the cab fare"
+    },
+    "bikeMaxKm": {
+     "v": 15,
+     "tier": "T4",
+     "how": "longest corridor offered on a two-wheeler"
+    }
+   },
+   "arrivalProfile": [
+    {
+     "from": 1080,
+     "to": 1200,
+     "w": 0.65
+    },
+    {
+     "from": 1200,
+     "to": 1320,
+     "w": 0.35
+    }
+   ],
+   "corridors": [
+    {
+     "id": "pryj",
+     "name": "Prayagraj (Maha Kumbh)",
+     "oneWayMin": {
+      "v": 600,
+      "tier": "T1",
+      "how": "GTFS run time about 8 to 10 h"
+     },
+     "share": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "stops": 0
+    }
+   ],
+   "fleet": [
+    {
+     "id": "t12560",
+     "kind": "train",
+     "label": "12560 Shiv Ganga Exp (20:05)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1185,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "departMin": {
+      "v": 1205,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "delayMin": {
+      "v": 30,
+      "tier": "T4"
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "cap": {
+      "v": 400,
+      "tier": "T4",
+      "how": "4 general coaches x 100"
+     },
+     "wcSlots": 2,
+     "doors": 8
+    },
+    {
+     "id": "t20802",
+     "kind": "train",
+     "label": "20802 Magadh Exp (21:05)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1245,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "departMin": {
+      "v": 1265,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "delayMin": {
+      "v": 40,
+      "tier": "T4"
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "cap": {
+      "v": 400,
+      "tier": "T4"
+     },
+     "wcSlots": 2,
+     "doors": 8
+    },
+    {
+     "id": "t12562",
+     "kind": "train",
+     "label": "12562 Swatantrata Senani Exp (21:15)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1255,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "departMin": {
+      "v": 1275,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "delayMin": {
+      "v": 185,
+      "tier": "T1",
+      "how": "'over 3 hours' late",
+      "s": [
+       "ndls_scroll"
+      ]
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "cap": {
+      "v": 400,
+      "tier": "T4"
+     },
+     "wcSlots": 2,
+     "doors": 8
+    },
+    {
+     "id": "t12418",
+     "kind": "train",
+     "label": "12418 Prayagraj Exp (22:10)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1310,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "departMin": {
+      "v": 1330,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "delayMin": {
+      "v": 20,
+      "tier": "T4"
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "cap": {
+      "v": 400,
+      "tier": "T4"
+     },
+     "wcSlots": 2,
+     "doors": 8
+    },
+    {
+     "id": "kumbh",
+     "kind": "train",
+     "label": "Prayagraj Special (Kumbh)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1305,
+      "tier": "T4"
+     },
+     "departMin": {
+      "v": 1335,
+      "tier": "T4"
+     },
+     "delayMin": {
+      "v": 0,
+      "tier": "T4"
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1",
+      "s": [
+       "ndls_police"
+      ]
+     },
+     "cap": {
+      "v": 1500,
+      "tier": "T4",
+      "how": "fully unreserved rake"
+     },
+     "wcSlots": 4,
+     "doors": 30
+    },
+    {
+     "id": "t12582",
+     "kind": "train",
+     "label": "12582 BNRS SF Exp (22:50)",
+     "corr": 0,
+     "platformAtMin": {
+      "v": 1350,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "departMin": {
+      "v": 1370,
+      "tier": "T2",
+      "s": [
+       "gtfs_ir"
+      ]
+     },
+     "delayMin": {
+      "v": 20,
+      "tier": "T4"
+     },
+     "count": {
+      "v": 1,
+      "tier": "T1"
+     },
+     "cap": {
+      "v": 400,
+      "tier": "T4"
+     },
+     "wcSlots": 2,
+     "doors": 8
+    }
+   ],
+   "story": {
+    "lift": "Saturday 15 February 2025, evening. Maha Kumbh travellers fill New Delhi station; Prayagraj trains run late.",
+    "asIs": "As it happened: tickets without seats, late trains, confusing platform calls. Everyone converges on the same stairs.",
+    "split": "Same tickets, same trains. Right: holding area plus capacity-linked boarding windows.",
+    "omni": "Nobody walks to a platform without a slot on that train. The stairs stay below LOS E."
+   },
+   "station": "New Delhi Railway Station"
+  },
+  {
+   "id": "kurla",
+   "title": "Mumbai",
+   "country": "India",
+   "flag": "IN",
+   "date": "2025-08-19",
+   "weekday": "Tuesday",
+   "tz": "IST",
+   "lat": 19.0656,
+   "lon": 72.8792,
+   "currency": "Rs",
+   "archetype": "Monsoon flooding",
+   "fidelity": "C",
+   "headline": "Heavy rain floods tracks. Central Railway suspends CSMT-Thane. Thousands stranded across stations.",
+   "what": [
+    {
+     "t": "19 Aug",
+     "x": "Heavy rain. Central Railway suspends Main and Harbour line services between CSMT and Thane until further notice.",
+     "s": [
+      "mum_suspend"
+     ]
+    },
+    {
+     "t": "afternoon",
+     "x": "Trains stuck between Vidyavihar and Thane; massive crowds at CSMT, Byculla, Dadar, Kurla and Ghatkopar.",
+     "s": [
+      "mum_stranded"
+     ]
+    },
+    {
+     "t": "20 Aug",
+     "x": "Services resume gradually the next morning.",
+     "s": [
+      "mum_stranded"
+     ]
+    }
+   ],
+   "why": [
+    {
+     "k": "System",
+     "x": "Mumbai's storm drains handle about 25 mm of rain per hour at low tide; most outfalls sit below sea level and only 3 of 45 have floodgates.",
+     "s": [
+      "mum_drains"
+     ]
+    },
+    {
+     "k": "System",
+     "x": "A plan to double drain capacity to 50 mm per hour (BRIMSTOWAD) has been pending for years.",
+     "s": [
+      "mum_brims"
+     ]
+    },
+    {
+     "k": "Space",
+     "x": "Central Railway carries about 38.7 lakh riders a day; stations and foot-over-bridges were never sized for a whole line stopping at once. At Elphinstone Road a 2.4 m FOB killed 23 people in 2017.",
+     "s": [
+      "mum_ridership",
+      "elph_fob",
+      "elph"
+     ]
+    },
+    {
+     "k": "Information",
+     "x": "When a line stops, people wait on platforms and stairs because nobody tells them where else is safe or what will move.",
+     "s": [
+      "fruin"
+     ]
+    }
+   ],
+   "omni": [
+    "Staging: tell people where to wait safely, not just when trains return.",
+    "Multimodal fallback by corridor: BEST buses, Metro Line 1 at Ghatkopar, shared cabs.",
+    "Koottu groups cab riders by direction so 4 people take 1 car on flooded roads.",
+    "Offline passes when mobile networks choke.",
+    "Geofence: phones and delivery partners inside 2 km of the station get the alert. Two-wheeler partners take urgent solo riders (where state law allows) and drop water and food to anyone waiting over 45 minutes."
+   ],
+   "params": {
+    "N": {
+     "v": 5000,
+     "tier": "T4",
+     "how": "no station-level count published; Central Railway averages 38.7 lakh riders a day (T1)",
+     "range": [
+      2000,
+      10000
+     ],
+     "s": [
+      "mum_ridership"
+     ]
+    },
+    "horizonMin": {
+     "v": 960,
+     "tier": "T4"
+    },
+    "accessWalkMin": {
+     "v": 7,
+     "tier": "T4"
+    },
+    "busSpeedKmh": {
+     "v": 10,
+     "tier": "T4",
+     "range": [
+      6,
+      18
+     ],
+     "how": "flooded roads"
+    },
+    "detour": {
+     "v": 1.35,
+     "tier": "T4"
+    },
+    "stopDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "wheelchair": {
+     "v": 0.0045,
+     "tier": "T2",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "assist": {
+     "v": 0.0176,
+     "tier": "T2",
+     "s": [
+      "census_dis"
+     ]
+    },
+    "elderly": {
+     "v": 0.086,
+     "tier": "T1",
+     "s": [
+      "census_age"
+     ]
+    },
+    "deadlineShare": {
+     "v": 0.2,
+     "tier": "T4"
+    },
+    "deadlineSlackMin": {
+     "v": [
+      20,
+      90
+     ],
+     "tier": "T4"
+    },
+    "phone": {
+     "v": 0.85,
+     "tier": "T4"
+    },
+    "wtpLogMean": {
+     "v": 5.3,
+     "tier": "T4"
+    },
+    "wtpLogSd": {
+     "v": 0.7,
+     "tier": "T4"
+    },
+    "kioskDelayMin": {
+     "v": 6,
+     "tier": "T4"
+    },
+    "lateCheckinAccessMin": {
+     "v": 6,
+     "tier": "T4"
+    },
+    "doorCrush": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "boardSec": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "wheelchairBoardSec": {
+     "v": 90,
+     "tier": "T4"
+    },
+    "minDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "layoverMin": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "passLeadMin": {
+     "v": 4,
+     "tier": "T4"
+    },
+    "doorZoneM2": {
+     "v": 40,
+     "tier": "T4"
+    },
+    "cabBaseFare": {
+     "v": 50,
+     "tier": "T4"
+    },
+    "cabPerKm": {
+     "v": 20,
+     "tier": "T4"
+    },
+    "surgeCap": {
+     "v": 2.0,
+     "tier": "T1",
+     "s": [
+      "surge_cap"
+     ]
+    },
+    "surgeK": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "gates": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "stagedDensity": {
+     "v": 1.0,
+     "tier": "T3",
+     "how": "release pass holders in waves at about 1 person per square metre (Fruin LOS D or better)",
+     "s": [
+      "fruin_los"
+     ]
+    },
+    "circles": {
+     "v": 4,
+     "tier": "T4",
+     "how": "trusted circles (campus, company, residential); Koottu only pools inside a circle (Zimride's closed-network idea)",
+     "s": [
+      "zimride"
+     ]
+    },
+    "quoteSpread": {
+     "v": 0.08,
+     "tier": "T4",
+     "how": "phone-to-phone and app-to-app quote spread; the cheapest phone books"
+    },
+    "essentialsAfterMin": {
+     "v": 45,
+     "tier": "T4",
+     "how": "riders waiting longer get water and food dropped by delivery partners inside the geofence",
+     "s": [
+      "michaung"
+     ]
+    },
+    "geofenceKm": {
+     "v": 2.0,
+     "tier": "T4",
+     "how": "alert radius around the disrupted station for stranded riders, cabs and delivery partners"
+    },
+    "bikeFareFactor": {
+     "v": 0.4,
+     "tier": "T4",
+     "how": "two-wheeler fare as a share of the cab fare"
+    },
+    "bikeMaxKm": {
+     "v": 15,
+     "tier": "T4",
+     "how": "longest corridor offered on a two-wheeler"
+    }
+   },
+   "arrivalProfile": [
+    {
+     "from": 720,
+     "to": 780,
+     "w": 0.6
+    },
+    {
+     "from": 780,
+     "to": 840,
+     "w": 0.4
+    }
+   ],
+   "corridors": [
+    {
+     "id": "gkp",
+     "name": "Ghatkopar - Metro Line 1",
+     "place": "Ghatkopar",
+     "share": {
+      "v": 0.22,
+      "tier": "T4"
+     },
+     "stops": 3
+    },
+    {
+     "id": "tna",
+     "name": "Thane (LBS Marg)",
+     "place": "Thane",
+     "share": {
+      "v": 0.24,
+      "tier": "T4"
+     },
+     "stops": 10
+    },
+    {
+     "id": "ddr",
+     "name": "Dadar - Parel",
+     "place": "Dadar",
+     "share": {
+      "v": 0.22,
+      "tier": "T4"
+     },
+     "stops": 6
+    },
+    {
+     "id": "bnd",
+     "name": "Bandra - BKC",
+     "place": "Bandra",
+     "share": {
+      "v": 0.18,
+      "tier": "T4"
+     },
+     "stops": 5
+    },
+    {
+     "id": "cmb",
+     "name": "Chembur - Vashi",
+     "place": "Chembur",
+     "share": {
+      "v": 0.14,
+      "tier": "T4"
+     },
+     "stops": 4
+    }
+   ],
+   "fleet": [
+    {
+     "id": "best",
+     "kind": "bus",
+     "label": "BEST buses (diverted)",
+     "count": {
+      "v": 20,
+      "tier": "T4"
+     },
+     "cap": {
+      "v": 80,
+      "tier": "T4"
+     },
+     "wcSlots": 1,
+     "doors": 2,
+     "firstAtMin": 735,
+     "staggerMin": 2
+    },
+    {
+     "id": "cabs",
+     "kind": "cab",
+     "label": "Cabs reaching the gates",
+     "ratePerMin": {
+      "v": 0.8,
+      "tier": "T4"
+     },
+     "windowMin": [
+      725,
+      900
+     ]
+    },
+    {
+     "id": "bikes",
+     "kind": "bike",
+     "label": "Bike taxis / delivery partners inside the geofence",
+     "ratePerMin": {
+      "v": 0.6,
+      "tier": "T4",
+      "how": "two-wheeler partners alerted inside the geofence; only where state rules allow",
+      "s": [
+       "bike_ban"
+      ]
+     },
+     "windowMin": [
+      725,
+      900
+     ]
+    }
+   ],
+   "story": {
+    "lift": "Tuesday 19 August 2025. Rain floods the tracks; Central Railway stops CSMT-Thane.",
+    "asIs": "As it happened: a whole line's riders at one station, waiting on stairs and platforms.",
+    "split": "Right: staged waiting, multimodal corridors, pooled cabs.",
+    "omni": "People are moved by direction, not by who pushes hardest."
+   },
+   "station": "Kurla station"
+  },
+  {
+   "id": "jurong",
+   "title": "Singapore",
+   "country": "Singapore",
+   "flag": "SG",
+   "date": "2024-09-25",
+   "weekday": "Wednesday",
+   "tz": "SGT",
+   "lat": 1.3331,
+   "lon": 103.7422,
+   "currency": "S$",
+   "archetype": "Infrastructure damage, 6 days",
+   "fidelity": "A",
+   "headline": "A faulty train damages track and power on the East-West Line. No trains Jurong East to Buona Vista for six days.",
+   "what": [
+    {
+     "t": "25 Sep, morning",
+     "x": "Faulty train damages track and power infrastructure between Jurong East and Buona Vista.",
+     "s": [
+      "sg_ltg",
+      "sg_fine"
+     ]
+    },
+    {
+     "t": "~09:30",
+     "x": "Free regular buses activated within about five minutes; bridging buses running by about 09:50.",
+     "s": [
+      "sg_mot"
+     ]
+    },
+    {
+     "t": "day 1",
+     "x": "Bridging buses grow from 39 before the peak to 70 by the evening peak. Queues at Buona Vista take over 30 minutes; the Jurong East bridging point is about an 8-minute walk away.",
+     "s": [
+      "sg_mot",
+      "sg_ltg"
+     ]
+    },
+    {
+     "t": "25 Sep-1 Oct",
+     "x": "About 358,000 affected on day 1 and over 2.1 million by 30 Sep. Service resumes 1 Oct.",
+     "s": [
+      "sg_wiki"
+     ]
+    },
+    {
+     "t": "2025",
+     "x": "LTA finds degraded axle-box grease most likely caused the failure; SMRT fined S$2.4m (cut from S$3m).",
+     "s": [
+      "sg_fine"
+     ]
+    }
+   ],
+   "why": [
+    {
+     "k": "System",
+     "x": "The overhaul interval for the faulty train had been extended without a detailed engineering and risk assessment.",
+     "s": [
+      "sg_fine"
+     ]
+    },
+    {
+     "k": "Space",
+     "x": "The bridging point at Jurong East was placed about 8 minutes' walk from the station for traffic safety, adding walking and confusion.",
+     "s": [
+      "sg_ltg"
+     ]
+    },
+    {
+     "k": "Information",
+     "x": "Commuters were confused between shuttle trains, bridging buses and free regular buses; operators later reviewed bridging management.",
+     "s": [
+      "sg_review"
+     ]
+    },
+    {
+     "k": "Time",
+     "x": "Bus supply ramps up over hours while demand arrives in minutes.",
+     "s": [
+      "sg_mot",
+      "pender"
+     ]
+    }
+   ],
+   "omni": [
+    "Corridor-aware bridging: stopping vs express buses sized to real demand.",
+    "Unaffected rail (North-South Line) offered as an alternative with honest travel times.",
+    "Constraint 3 stage: the bus feed changes shape mid-incident and the adapter keeps every seat count correct."
+   ],
+   "params": {
+    "N": {
+     "v": 9000,
+     "tier": "T2",
+     "how": "about 358,000 affected on day 1 (T1) x 0.2 through the Jurong East bridging point (T4) x 0.125 in this 2.5 h window (T4)",
+     "range": [
+      5000,
+      15000
+     ],
+     "s": [
+      "sg_wiki"
+     ]
+    },
+    "horizonMin": {
+     "v": 805,
+     "tier": "T4"
+    },
+    "accessWalkMin": {
+     "v": 8,
+     "tier": "T1",
+     "how": "bridging point about an 8-minute walk from the station",
+     "s": [
+      "sg_ltg"
+     ]
+    },
+    "busSpeedKmh": {
+     "v": 22,
+     "tier": "T4",
+     "range": [
+      15,
+      30
+     ]
+    },
+    "detour": {
+     "v": 1.35,
+     "tier": "T4"
+    },
+    "stopDwellMin": {
+     "v": 1,
+     "tier": "T4"
+    },
+    "wheelchair": {
+     "v": 0.005,
+     "tier": "T4"
+    },
+    "assist": {
+     "v": 0.02,
+     "tier": "T4"
+    },
+    "elderly": {
+     "v": 0.19,
+     "tier": "T4",
+     "how": "replace with SingStat 65+ share"
+    },
+    "deadlineShare": {
+     "v": 0.3,
+     "tier": "T4"
+    },
+    "deadlineSlackMin": {
+     "v": [
+      10,
+      60
+     ],
+     "tier": "T4"
+    },
+    "phone": {
+     "v": 0.95,
+     "tier": "T4"
+    },
+    "wtpLogMean": {
+     "v": 3.0,
+     "tier": "T4",
+     "how": "median about S$20"
+    },
+    "wtpLogSd": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "kioskDelayMin": {
+     "v": 4,
+     "tier": "T4"
+    },
+    "lateCheckinAccessMin": {
+     "v": 6,
+     "tier": "T4"
+    },
+    "doorCrush": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "boardSec": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "wheelchairBoardSec": {
+     "v": 60,
+     "tier": "T4"
+    },
+    "minDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "layoverMin": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "passLeadMin": {
+     "v": 4,
+     "tier": "T4"
+    },
+    "doorZoneM2": {
+     "v": 50,
+     "tier": "T4"
+    },
+    "cabBaseFare": {
+     "v": 3.9,
+     "tier": "T4"
+    },
+    "cabPerKm": {
+     "v": 0.7,
+     "tier": "T4"
+    },
+    "surgeCap": {
+     "v": 2.5,
+     "tier": "T4",
+     "how": "no statutory cap found"
+    },
+    "surgeK": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "gates": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "stagedDensity": {
+     "v": 1.0,
+     "tier": "T3",
+     "how": "release pass holders in waves at about 1 person per square metre (Fruin LOS D or better)",
+     "s": [
+      "fruin_los"
+     ]
+    },
+    "circles": {
+     "v": 4,
+     "tier": "T4",
+     "how": "trusted circles (campus, company, residential); Koottu only pools inside a circle (Zimride's closed-network idea)",
+     "s": [
+      "zimride"
+     ]
+    },
+    "quoteSpread": {
+     "v": 0.08,
+     "tier": "T4",
+     "how": "phone-to-phone and app-to-app quote spread; the cheapest phone books"
+    },
+    "essentialsAfterMin": {
+     "v": 45,
+     "tier": "T4",
+     "how": "riders waiting longer get water and food dropped by delivery partners inside the geofence",
+     "s": [
+      "michaung"
+     ]
+    },
+    "geofenceKm": {
+     "v": 2.0,
+     "tier": "T4",
+     "how": "alert radius around the disrupted station for stranded riders, cabs and delivery partners"
+    },
+    "bikeFareFactor": {
+     "v": 0.4,
+     "tier": "T4",
+     "how": "two-wheeler fare as a share of the cab fare"
+    },
+    "bikeMaxKm": {
+     "v": 15,
+     "tier": "T4",
+     "how": "longest corridor offered on a two-wheeler"
+    }
+   },
+   "arrivalProfile": [
+    {
+     "from": 565,
+     "to": 620,
+     "w": 0.45
+    },
+    {
+     "from": 620,
+     "to": 715,
+     "w": 0.55
+    }
+   ],
+   "corridors": [
+    {
+     "id": "brg",
+     "name": "Bridging: Clementi - Dover - Buona Vista",
+     "place": "Buona Vista",
+     "share": {
+      "v": 0.5,
+      "tier": "T4"
+     },
+     "stops": 2
+    },
+    {
+     "id": "exp",
+     "name": "Express bridging to Buona Vista",
+     "place": "Buona Vista",
+     "share": {
+      "v": 0.2,
+      "tier": "T4"
+     },
+     "stops": 0
+    },
+    {
+     "id": "reg",
+     "name": "Free regular buses to Queenstown",
+     "place": "Queenstown",
+     "share": {
+      "v": 0.15,
+      "tier": "T4"
+     },
+     "stops": 6
+    },
+    {
+     "id": "nsl",
+     "name": "North-South Line detour (rail, unaffected)",
+     "oneWayMin": {
+      "v": 45,
+      "tier": "T4"
+     },
+     "share": {
+      "v": 0.15,
+      "tier": "T4"
+     },
+     "stops": 0
+    }
+   ],
+   "fleet": [
+    {
+     "id": "bridge",
+     "kind": "bus",
+     "label": "Bridging buses (double-deck)",
+     "count": {
+      "v": 39,
+      "tier": "T1",
+      "how": "39 before the peak",
+      "s": [
+       "sg_mot"
+      ]
+     },
+     "cap": {
+      "v": 120,
+      "tier": "T4",
+      "range": [
+       90,
+       130
+      ]
+     },
+     "wcSlots": 1,
+     "doors": 2,
+     "firstAtMin": 585,
+     "staggerMin": 0.8
+    },
+    {
+     "id": "ramp",
+     "kind": "bus",
+     "label": "Ramp-up buses (toward 70)",
+     "count": {
+      "v": 9,
+      "tier": "T2",
+      "how": "linear ramp 39 to 70 by the evening peak (T1), share inside this window"
+     },
+     "cap": {
+      "v": 120,
+      "tier": "T4"
+     },
+     "wcSlots": 1,
+     "doors": 2,
+     "firstAtMin": 640,
+     "staggerMin": 8
+    },
+    {
+     "id": "regbus",
+     "kind": "regular",
+     "label": "Free regular buses (spare seats)",
+     "corr": 2,
+     "count": {
+      "v": 60,
+      "tier": "T4"
+     },
+     "cap": {
+      "v": 30,
+      "tier": "T4"
+     },
+     "windowMin": [
+      565,
+      800
+     ]
+    },
+    {
+     "id": "nsl",
+     "kind": "regular",
+     "label": "North-South Line trains (spare capacity)",
+     "corr": 3,
+     "count": {
+      "v": 80,
+      "tier": "T4"
+     },
+     "cap": {
+      "v": 150,
+      "tier": "T4"
+     },
+     "windowMin": [
+      565,
+      800
+     ]
+    },
+    {
+     "id": "cabs",
+     "kind": "cab",
+     "label": "Cabs reaching the gates",
+     "ratePerMin": {
+      "v": 1.5,
+      "tier": "T4"
+     },
+     "windowMin": [
+      565,
+      760
+     ]
+    }
+   ],
+   "drift": {
+    "at": 630,
+    "cls": "rename"
+   },
+   "story": {
+    "lift": "Wednesday 25 September 2024, 09:25 SGT. East-West Line closed between Jurong East and Buona Vista.",
+    "asIs": "As it happened: an 8-minute walk to the bridging point, long queues, buses that ramp up over hours.",
+    "split": "Right: corridor-aware bridging, the unaffected North-South Line as an honest alternative, pooled cabs.",
+    "omni": "Then the bus feed changes its JSON shape mid-incident. Watch which side still counts seats correctly."
+   },
+   "station": "Jurong East station"
+  },
+  {
+   "id": "atocha",
+   "title": "Madrid",
+   "country": "Spain",
+   "flag": "ES",
+   "date": "2025-04-28",
+   "weekday": "Monday",
+   "tz": "CEST",
+   "lat": 40.4066,
+   "lon": -3.6892,
+   "currency": "EUR",
+   "archetype": "Grid and telecom blackout",
+   "fidelity": "A",
+   "headline": "At 12:33 the Iberian grid collapses. Trains stop, the metro is evacuated, phones barely work.",
+   "what": [
+    {
+     "t": "12:33",
+     "x": "Continental Spain and Portugal lose power.",
+     "s": [
+      "es_entsoe"
+     ]
+    },
+    {
+     "t": "afternoon",
+     "x": "Renfe halts trains nationwide; Madrid metro evacuated; about 35,000 rail passengers stranded across Spain.",
+     "s": [
+      "es_riskline",
+      "es_reuters"
+     ]
+    },
+    {
+     "t": "afternoon",
+     "x": "Mobile networks degrade: Vodafone Spain at about 70% capacity.",
+     "s": [
+      "es_net"
+     ]
+    },
+    {
+     "t": "evening",
+     "x": "EMT reinforces lines 203, 101 and 200 to pick up at Atocha and Chamartin; 11 trains still await evacuation late at night.",
+     "s": [
+      "es_emt",
+      "es_reuters"
+     ]
+    },
+    {
+     "t": "night",
+     "x": "Atocha stays open overnight as a shelter; crowds wait for hours.",
+     "s": [
+      "es_atocha"
+     ]
+    }
+   ],
+   "why": [
+    {
+     "k": "System",
+     "x": "ENTSO-E's final report: an uncontrolled voltage rise and loss of voltage control, with generators below required reactive-power set points.",
+     "s": [
+      "es_cause",
+      "es_entsoe"
+     ]
+    },
+    {
+     "k": "System",
+     "x": "Every digital layer (apps, ticketing, cloud dispatch) depends on power and mobile data. When both go, cloud-only coordination stops completely.",
+     "s": [
+      "es_net",
+      "optus",
+      "crowdstrike"
+     ]
+    },
+    {
+     "k": "Information",
+     "x": "Without phones, stranded travellers rely on rumour and staff shouting.",
+     "s": [
+      "fruin"
+     ]
+    }
+   ],
+   "omni": [
+    "Constraint 1 stage: the internet is cut at 12:33 and RAHA keeps allocating on the station edge node (UPS).",
+    "Passes are signed and verified on driver handhelds with zero network.",
+    "A cloud-only coordinator, by contrast, collapses into free-for-all the moment the network goes."
+   ],
+   "params": {
+    "N": {
+     "v": 6000,
+     "tier": "T4",
+     "how": "no Atocha-specific count; about 35,000 rail passengers stranded Spain-wide (T1)",
+     "range": [
+      3000,
+      12000
+     ],
+     "s": [
+      "es_riskline"
+     ]
+    },
+    "horizonMin": {
+     "v": 1053,
+     "tier": "T4"
+    },
+    "accessWalkMin": {
+     "v": 10,
+     "tier": "T4",
+     "how": "evacuation from platforms and tunnels"
+    },
+    "busSpeedKmh": {
+     "v": 14,
+     "tier": "T4",
+     "range": [
+      8,
+      20
+     ],
+     "how": "traffic lights out"
+    },
+    "detour": {
+     "v": 1.3,
+     "tier": "T4"
+    },
+    "stopDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "wheelchair": {
+     "v": 0.005,
+     "tier": "T4"
+    },
+    "assist": {
+     "v": 0.02,
+     "tier": "T4"
+    },
+    "elderly": {
+     "v": 0.2,
+     "tier": "T4",
+     "how": "replace with INE 65+ share"
+    },
+    "deadlineShare": {
+     "v": 0.25,
+     "tier": "T4"
+    },
+    "deadlineSlackMin": {
+     "v": [
+      20,
+      120
+     ],
+     "tier": "T4"
+    },
+    "phone": {
+     "v": 0.95,
+     "tier": "T4"
+    },
+    "wtpLogMean": {
+     "v": 3.2,
+     "tier": "T4",
+     "how": "median about EUR 25"
+    },
+    "wtpLogSd": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "kioskDelayMin": {
+     "v": 5,
+     "tier": "T4"
+    },
+    "lateCheckinAccessMin": {
+     "v": 6,
+     "tier": "T4"
+    },
+    "doorCrush": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "boardSec": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "wheelchairBoardSec": {
+     "v": 60,
+     "tier": "T4"
+    },
+    "minDwellMin": {
+     "v": 0.5,
+     "tier": "T4"
+    },
+    "layoverMin": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "passLeadMin": {
+     "v": 4,
+     "tier": "T4"
+    },
+    "doorZoneM2": {
+     "v": 40,
+     "tier": "T4"
+    },
+    "cabBaseFare": {
+     "v": 2.5,
+     "tier": "T4"
+    },
+    "cabPerKm": {
+     "v": 1.2,
+     "tier": "T4"
+    },
+    "surgeCap": {
+     "v": 2.5,
+     "tier": "T4"
+    },
+    "surgeK": {
+     "v": 0.6,
+     "tier": "T4"
+    },
+    "gates": {
+     "v": 3,
+     "tier": "T4"
+    },
+    "stagedDensity": {
+     "v": 1.0,
+     "tier": "T3",
+     "how": "release pass holders in waves at about 1 person per square metre (Fruin LOS D or better)",
+     "s": [
+      "fruin_los"
+     ]
+    },
+    "circles": {
+     "v": 4,
+     "tier": "T4",
+     "how": "trusted circles (campus, company, residential); Koottu only pools inside a circle (Zimride's closed-network idea)",
+     "s": [
+      "zimride"
+     ]
+    },
+    "quoteSpread": {
+     "v": 0.08,
+     "tier": "T4",
+     "how": "phone-to-phone and app-to-app quote spread; the cheapest phone books"
+    },
+    "essentialsAfterMin": {
+     "v": 45,
+     "tier": "T4",
+     "how": "riders waiting longer get water and food dropped by delivery partners inside the geofence",
+     "s": [
+      "michaung"
+     ]
+    },
+    "geofenceKm": {
+     "v": 2.0,
+     "tier": "T4",
+     "how": "alert radius around the disrupted station for stranded riders, cabs and delivery partners"
+    },
+    "bikeFareFactor": {
+     "v": 0.4,
+     "tier": "T4",
+     "how": "two-wheeler fare as a share of the cab fare"
+    },
+    "bikeMaxKm": {
+     "v": 15,
+     "tier": "T4",
+     "how": "longest corridor offered on a two-wheeler"
+    }
+   },
+   "arrivalProfile": [
+    {
+     "from": 753,
+     "to": 800,
+     "w": 0.5
+    },
+    {
+     "from": 800,
+     "to": 900,
+     "w": 0.5
+    }
+   ],
+   "corridors": [
+    {
+     "id": "cha",
+     "name": "Chamartin (north)",
+     "place": "Madrid-Chamartín-Clara Campoamor",
+     "share": {
+      "v": 0.24,
+      "tier": "T4"
+     },
+     "stops": 8
+    },
+    {
+     "id": "air",
+     "name": "Barajas Airport T4 (EMT 203)",
+     "place": "Aeropuerto T4",
+     "share": {
+      "v": 0.16,
+      "tier": "T4"
+     },
+     "stops": 1,
+     "deadlineShare": {
+      "v": 0.7,
+      "tier": "T4",
+      "how": "flights"
+     }
+    },
+    {
+     "id": "sol",
+     "name": "Sol - Centro",
+     "place": "Sol",
+     "share": {
+      "v": 0.22,
+      "tier": "T4"
+     },
+     "stops": 3
+    },
+    {
+     "id": "mal",
+     "name": "Mendez Alvaro coach station",
+     "place": "Méndez Álvaro",
+     "share": {
+      "v": 0.14,
+      "tier": "T4"
+     },
+     "stops": 2
+    },
+    {
+     "id": "get",
+     "name": "Getafe (south)",
+     "place": "Getafe Central",
+     "share": {
+      "v": 0.24,
+      "tier": "T4"
+     },
+     "stops": 6
+    }
+   ],
+   "fleet": [
+    {
+     "id": "emt",
+     "kind": "bus",
+     "label": "EMT reinforcement buses",
+     "count": {
+      "v": 30,
+      "tier": "T4"
+     },
+     "cap": {
+      "v": 90,
+      "tier": "T4"
+     },
+     "wcSlots": 1,
+     "doors": 3,
+     "firstAtMin": 770,
+     "staggerMin": 3
+    },
+    {
+     "id": "cabs",
+     "kind": "cab",
+     "label": "Taxis and VTC reaching the gates",
+     "ratePerMin": {
+      "v": 1.0,
+      "tier": "T4"
+     },
+     "windowMin": [
+      760,
+      950
+     ]
+    }
+   ],
+   "cut": {
+    "at": 753,
+    "reachAfter": 0.3
+   },
+   "story": {
+    "lift": "Monday 28 April 2025, 12:33 CEST. The Iberian grid collapses. Atocha goes dark.",
+    "asIs": "As it happened: no trains, a weak phone signal, a crowd and no plan.",
+    "split": "Left: a cloud-only coordinator, cut off with the internet. Right: RAHA on the station edge node.",
+    "omni": "External requests: zero. Passes keep verifying, seats keep matching, the urgent keep going first."
+   },
+   "station": "Atocha station"
+  }
+ ],
+ "business": {
+  "thesis": "RAHA is free for riders and paid for by the operators who carry the legal and reputational cost of a stranded station. The simulation is part of the product: operators use it to size bridging reserves and holding areas before an incident, and the same engine runs live during one.",
+  "streams": [
+   {
+    "who": "Rail, metro and bus operators (B2G)",
+    "model": "per-station annual licence + incident drills",
+    "why": "Railways is already funding holding areas and AI monitoring at 76 stations; RAHA is the capacity-linked release and bridging layer on top. Pender et al. found few agencies keep bus reserves: RAHA's drills size them.",
+    "s": [
+     "ir_76",
+     "ir_amenities",
+     "pender"
+    ]
+   },
+   {
+    "who": "Campuses and employers (B2B circles)",
+    "model": "per-member monthly fee",
+    "why": "Trusted circles (Zimride's model, which became Lyft) for students and shift workers: guaranteed rides home when the network fails, cheaper than solo cabs.",
+    "s": [
+     "zimride"
+    ]
+   },
+   {
+    "who": "Delivery and bike-taxi platforms",
+    "model": "per geofenced dispatch lead",
+    "why": "Idle partners inside the geofence get paid trips (urgent riders, essentials drops) exactly when demand spikes.",
+    "s": [
+     "bike_ban"
+    ]
+   },
+   {
+    "who": "Event organisers (Kumbh, stadiums, concerts)",
+    "model": "per-event deployment",
+    "why": "Capacity-linked boarding windows and holding-area countdowns for planned surges like the one at New Delhi.",
+    "s": [
+     "ndls_holding"
+    ]
+   }
+  ],
+  "gtm": "Pilot at Chennai (Tambaram station) with Southern Railway Chennai Division and MTC via SRMIST (riders, data and a live corridor next door), then the 76 holding-area stations. Riders adopt Koottu for free because sharing is cheaper than riding alone during surge.",
+  "proof": [
+   {
+    "x": "Transit software sold to governments is a real market: Via listed at about $3.5bn with over 90% of revenue from public agencies.",
+    "s": [
+     "via_ipo"
+    ]
+   },
+   {
+    "x": "Indian state transport buys digital services: Chalo works with TNSTC, DTC and KSRTC.",
+    "s": [
+     "chalo"
+    ]
+   },
+   {
+    "x": "Station crowd tools are tendered today: one division's information-board tender alone is about Rs 2.13 cr.",
+    "s": [
+     "pids_tender"
+    ]
+   }
+  ],
+  "risks": "Long public-sector sales cycles; two-wheeler and multi-stop pooling rules vary by state; RAHA cannot switch surge off, only make it hurt less; fare quotes are entered by riders, never scraped."
+ },
+ "constraints": [
+  {
+   "id": "CONSTRAINT 1",
+   "title": "No internet, no third-party APIs",
+   "card": "All external internet connectivity and third-party API access become unavailable during the challenge. The application must continue its essential user journey using information and components available within the local environment.",
+   "product": [
+    "The station edge node (on UPS power) runs grouping, scoring and seat allocation with no cloud dependency (local-first).",
+    "Passes are signed on the edge node and verified on driver handhelds with no network.",
+    "Riders without signal check in at kiosks or with staff tokens; Koottu still books a cab if any one phone in the group has signal.",
+    "Timetables, fleet registry and maps are cached locally; no maps API, no ride-hail API, no LLM."
+   ],
+   "sim": [
+    "Madrid blackout scenario: the real 28 April 2025 blackout at 12:33. Left: a cloud-only coordinator collapses into free-for-all. Right: RAHA on the edge node keeps allocating.",
+    "Every 200-seed experiment sweeps phone reach 100%, 70%, 30% and 0%, comparing cloud and local architectures (Chennai and Madrid).",
+    "The simulator obeys the card too: three.js, fonts, maps and data are bundled; the EXTERNAL REQUESTS badge counts and blocks any outside call and stays at 0."
+   ],
+   "s": [
+    "es_entsoe",
+    "es_net",
+    "localfirst",
+    "optus",
+    "crowdstrike"
+   ]
+  },
+  {
+   "id": "CONSTRAINT 3",
+   "title": "An API changes its response structure",
+   "card": "A previously working API suddenly changes its response structure. A field may be renamed, moved into a nested object, change type, or become optional.",
+   "product": [
+    "One adapter sits between every feed and the allocator: alias paths for renamed and nested fields, coercion for type changes, last-known-good and a local vehicle registry for missing fields.",
+    "Invariant checks catch semantic drift (same field, new meaning), such as an ETA that silently becomes epoch milliseconds or a capacity that becomes crush load.",
+    "Fail safe: if a seat count cannot be trusted, no passes are issued for that vehicle, so nobody is overbooked."
+   ],
+   "sim": [
+    "Singapore line-closure scenario: the bus feed mutates at 10:30 mid-incident; pick any of six mutations (rename, nest, retype, optional, garbage, semantic) and watch both sides re-run live.",
+    "The JSON panel shows the real message, what a naive parser reads (NaN, a throw, a wrong count) and what RAHA's adapter reads.",
+    "Every mutation class is measured over 200 seeds, naive versus adapter (Chennai and Singapore): empty departures, turned away, worst wait."
+   ],
+   "s": [
+    "fowler",
+    "espinha",
+    "mta",
+    "sydney_rt"
+   ]
+  }
+ ]
+}

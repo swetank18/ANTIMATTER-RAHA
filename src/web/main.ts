@@ -456,7 +456,7 @@ async function renderSim() {
   if (location.hash !== '#/sim') return;
   main().innerHTML = ready
     ? `<div class="sim-head"><div><h1>Five real disruptions, replayed</h1>
-        <p class="lede">Real stations rebuilt from OpenStreetMap. Each disruption plays twice: once as it happened, once with our recovery. It runs entirely on this device.</p></div>
+        <p class="lede">Each plays twice: as it happened, then with our recovery. Runs entirely on this device.</p></div>
         <a class="go alt" href="/sim/" target="_blank" rel="noopener">Open full screen</a></div>
        <iframe class="sim-frame" src="/sim/" title="Simulation of five real transit disruptions" allow="fullscreen"></iframe>`
     : `<h1>The simulation is not in this build yet</h1>

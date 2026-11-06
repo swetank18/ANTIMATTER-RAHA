@@ -188,6 +188,8 @@ html[data-embed='yes'] main { padding: 14px 14px 40px; }
 html[data-route='rider'] main h1 { font-size: 1.9rem; font-stretch: 118%; }
 
 /* ---------- simulation ---------- */
-.sim-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 32px; margin-bottom: 14px; }
-.sim-head .go { margin: 0; text-decoration: none; display: inline-block; }
-.sim-frame { display: block; width: 100%; height: max(560px, calc(100vh - 230px)); border: 3px solid var(--track); background: #000; }
+.sim-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 32px; margin: -8px 0 10px; }
+.sim-head h1 { font-size: 1.35rem; }
+.sim-head .lede { margin-top: 2px; }
+.sim-head .go { margin: 0; padding: 9px 16px; text-decoration: none; display: inline-block; }
+.sim-frame { display: block; width: 100%; height: max(520px, calc(100vh - 205px)); border: 3px solid var(--track); background: #000; }
