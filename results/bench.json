@@ -1,0 +1,31 @@
+{
+  "node": "v20.20.2",
+  "cpu": "AMD Ryzen 7 7840HS w/ Radeon 780M Graphics",
+  "ranAt": "2026-11-06T05:25:05.663Z",
+  "rows": [
+    {
+      "passengers": 1500,
+      "solveMs": 2.1,
+      "clusterMs": 5.6,
+      "clusterTotalMs": 11.1,
+      "seated": 1228,
+      "certified": true
+    },
+    {
+      "passengers": 5000,
+      "solveMs": 10.5,
+      "clusterMs": 24.7,
+      "clusterTotalMs": 41.8,
+      "seated": 1416,
+      "certified": true
+    },
+    {
+      "passengers": 20000,
+      "solveMs": 32.1,
+      "clusterMs": 343.4,
+      "clusterTotalMs": 419.2,
+      "seated": 1556,
+      "certified": true
+    }
+  ]
+}
