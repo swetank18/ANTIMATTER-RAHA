@@ -1,0 +1,565 @@
+<title>Koottu</title>
+<style>
+/*KOOTTU_CSS*/
+:root{color-scheme:light}
+[hidden]{display:none!important}
+html,body{background:#F3F5F1;color:#16302B}
+#app{min-height:100vh;display:flex;flex-direction:column}
+#app>main{flex:1}
+.mk{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.mk-dot{width:10px;height:10px;border-radius:50%;background:#F5C400;border:1.5px solid #111}
+.mk-ring{width:46px;height:46px;border-radius:50%;border:2px solid #16302B}
+.mk-cab{width:28px;height:28px;background:#F5C400;border:2px solid #111;color:#111;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.board-map svg.ic{width:16px;height:16px;display:inline-block}
+.lbl-down{position:absolute;transform:translate(-50%,-50%);background:#FDE0DC;color:#8E1B15;border:1.5px solid #8E1B15;padding:2px 10px;font-weight:700;font-size:14px;border-radius:4px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.sys-sec{padding:32px 24px;border-top:1px solid #B8C2B6;display:flex;flex-direction:column;gap:20px;max-width:1280px}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.sw-cell{border:1px solid #B8C2B6;background:#fff;display:flex;flex-direction:column}
+.sw-cell .chipcol{height:56px;border-bottom:1px solid #B8C2B6}
+.sw-cell .meta{padding:8px 10px;font-size:14px;line-height:20px}
+.demo-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.spec{font-size:14px;line-height:20px;color:#3A4A47}
+.lead-stage{display:flex;flex-wrap:wrap;gap:32px;justify-content:center;align-items:flex-start;padding:24px 16px}
+.lead-note{max-width:320px;display:flex;flex-direction:column;gap:12px}
+.cards tr.cr td .sortbtn{font-size:16px;text-align:left}
+@media (max-width:1023px){.topbar{padding:0 16px}}
+@media (max-width:479px){.hide-xs{display:none}.topbar{gap:8px}.topbar .wordmark{font-size:18px;gap:6px}.bar-right{gap:8px}.topbar .tag-sample{padding:2px 8px}.lead-phone{width:100%!important;border:0}.lead-stage{padding:0}.sys-sec{padding:24px 16px}.arena-head,.md-list,.md-detail,.board-ctl{padding-left:16px;padding-right:16px}}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="M15 15l6 6"></path></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="6" cy="9" r="2.5"></circle><circle cx="12" cy="6.5" r="2.5"></circle><circle cx="18" cy="9" r="2.5"></circle><path d="M3 19c0-3 1.5-5 3-5M9 19c0-4 1.5-6 3-6s3 2 3 6M21 19c0-3-1.5-5-3-5"></path></symbol>
+<symbol id="i-question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.5"></path></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></symbol>
+<symbol id="i-group" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"></path><path d="M9.5 11h5v3.5h-5zM10.5 11v-1a1.5 1.5 0 0 1 3 0v1"></path></symbol>
+<symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol>
+<symbol id="i-dash" viewBox="0 0 24 24"><path d="M7 12h10"></path></symbol>
+<symbol id="i-run" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v5h-5"></path></symbol>
+<symbol id="i-rail" viewBox="0 0 24 24"><path d="M7 3v7M17 3v7M7 14v7M17 14v7M4 6h16M4 18h16M9 10l6 4M15 10l-6 4"></path></symbol>
+<symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5-2.7M14 10.3a10 10 0 0 1 5 2.7M2 9.5a14 14 0 0 1 4.5-2.8M11 5.1a14 14 0 0 1 11 4.4M12 20v.01"></path></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M8.5 12l2.5 2.5 4.5-5"></path></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"></path></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6 2h12v20H6zM10 18h4"></path></symbol>
+<symbol id="i-walk" viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="1.5"></circle><path d="M10 21l2-6 3 3v3M12 15l-1-5 4 2 2 2M11 10l-3 2v3"></path></symbol>
+<symbol id="i-keyboard" viewBox="0 0 24 24"><path d="M2 6h20v12H2zM6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"></path></symbol>
+<symbol id="i-lang" viewBox="0 0 24 24"><path d="M3 5h10M8 3v2M5 5c1 4 4 7 7 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5"></path></symbol>
+<symbol id="i-bridge" viewBox="0 0 24 24"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"></path><path d="M12 10v5M12 18v.5"></path></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"></path></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"></path></symbol>
+<symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 3v5h5"></path></symbol>
+<symbol id="i-skip" viewBox="0 0 24 24"><path d="M5 5l9 7-9 7zM18 5v14"></path></symbol>
+<symbol id="i-sort" viewBox="0 0 24 24"><path d="M8 10l4-4 4 4M8 14l4 4 4-4"></path></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M7 12h10"></path></symbol>
+</defs></svg>
+<div id="app" class="k"></div>
+<script>
+(function () {
+'use strict';
+var app = document.getElementById('app');
+function ic(n, c) { return '<svg class="ic' + (c ? ' ' + c : '') + '" aria-hidden="true"><use href="#i-' + n + '"></use></svg>'; }
+function chip(k, i, w, st) { return '<span class="chip chip-' + k + '"' + (st ? ' style="' + st + '"' : '') + '>' + ic(i) + w + '</span>'; }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function cl(v) { return Math.max(0, Math.min(1, v)); }
+var ob = []; try { ob = JSON.parse(localStorage.getItem('koottu.outbox') || '[]'); } catch (e) { ob = []; }
+function saveOb() { try { localStorage.setItem('koottu.outbox', JSON.stringify(S.outbox)); } catch (e) {} }
+
+var S = { route: 'arena', kb: false, offline: false, lang: 'en', sampleOpen: false, outbox: ob,
+  r: { st: 'check', bridge: false, locked: false, lockQueued: false, checked: false, shot: false, amount: '649', base: '', spot: 'Guindy station east exit', dest: 'Tambaram', app: 'Ride app A', paused: false, bids: false },
+  a: { sel: 'C01', status: { C01: 'pass', C05: 'pass', C09: 'pass' }, filter: 'all', query: '', sort: '', dir: 1, runAll: null, allDone: false, paste: '', pasteErr: false, pasteNote: '', audit: false },
+  b: { t: -1, playing: false, paused: false, speed: 1, tableOpen: false, reduced: false },
+  l: { view: 'scan', code: '', err: false, queued: 3, seats: 2 },
+  y: { xa: false, tip: null, drawer: false, dialog: false } };
+var focusId = null, rT = [];
+function rLater(ms, f) { rT.push(setTimeout(f, ms)); }
+function rClear() { rT.forEach(clearTimeout); rT = []; }
+
+/* ---------- routing: #arena #rider #board #lead #system (also #/rider?mode=keyboard when self-hosted) ---------- */
+var ROUTES = ['arena', 'board', 'rider', 'lead', 'system'];
+function parseHash(raw) {
+  var h = (raw != null ? raw : (location.hash || '')).replace(/^#\/?/, '');
+  S.kb = /mode=keyboard/.test(h) || h === 'rider-keyboard';
+  var r = h.split(/[?\-]/)[0];
+  S.route = ROUTES.indexOf(r) >= 0 ? r : 'arena';
+}
+
+/* ---------- shell ---------- */
+var TABS = [['arena', 'shield', 'Judges'], ['board', 'map', 'Live board'], ['rider', 'phone', 'Rider'], ['lead', 'ticket', 'Lead’s phone']];
+function tabs(cls) { return TABS.map(function (t) { var on = S.route === t[0]; return '<a class="tab' + (on ? ' active' : '') + '" href="#' + t[0] + '"' + (on ? ' aria-current="page"' : '') + '>' + ic(t[1]) + (cls && t[0] === 'lead' ? 'Lead' : t[2]) + '</a>'; }).join(''); }
+var LANGS = [['en', 'English', 'EN'], ['ta', 'தமிழ்', 'தமிழ்'], ['hi', 'हिन्दी', 'हिं']];
+function langSeg(short, extra) { return '<div class="seg' + (extra || '') + '" role="group" aria-label="Language">' + LANGS.map(function (l) { return '<button lang="' + l[0] + '" aria-pressed="' + (S.lang === l[0]) + '" data-a="lang" data-v="' + l[0] + '">' + (short ? l[2] : l[1]) + '</button>'; }).join('') + '</div>'; }
+function shell(inner) {
+  return '<a class="skip" href="#next" data-a="skip">Skip to the next step</a>' +
+  '<header class="topbar"><a class="wordmark" href="#arena"><span class="ta" lang="ta">கூட்டு</span><span>Koottu</span></a>' +
+  '<nav class="tabs" aria-label="Main">' + tabs() + '</nav><div class="bar-right">' +
+  '<button class="switch" role="switch" aria-checked="' + !S.offline + '" data-a="net"><span class="sw-track"><span class="sw-knob"></span></span><span class="hide-sm">Network: </span>' + (S.offline ? 'Cut' : 'On') + '</button>' +
+  langSeg(false, ' hide-sm') +
+  '<button class="tag tag-sample" aria-expanded="' + S.sampleOpen + '" data-a="sample">Sample<span class="hide-xs"> data</span></button></div>' +
+  (S.sampleOpen ? '<div class="pop" role="dialog" aria-label="About the sample data"><p>All riders, fares and cabs in this demo are synthetic. Place names are real.</p></div>' : '') + '</header>' +
+  (S.offline ? '<div class="banner banner-dark on-dark" role="status">' + ic('wifioff') + '<p><span class="acc b">Network cut.</span> Koottu is still working offline.</p></div>' : '') +
+  (S.kb && S.route === 'rider' ? '<div class="banner banner-info" role="status">' + ic('keyboard') + '<p>Keyboard-only test mode: pointer is off and colour is removed.</p></div>' : '') +
+  '<main>' + inner + '</main>' +
+  '<footer class="footer"><a href="#system">Design system</a><span>All riders, fares and cabs are synthetic. Place names are real.</span></footer>' +
+  '<nav class="bottombar" aria-label="Main">' + tabs(true) + '</nav>';
+}
+
+/* ---------- RIDER ---------- */
+var M = {
+  check: { word: 'Check', band: 'band-check', icon: 'search', step: 1, dark: false, color: '#F5C400', notice: 'Type a fare and press Check this fare. With no verified base fare it says it cannot be checked against the legal cap, instead of guessing.' },
+  finding: { word: 'Finding your group', band: 'band-finding', icon: 'people', step: 2, dark: true, color: '#0F4C81', notice: 'The band turns blue and says exactly what it is looking for. The dots stop under reduced motion and have a Pause control.' },
+  question: { word: 'Needs your answer', band: 'band-question', icon: 'question', step: 2, dark: true, color: '#5B2A9E', notice: 'C12: the sharing preference is not confirmed, so Koottu asks instead of guessing. One large button per answer.' },
+  waiting: { word: 'Waiting', band: 'band-waiting', icon: 'clock', step: 2, dark: false, color: '#F58A1F', notice: 'C05: a refused rider gets a reason they can check. Open Why not? Orange and yellow are also told apart by the clock icon and the word.' },
+  forming: { word: 'Forming', band: 'band-forming', icon: 'group', step: 2, dark: true, color: '#0E6E8C', notice: 'Seats show a shape and a word. Four phones, four quotes, cheapest books. The share is an estimate until the group fills.' },
+  ready: { word: 'Ready', band: 'band-ready', icon: 'ticket', step: 3, dark: true, color: '#0B7A4F', notice: 'Money is the headline, not the QR. Cut the network: the pass still works and Lock my share is queued with a reason.' },
+  booked: { word: 'Booked', band: 'band-booked', icon: 'checkc', step: 4, dark: true, color: '#064E32', notice: 'Koottu never touches money. The rider pays the person who booked, by UPI.' }
+};
+var QR = (function () { var n = 21, out = ''; for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) { var v = null, fs = [[0, 0], [14, 0], [0, 14]];
+  for (var i = 0; i < 3; i++) { var dx = x - fs[i][0], dy = y - fs[i][1]; if (dx >= 0 && dy >= 0 && dx < 7 && dy < 7) v = Math.max(Math.abs(dx - 3), Math.abs(dy - 3)) !== 2; }
+  if (v === null) v = ((x === 7 && y < 8) || (y === 7 && x < 8) || (x === 13 && y < 8) || (y === 7 && x > 12) || (y === 13 && x < 8) || (x === 7 && y > 12)) ? false : ((x * 7 + y * 13 + x * y * 3) % 5) < 2;
+  out += '<i' + (v ? ' class="on"' : '') + '></i>'; } return out; })();
+function go(st, focus) { rClear(); S.r.st = st; S.r.bids = false; if (focus) focusId = 'next'; }
+function sel(id, val, opts, lab) { return '<div class="field"><label for="' + id + '">' + lab + '</label><select id="' + id + '" class="input" data-in="r.' + id + '">' + opts.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></div>'; }
+function seats(sz) { var s = sz ? ' style="width:' + sz + 'px;height:' + sz + 'px"' : '', c = sz ? 'ic-16' : 'ic-24';
+  return '<span class="seat you"' + s + '>' + ic('check', c) + '</span><span class="seat filled"' + s + '>' + ic('check', c) + '</span><span class="seat"' + s + '></span><span class="seat"' + s + '></span>'; }
+function offBtn(id, label, icon, why, act) { return '<div class="stack g2"><button id="' + id + '" class="btn btn-lg" disabled aria-describedby="' + id + '-why">' + ic(icon, 'ic-24') + label + '</button><p id="' + id + '-why" class="reason">' + ic('wifioff', 'ic-16') + '<span>' + why + '</span></p><button class="btn btn-secondary" data-a="' + act + '">Queue it</button></div>'; }
+function rider() {
+  var r = S.r, m = M[r.st], off = S.offline, h = '';
+  var amt = parseFloat(r.amount) || 0, base = parseFloat(r.base) || 0, cap = base * 2, capLine, capIcon, verdict;
+  if (!base) { capLine = 'This fare cannot be checked against the legal cap yet. Enter a verified base fare.'; capIcon = 'info'; verdict = 'Rs ' + amt + ' looks high for this trip right now.'; }
+  else if (amt <= cap) { capLine = 'This fare is within the legal cap of Rs ' + cap + ' (2x your verified base fare of Rs ' + base + ').'; capIcon = 'checkc'; verdict = 'Rs ' + amt + ' is within the legal cap.'; }
+  else { capLine = 'This fare is above the legal cap of Rs ' + cap + ' (2x your verified base fare of Rs ' + base + ').'; capIcon = 'cross'; verdict = 'Rs ' + amt + ' is above the legal cap.'; }
+  if (S.lang !== 'en') h += '<p class="row g2 t-small" style="background:#fff;border:1.5px solid #3A4A47;padding:8px 12px;align-items:flex-start">' + ic('lang', 'ic-16') + '<span>Shown in English: a verified translation is not available.</span></p>';
+  if (r.bridge) h += '<div class="card-white" style="border-color:#8E1B15"><h2 class="t-h3">Rail is down. This short ride takes you to Pallavaram.</h2>' +
+    '<svg class="minimap" viewBox="0 0 350 120" role="img" aria-label="Map: a short cab ride from Guindy, where the rail is down, to Pallavaram station, which is working"><rect width="350" height="120" fill="#D9DFD6"></rect><path d="M40 30 L80 60" stroke="#16302B" stroke-width="4" stroke-dasharray="6 5" fill="none"></path><path d="M80 60 L290 80" stroke="#16302B" stroke-width="3" fill="none"></path><circle cx="80" cy="60" r="11" fill="#C4271E"></circle><path d="M75 55l10 10M85 55l-10 10" stroke="#fff" stroke-width="2.5"></path><circle cx="290" cy="80" r="11" fill="#0B7A4F"></circle><path d="M284 80l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none"></path><rect x="170" y="56" width="24" height="24" fill="#F5C400" stroke="#111" stroke-width="2"></rect><text x="182" y="73" text-anchor="middle" font-size="14" font-weight="800" fill="#111">4</text><text x="64" y="96" font-size="13" font-weight="700" fill="#16302B">Guindy</text><text x="250" y="108" font-size="13" font-weight="700" fill="#16302B">Pallavaram</text></svg>' +
+    '<p><b>New meeting point:</b> Guindy station east exit, gate 2, 17:50.</p>' + chip('group', 'bridge', 'Bridge ride', 'align-self:flex-start') + '</div>';
+  if (r.st === 'check') {
+    h += '<div class="stack g3"><h1 id="next" tabindex="-1" class="t-sign xs">Is this fare fair?</h1><p>Ride apps overcharge you when everyone needs a cab. Koottu checks your fare and shares the cab.</p></div>' +
+      '<form id="fare-form" class="card-white" aria-label="Fare check">' +
+      sel('spot', r.spot, ['Guindy station east exit', 'SRM main gate', 'Tambaram station', 'Chromepet'], 'Where are you?') +
+      sel('dest', r.dest, ['Tambaram', 'Velachery', 'T Nagar', 'Airport'], 'Where to?') +
+      sel('app', r.app, ['Ride app A', 'Ride app B', 'Auto or bike app'], 'Which app shows this fare?') +
+      '<div class="field"><label for="amount">Fare your app shows</label><div class="money"><span class="pre" aria-hidden="true">Rs</span><input id="amount" class="input" inputmode="decimal" value="' + esc(r.amount) + '" data-in="r.amount" aria-describedby="amount-help"></div><p id="amount-help" class="help">Type it, or read it from a screenshot below.</p></div>' +
+      '<div class="field"><label for="base">Verified base fare (optional)</label><div class="money"><span class="pre" aria-hidden="true">Rs</span><input id="base" class="input" inputmode="decimal" value="' + esc(r.base) + '" data-in="r.base" aria-describedby="base-help"></div><p id="base-help" class="help">The legal cap is 2x the base fare. We cannot check it until you enter a verified base fare.</p></div>' +
+      '<div class="field"><label for="shot">Screenshot of your fare (optional)</label><input id="shot" type="file" accept="image/*" class="input" style="padding:10px"><p id="shot-out" class="help" aria-live="polite">' + (r.shot ? 'Read Rs 649 from the screenshot. Sample: the reading is simulated.' : 'Koottu reads the fare from the image on your phone. The image is not uploaded.') + '</p></div>' +
+      '<button type="submit" class="btn btn-primary btn-lg">' + ic('search', 'ic-24') + 'Check this fare</button></form>' +
+      '<div id="check-out" class="stack g3" aria-live="polite">' + (r.checked ? '<div class="card-white"><h2 id="result" tabindex="-1" class="t-h3">' + verdict + '</h2>' +
+        (off ? chip('wait', 'clock', 'Using fares saved at 17:12', 'align-self:flex-start') : '') +
+        '<p class="row g2" style="align-items:flex-start">' + ic(capIcon) + '<span>' + capLine + '</span></p>' +
+        '<p class="row g2" style="align-items:flex-start">' + ic('clock') + '<span>Surge likely to ease to about 1.26x in 15 minutes. Waiting may save money.</span></p>' +
+        '<h3 class="t-body b">What else you could do</h3><ul style="list-style:none;margin:0;padding:0">' +
+        '<li class="adv">' + ic('people', 'ic-24') + '<span><b>Share.</b> Split one cab with people going your way. With 2 people, about Rs ' + Math.round(amt / 2) + ' each.</span></li>' +
+        '<li class="adv">' + ic('clock', 'ic-24') + '<span><b>Wait.</b> The fare may drop in about 15 minutes.</span></li>' +
+        '<li class="adv">' + ic('walk', 'ic-24') + '<span><b>Walk to another gate.</b> The west exit is 4 minutes away and quieter.</span></li>' +
+        '<li class="adv">' + ic('phone', 'ic-24') + '<span><b>Try another app.</b> Check the same trip on another ride app.</span></li></ul>' +
+        '<p class="t-small muted">Sample: fare history and surge are simulated.</p></div>' : '') + '</div>' +
+      (off ? offBtn('ride', 'Find my group', 'people', 'Needs a network. Queued until you reconnect.', 'queueGroup') : '<button id="ride" class="btn btn-yellow btn-lg" data-a="find">' + ic('people', 'ic-24') + 'Find my group</button>');
+  }
+  if (r.st === 'finding') h += '<h1 id="next" tabindex="-1" class="t-sign xs">Finding your group</h1><div class="dots' + (r.paused ? ' paused' : '') + '" aria-hidden="true"><i></i><i></i><i></i><i></i></div>' +
+    '<p class="t-h3" style="font-weight:500">Looking for people at ' + esc(r.spot) + ' going towards ' + esc(r.dest) + ', inside your circle.</p><p class="t-small">This usually takes under a minute. Your place is kept if the signal drops.</p>' +
+    '<button class="btn btn-quiet btn-sm" style="align-self:flex-start" data-a="dotsPause">' + ic(r.paused ? 'play' : 'pause') + (r.paused ? 'Play animation' : 'Pause animation') + '</button>';
+  if (r.st === 'question') h += '<h1 id="next" tabindex="-1" class="t-display xs">Are you happy to share with people outside your circle?</h1><p><b>Why we ask.</b> Your sharing preference is not confirmed. We would rather ask than guess.</p>' +
+    '<div class="stack g3" role="group" aria-label="Your answer"><button class="btn btn-secondary btn-lg" data-a="answer" data-v="anyone">Yes, anyone going my way</button><button class="btn btn-secondary btn-lg" data-a="answer" data-v="circle">Only people in my circle</button><button class="btn btn-secondary btn-lg" data-a="answer" data-v="alone">I will go alone</button></div>';
+  if (r.st === 'waiting') h += '<h1 id="next" tabindex="-1" class="t-display xs">All 9 cabs here are taken by groups ahead of you.</h1><p class="t-h3">Next seat around 17:55.</p>' +
+    '<div class="card-white"><h2 class="t-h3">What you can do now</h2><button class="btn btn-secondary btn-lg">' + ic('clock', 'ic-24') + 'Wait and keep my place</button><button class="btn btn-secondary btn-lg">' + ic('walk', 'ic-24') + 'Walk to the west exit</button><button class="btn btn-secondary btn-lg">' + ic('phone', 'ic-24') + 'Try another app</button></div>' +
+    '<details class="details card-white"><summary>Why not?</summary><p>9 cabs are at this spot. 9 groups asked before you, between 17:12 and 17:31. You asked at 17:33. The next cab goes to the earliest full group, and urgent riders go first.</p><p class="t-small muted">You can check this: the order of requests is saved and the same for everyone here. Sample data.</p></details>';
+  if (r.st === 'forming') h += '<h1 id="next" tabindex="-1" class="t-sign xs">2 of 4 seats taken</h1><p class="t-h3" style="font-weight:500">About Rs 325 each, if the group fills.</p>' +
+    '<div class="stack g2"><div class="seats" role="img" aria-label="Seats: you, 1 joined, 2 open">' + seats() + '</div><p class="t-small b">You, 1 joined, 2 open</p></div>' +
+    '<div class="card-white"><h2 class="t-h3">Fares your group sees</h2><table class="table" style="border:0"><thead><tr><th scope="col">Phone</th><th scope="col">App</th><th scope="col">Fare</th></tr></thead><tbody>' +
+    '<tr><td>Yours</td><td>Ride app A</td><td><b>Rs 649</b> ' + chip('pass', 'check', 'Lowest', 'min-height:24px;padding:0 8px 0 4px') + '</td></tr><tr><td>Member 2</td><td>Ride app B</td><td>Rs 702</td></tr></tbody></table>' +
+    '<p class="t-small">Four phones, four quotes, cheapest books. Your phone has the lowest fare, so you will book.</p></div><p class="t-small">No pass yet. Your pass appears when the group locks.</p>';
+  if (r.st === 'ready') {
+    var lockChip = r.locked ? chip('pass', 'check', 'Locked') : (r.lockQueued ? chip('wait', 'clock', 'Waiting to send') : chip('group', 'group', 'Not locked yet'));
+    h += '<h1 id="next" tabindex="-1" class="t-h2" style="font-weight:800;font-stretch:125%">Your pass is ready</h1>' +
+      '<article class="ticket" aria-label="Your pass"><div class="ticket-sec"><p class="t-money">You pay Rs 325</p><p>Alone it would cost Rs 649.</p><p class="save">You save Rs 324.</p></div><div class="tear" aria-hidden="true"></div>' +
+      '<div class="ticket-sec" style="gap:12px"><div><p class="t-h2" style="font-weight:800;font-stretch:120%">Guindy station east exit</p>' +
+      (S.lang !== 'en' ? '<p class="t-small"><span lang="ta">கிண்டி</span>  <span lang="hi">गिंडी</span></p>' : '') +
+      '<p class="t-h2" style="font-weight:800;font-stretch:120%">17:40</p><p>To Tambaram</p></div>' +
+      '<div class="row g3"><div class="seats" role="img" aria-label="Group of 4: 2 joined, 2 to go" style="gap:4px">' + seats(28) + '</div><p class="t-small b">Group of 4: 2 joined, 2 to go</p></div>' +
+      '<div class="row g4" style="align-items:flex-end;flex-wrap:wrap"><div class="qr" role="img" aria-label="Your boarding pass">' + QR + '</div><div class="stack g2">' + lockChip + '<span class="tag tag-sample">Sample pass</span></div></div></div></article>';
+    if (!r.locked && !r.lockQueued) h += off ? offBtn('lockbtn', 'Lock my share', 'ticket', 'Needs a network. Queued until you reconnect.', 'queueLock') : '<button class="btn btn-green btn-lg" data-a="lock">' + ic('ticket', 'ic-24') + 'Lock my share</button>';
+    h += '<p class="t-small">You only join a group if you pay less than going alone. Koottu never touches money. You pay the person who books, by UPI.</p>';
+    if (r.locked && !r.bids && !off) h += '<div class="stack g2"><p class="t-small b">You have the lowest fare, so you book for the group.</p><button class="btn btn-primary" data-a="bids">Ask drivers to bid</button></div>';
+    if (r.bids && !off) h += '<div class="card-white"><h2 class="t-h3">Driver bids</h2><p class="row g2"><span class="grow">Bid 1: Rs 640, 3 minutes away</span><button class="btn btn-green btn-sm" data-a="accept">Accept</button></p><p class="row g2"><span class="grow">Bid 2: Rs 649, 6 minutes away</span><button class="btn btn-secondary btn-sm" data-a="accept">Accept</button></p><span class="tag tag-sim" style="align-self:flex-start">Simulated drivers and bids</span></div>';
+  }
+  if (r.st === 'booked') h += '<h1 id="next" tabindex="-1" class="t-sign xs">Booked. Your share is paid.</h1><div class="card-white"><p class="t-h2" style="font-weight:800;font-stretch:120%">Meet at Guindy station east exit, 17:40</p><p>Your cab has 4 seats. Show your pass to the person who booked.</p>' +
+    chip('pass', 'check', 'Paid Rs 325 by UPI', 'align-self:flex-start') + '<span class="tag tag-sim" style="align-self:flex-start">Simulated driver and payment</span></div><button class="btn btn-secondary btn-lg" data-a="reset">Check another fare</button>';
+
+  var obItems = S.outbox.map(function (o) { return '<li class="row g2 wrap"><span class="grow">' + esc(o.text) + '</span>' + (o.sent ? chip('pass', 'check', 'Sent') : chip('wait', 'clock', 'Waiting to send')) + '</li>'; }).join('');
+  var waitingN = S.outbox.filter(function (o) { return !o.sent; }).length;
+  var order = ['check', 'finding', 'question', 'waiting', 'forming', 'ready', 'booked'];
+  var rail = order.map(function (k) { return '<li><button aria-current="' + (!r.bridge && r.st === k) + '" data-a="pick" data-v="' + k + '"><span class="sw" style="background:' + M[k].color + '"></span>' + ic(M[k].icon) + M[k].word + '</button></li>'; }).join('') +
+    '<li><button aria-current="' + r.bridge + '" data-a="pick" data-v="bridge"><span class="sw" style="background:#C4271E"></span>' + ic('rail') + 'Bridge (rail down)</button></li>';
+  return '<div class="rider-wrap' + (S.kb ? ' kbmode' : '') + '">' +
+    '<!-- Hooks kept for handoff: service worker, pack, outbox, flush, heartbeat, warmOffline, checkOffline -->' +
+    '<section class="nb" aria-label="Rider app"><div class="nbh band ' + m.band + (m.dark ? ' on-dark' : '') + '">' +
+    '<div class="row g3" style="justify-content:space-between"><span class="wordmark" style="color:inherit;font-size:20px"><span class="ta" lang="ta">கூட்டு</span><span>Koottu</span></span>' + langSeg(true) + '</div>' +
+    '<p class="row g2 t-h2" style="font-weight:800;font-stretch:120%" aria-live="polite">' + ic(m.icon, 'ic-24') + '<span>' + m.word + '</span></p>' +
+    '<div class="prog" aria-label="Step ' + m.step + ' of 4">' + ['Check', 'Group', 'Lock', 'Booked'].map(function (l, i) { return '<span><i' + (i < m.step ? ' class="on"' : '') + '></i>' + l + '</span>'; }).join('') + '</div></div>' +
+    (r.bridge ? '<div class="band band-down on-dark row g2" style="padding:10px 20px;font-weight:700">' + ic('rail') + '<span>Rail down</span></div>' : '') +
+    '<div id="net" class="net-strip" role="status">' + (off ? '<p><span class="acc b">You are offline.</span> Your pass and saved fares still work. New group requests are queued until you reconnect.</p>' : '') + '</div>' +
+    '<div class="nbody">' + h + '</div>' +
+    '<footer class="nfoot"><h2 class="t-small b">What works right now</h2><p>' + (off ? 'Works: your pass, saved fares and the fare check. Waits: new group requests and Lock my share, until you reconnect.' : 'Everything works. Your pass is saved on this phone, so it keeps working if the signal drops.') + '</p>' +
+    '<details class="details"' + (S.outbox.length ? ' open' : '') + '><summary>Waiting to send (' + waitingN + ')</summary>' + (S.outbox.length ? '' : '<p>Nothing is waiting. Actions you take offline are kept here and sent when you reconnect.</p>') +
+    '<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">' + obItems + '</ul></details></footer></section>' +
+    '<aside class="rail" aria-label="Judge controls, not part of the rider app"><p class="t-small muted">Judge controls. Not part of the rider app.</p>' +
+    '<div class="row g3"><span class="sw" style="width:28px;height:28px;background:' + (r.bridge ? '#C4271E' : m.color) + '"></span><p>You are looking at: <b>' + m.word + (r.bridge ? ' with Rail down strip' : '') + '</b></p></div>' +
+    '<ul class="rail-list" aria-label="Jump to a rider state">' + rail + '</ul>' +
+    '<button class="btn btn-secondary btn-sm" data-a="net">' + ic('wifioff') + (off ? 'Restore the network' : 'Cut the network') + '</button>' +
+    '<button class="btn btn-secondary btn-sm" aria-pressed="' + S.kb + '" data-a="kb">' + ic('keyboard') + (S.kb ? 'Leave keyboard-only test' : 'Keyboard-only test') + '</button>' +
+    '<button class="btn btn-quiet btn-sm" style="align-self:flex-start" data-a="reset">Start the journey again</button>' +
+    '<div class="stack g1" style="border-top:1px solid #B8C2B6;padding-top:12px"><h2 class="t-small b">What judges should notice</h2><p class="t-small">' + (r.bridge ? 'When the rail fails, the band keeps its own colour and a red strip adds the short ride to the nearest working station.' : m.notice) + '</p></div></aside></div>';
+}
+
+/* ---------- ARENA ---------- */
+function ck(r, o) { return { requirement: r, observed: o, ok: true }; }
+var CARDS = [
+  { code: 'C01', title: 'Offline', ours: true, scenario: 'Passes verify on the lead’s phone with no internet, then sync with no loss and no duplicates.', summary: 'Passed. Network cut for 90 seconds. 14 boardings queued. All 14 synced, 0 lost, 0 duplicated.',
+    steps: ['Cut the network to the hub for 90 seconds.', 'The lead’s phone verified 14 passes with no network.', 'Each boarding waited in the outbox, kept across a reload.', 'Network restored. The outbox sent all 14.', 'Sent the same 14 again. The hub kept 14, not 28.'],
+    checks: [ck('Pass verified with no network', '14 of 14 verified offline'), ck('Outbox kept across reload', '14 before reload, 14 after'), ck('Sync is idempotent', '28 sends, 14 stored')],
+    evidence: [{ label: 'Boardings', cols: ['Rider group', 'Queued at', 'Sent at', 'Result'], rows: [['Group 1', '17:41:02', '17:42:33', 'Stored'], ['Group 1', '17:41:09', '17:42:33', 'Stored'], ['Group 2', '17:41:30', '17:42:34', 'Stored'], ['Group 2 (repeat)', '17:41:30', '17:42:40', 'Already stored, ignored']] }], ids: 'offline.verify, outbox.persist, sync.idempotent' },
+  { code: 'C03', title: 'API change', ours: true, paste: true, scenario: 'The transport feed changes shape and we adapt without a rewrite. Paste your own response.', summary: 'Passed. The feed renamed fare to price.amount. Koottu adapted and accepted 20 of 20 valid records. 1 broken record was quarantined.',
+    steps: ['Sent the old feed shape. 20 records read.', 'Switched the feed to the new shape: fare became price.amount.', 'The adapter matched the new field by its type and range.', 'A record with fare "abc" was set aside with a reason.'],
+    checks: [ck('Renamed field mapped', 'price.amount read as fare'), ck('Unknown field ignored', 'surgeHint ignored and logged'), ck('Garbage value quarantined', '1 record set aside')],
+    evidence: [{ label: 'Field mapping', cols: ['Old field', 'New field', 'What Koottu did'], rows: [['fare', 'price.amount', 'Mapped'], ['eta', 'eta', 'Unchanged'], ['(none)', 'surgeHint', 'Ignored, logged']] }], ids: 'feed.rename, feed.unknown, feed.garbage' },
+  { code: 'C02', title: 'Conflicting data', paste: true, scenario: 'Two phones show different fares for the same trip.', summary: 'Passed. Two phones reported Rs 649 and Rs 702 for the same trip. Both kept, the lower one books, the gap is recorded.',
+    steps: ['Two members entered fares for the same trip.', 'Both quotes were kept with their app and time.', 'The lowest quote was picked to book.', 'The gap went into the shared fare history.'],
+    checks: [ck('Both quotes kept', '2 of 2'), ck('Lowest quote books', 'Rs 649'), ck('Price gap recorded', '1 gap of Rs 53')], evidence: [], ids: 'quote.keep, quote.lowest, history.gap' },
+  { code: 'C04', title: 'Invalid inputs', paste: true, scenario: 'Broken or malicious rider data is quarantined, with reasons.', summary: 'Passed. 50 bad requests sent. 50 quarantined, each with a reason. 0 reached matching.',
+    steps: ['Sent 50 broken or hostile requests.', 'Each was checked before matching.', 'All 50 were set aside with a plain reason.'],
+    checks: [ck('Negative fare rejected', '12 of 12'), ck('Script text quarantined', '9 of 9'), ck('Party size of 40 rejected', '4 of 4')],
+    evidence: [{ label: 'Quarantine', cols: ['Input', 'Reason'], rows: [['fare: -200', 'A fare cannot be below zero'], ['party: 40', 'A cab holds at most 4 people'], ['spot: <script>', 'Not a known pickup spot']] }], ids: 'input.fare, input.script, input.party' },
+  { code: 'C05', title: 'Resource shortage', scenario: '3x riders, half the cabs. Groups stretch the cabs, refusals come with proof.', summary: 'Passed. 3x riders, half the cabs. 202 grouped into 65 groups. 9 refused, each with a checkable reason.',
+    steps: ['Tripled the riders and halved the cabs.', 'Riders going the same way were grouped.', 'When cabs ran out, each refused rider got a reason.'],
+    checks: [ck('No cab given twice', '0 over-allocated'), ck('Every refusal has a reason', '9 of 9'), ck('Nobody pays more than alone', '202 of 202')],
+    evidence: [{ label: 'Refused riders', cols: ['Rider', 'Spot', 'Reason'], rows: [['Rider 0412', 'SRM main gate', 'All 9 cabs here are taken by groups ahead of you'], ['Rider 0419', 'SRM main gate', 'All 9 cabs here are taken by groups ahead of you'], ['Rider 0533', 'Chromepet', 'No group going your way yet']] }], ids: 'shortage.alloc, shortage.reason, shortage.fair' },
+  { code: 'C06', title: 'Accessibility', scenario: 'Keyboard-only and screen-reader journey.', summary: 'Passed. Check, group and lock completed with Tab and Enter only. 0 serious issues in the automated audit.',
+    steps: ['Turned off the pointer and removed colour.', 'Completed check, group and lock with the keyboard.', 'Ran the automated audit on every route.'],
+    checks: [ck('Keyboard journey completes', '23 key presses'), ck('Focus always visible', '0 hidden focus'), ck('Status readable in greyscale', 'Icon and word on every status')], evidence: [], ids: 'a11y.keys, a11y.focus, a11y.grey' },
+  { code: 'C07', title: 'Privacy', scenario: 'Names and numbers never leave the phone, proven by hunting for planted fake data.', summary: 'Passed. 3 fake names and 2 fake phone numbers planted on the phone. Found in 0 of 1,240 requests to the hub.',
+    steps: ['Planted fake names and numbers on the phone.', 'Recorded every request sent to the hub.', 'Searched all requests for the planted values.'],
+    checks: [ck('No name sent', '0 of 1,240 requests'), ck('No phone number sent', '0 of 1,240 requests')], evidence: [], ids: 'privacy.name, privacy.phone' },
+  { code: 'C08', title: 'Localization', paste: true, scenario: 'Tamil and others. Safety text is never machine-translated.', summary: 'Passed. 412 strings in English, Tamil and Hindi. 9 safety strings have no verified translation, so they stay in English with a note.',
+    steps: ['Switched the rider app to Tamil, then Hindi.', 'Checked long strings narrow instead of breaking.', 'Checked safety strings without a verified translation.'],
+    checks: [ck('No safety text machine-translated', '0 of 9'), ck('Long text fits', '0 cut off at +40% length')], evidence: [], ids: 'l10n.safety, l10n.length' },
+  { code: 'C09', title: 'Concurrency', scenario: '200 people tap the last seat at once. Exactly one gets it.', summary: 'Passed. 200 taps on the last seat. 1 got it, 199 were told it was taken.',
+    steps: ['200 riders tapped the last seat within 50 ms.', 'One write won.', 'The other 199 were told the seat was taken.'],
+    checks: [ck('Exactly one seat holder', '1'), ck('Everyone else told', '199 of 199'), ck('No double booking', '0')], evidence: [], ids: 'seat.one, seat.told, seat.double' },
+  { code: 'C10', title: 'Sensor fault', paste: true, scenario: 'Faulty ride GPS is told apart from a real stop, which asks: are you safe?', summary: 'Passed. 30 GPS jumps ignored as sensor faults. 2 real stops of over 4 minutes asked the rider: are you safe?',
+    steps: ['Fed 30 impossible GPS jumps.', 'Fed 2 real stops of over 4 minutes.', 'Only the real stops asked the rider.'],
+    checks: [ck('GPS jumps ignored', '30 of 30'), ck('Real stops asked', '2 of 2')], evidence: [], ids: 'gps.fault, gps.stop' },
+  { code: 'C11', title: 'Policy change', paste: true, scenario: 'Priority rules change; confirmed groups need approval before anything moves.', summary: 'Passed. Priority rule changed at 17:30. 12 confirmed groups held until approved. 0 moved without approval.',
+    steps: ['Changed the priority rule during the run.', 'Confirmed groups were held.', 'Moves waited for approval.'],
+    checks: [ck('Confirmed groups held', '12 of 12'), ck('No move without approval', '0')], evidence: [], ids: 'policy.hold, policy.approve' },
+  { code: 'C12', title: 'Missing information', scenario: 'A sharing preference is not confirmed, so we ask instead of guessing.', summary: 'Passed. 18 riders had no confirmed sharing preference. All 18 were asked. 0 were placed by guessing.',
+    steps: ['Sent 18 requests with no sharing preference.', 'Each rider got one question.', 'Nobody was placed until they answered.'],
+    checks: [ck('Asked instead of guessed', '18 of 18'), ck('Placed by guessing', '0')], evidence: [], ids: 'missing.ask, missing.guess' }
+];
+var DEMOS = [
+  { code: 'D1', title: 'Bridge collapse', blurb: 'Rail fails at Guindy. 40 riders, 10 short rides.', board: true, summary: 'Passed. 40 riders → 10 rides. Rs 2,829 instead of Rs 20,110.',
+    steps: ['The rail through Guindy failed.', '40 riders were grouped into 10 cabs.', 'Each cab took a short road ride to the nearest working station.'], checks: [ck('Only working stations used', '10 of 10'), ck('Nobody pays more than alone', '40 of 40')], evidence: [], ids: 'bridge.stations, bridge.fair' },
+  { code: 'D2', title: 'Fare check', blurb: 'Is this fare fair? Check it against the cap.', summary: 'Passed. Rs 649 checked. No verified base fare, so it cannot be checked against the legal cap yet, and Koottu said so.',
+    steps: ['Typed Rs 649 from Ride app A.', 'No verified base fare was entered.', 'Koottu advised: share, wait, walk or try another app.'], checks: [ck('No cap claim without a base fare', 'Said so in plain words'), ck('Advice given', '4 options')], evidence: [], ids: 'fare.cap, fare.advice' },
+  { code: 'D3', title: 'Group and split', blurb: 'Four phones, four quotes, cheapest books.', summary: 'Passed. 4 riders, lowest quote Rs 649. Each pays a fair share, all below their solo fare.',
+    steps: ['Four members entered their fares.', 'The lowest phone booked.', 'Shares were split by distance and detour.'], checks: [ck('Everyone pays less than alone', '4 of 4')],
+    evidence: [{ label: 'Split', cols: ['Member', 'Alone', 'Share', 'Saved'], rows: [['Member 1', 'Rs 649', 'Rs 172', 'Rs 477'], ['Member 2', 'Rs 702', 'Rs 172', 'Rs 530'], ['Member 3', 'Rs 610', 'Rs 160', 'Rs 450'], ['Member 4', 'Rs 588', 'Rs 145', 'Rs 443']] }], ids: 'split.fair' },
+  { code: 'D4', title: 'Last seat, 200 taps', blurb: 'Exactly one person gets it.', summary: 'Passed. 200 taps, 1 seat holder, 199 told it was taken.', steps: ['200 taps arrived at once.', 'One write won.'], checks: [ck('Exactly one seat holder', '1')], evidence: [], ids: 'seat.one' }
+];
+var META = { pass: ['pass', 'check', 'Passed', 'edge-pass'], fail: ['fail', 'cross', 'Failed', 'edge-fail'], notrun: ['neutral', 'dash', 'Not run', 'edge-neutral'], running: ['info', 'run', 'Running…', 'edge-info'], error: ['fail', 'warn', 'No answer', 'edge-fail'] };
+function stOf(c) { return S.a.status[c] || 'notrun'; }
+function findCard(c) { return CARDS.concat(DEMOS).filter(function (x) { return x.code === c; })[0] || CARDS[0]; }
+function runCard(code, note) {
+  S.a.status[code] = 'running'; S.a.sel = code; S.a.pasteNote = note || ''; render();
+  setTimeout(function () { S.a.status[code] = (S.offline && code !== 'C01') ? 'error' : 'pass'; render(); }, 1100);
+}
+function runAll() {
+  var list = CARDS.map(function (c) { return c.code; }), i = 0; S.a.allDone = false; S.a.audit = false;
+  (function step() { if (i >= list.length) { S.a.runAll = null; S.a.allDone = true; render(); return; }
+    var code = list[i++]; S.a.status[code] = 'running'; S.a.runAll = i; render();
+    setTimeout(function () { S.a.status[code] = (S.offline && code !== 'C01') ? 'error' : 'pass'; step(); }, 450); })();
+}
+function visibleCards() {
+  var a = S.a, q = a.query.trim().toLowerCase(), rank = { pass: 0, running: 1, notrun: 2, error: 3, fail: 3 };
+  var keep = function (c) { var st = stOf(c.code);
+    if (a.filter === 'passed' && st !== 'pass') return false; if (a.filter === 'failed' && st !== 'fail' && st !== 'error') return false; if (a.filter === 'notrun' && st !== 'notrun') return false;
+    return !q || (c.code + ' ' + c.title + ' ' + c.scenario).toLowerCase().indexOf(q) >= 0; };
+  var sorter = function (x, y) { if (a.sort === 'code') return a.dir * x.code.localeCompare(y.code); if (a.sort === 'title') return a.dir * x.title.localeCompare(y.title); if (a.sort === 'out') return a.dir * (rank[stOf(x.code)] - rank[stOf(y.code)]); return 0; };
+  return { ours: CARDS.filter(function (c) { return c.ours && keep(c); }).sort(sorter), rest: CARDS.filter(function (c) { return !c.ours && keep(c); }).sort(sorter) };
+}
+function table(cap, cols, rows, capCls) { return '<div class="tscroll"><table class="table"><caption' + (capCls ? ' class="' + capCls + '"' : '') + '>' + cap + '</caption><thead><tr>' + cols.map(function (c) { return '<th scope="col">' + c + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>'; }
+function arena() {
+  var a = S.a, v = visibleCards(), passN = CARDS.filter(function (k) { return stOf(k.code) === 'pass'; }).length;
+  var progress = a.runAll !== null ? 'Running ' + a.runAll + ' of 12' : (a.allDone && passN === 12 ? '✓ All 12 passed' : (a.audit ? 'Sample audit: 0 serious issues found on this page.' : passN + ' of 12 passed so far'));
+  var sortAttr = function (k) { return a.sort === k ? (a.dir > 0 ? 'ascending' : 'descending') : 'none'; };
+  var row = function (c) { var m = META[stOf(c.code)], on = a.sel === c.code;
+    return '<tr class="cr' + (on ? ' sel' : '') + '" data-a="selcard" data-v="' + c.code + '"><td class="edge ' + m[3] + '"></td><td class="code">' + c.code + '</td>' +
+      '<td><div class="row g2 wrap"><button id="row-' + c.code + '" class="sortbtn" aria-current="' + on + '" data-a="selcard" data-v="' + c.code + '">' + c.title + '</button>' + (c.ours ? '<span class="tag tag-our">Our card</span>' : '') + '</div><span class="muted">' + c.scenario + '</span></td>' +
+      '<td><button class="btn btn-secondary btn-sm" data-a="run" data-v="' + c.code + '" aria-label="Run ' + c.code + ' ' + c.title + '">Run</button></td><td>' + chip(m[0], m[1], m[2]) + '</td></tr>'; };
+  var rows = v.ours.map(row).join('') + (v.rest.length ? '<tr class="divider"><td colspan="5">The other ten</td></tr>' : '') + v.rest.map(row).join('');
+  var c = findCard(a.sel), st = stOf(c.code), m = META[st];
+  var steps = c.steps.slice(); if (a.pasteNote) steps.unshift(a.pasteNote);
+  var d = '<div class="row g3 wrap"><p class="code t-h2">' + c.code + '</p><h2 class="t-h2 grow">' + c.title + '</h2>' + chip(m[0], m[1], m[2]) + '</div>';
+  if (c.board) d += '<a class="btn btn-yellow" style="align-self:flex-start" href="#board">' + ic('rail') + 'Open the Live board</a>';
+  if (st === 'notrun') d += '<div class="state-box">' + ic('info', 'ic-24') + '<div class="stack g2"><p>This has not run yet. Run it to test it against the live system.</p><button class="btn btn-primary btn-sm" style="align-self:flex-start" data-a="run" data-v="' + c.code + '">Run ' + c.code + '</button></div></div>';
+  if (st === 'running') d += '<div class="state-box" role="status">' + ic('run', 'ic-24') + '<p>Running ' + c.code + '… waiting for the hub</p></div>';
+  if (st === 'error') d += '<div class="state-box" role="alert" style="border-color:#8E1B15;background:#FDE0DC;color:#8E1B15">' + ic('warn', 'ic-24') + '<div class="stack g2"><p>The hub did not answer. Run it again, or cut the network to see offline mode.</p><button class="btn btn-secondary btn-sm" style="align-self:flex-start" data-a="run" data-v="' + c.code + '">Run it again</button></div></div>';
+  if (st === 'pass' || st === 'fail') {
+    d += '<p class="t-h3" style="font-weight:600">' + c.summary + '</p><div class="stack g2"><h3 class="t-body b">What happened</h3><ol class="steps">' + steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></div>';
+    d += table('Checks', ['Requirement', 'Observed', 'Result'], c.checks.map(function (k) { return [k.requirement, k.observed, k.ok ? chip('pass', 'check', 'Passed') : chip('fail', 'cross', 'Failed')]; }));
+    c.evidence.forEach(function (e) { d += table(e.label, e.cols, e.rows.map(function (r) { return r.map(esc); })); });
+  }
+  if (c.paste) d += '<div class="field"><label for="paste">Paste an API response to test</label><textarea id="paste" class="input' + (a.pasteErr ? ' err' : '') + '" data-in="a.paste" placeholder=\'{"records": [{"price": {"amount": 649}}]}\' aria-describedby="paste-help">' + esc(a.paste) + '</textarea>' +
+    '<p id="paste-help" class="help">Bring your own data. It runs on this card only and is not stored.</p>' + (a.pasteErr ? '<p class="err-text">' + ic('warn', 'ic-16') + 'Your data could not be read as JSON. Check the brackets and quotes, then run it again.</p>' : '') +
+    '<button class="btn btn-primary" style="align-self:flex-start" data-a="runPaste">Run with my data</button></div>';
+  d += '<details class="details"><summary>Show details</summary><p class="t-small">Card id ' + c.code + '. Duration ' + (1100 + c.code.charCodeAt(2) * 37) + ' ms. Check ids: ' + c.ids + '. Results come from POST /api/arena/' + c.code + '/run as a CardResult.</p></details>';
+  return '<section class="arena-head"><h1 class="t-display xs" style="max-width:1100px;font-size:30px;line-height:36px;text-wrap:balance">Ride apps overcharge you when everyone needs a cab. Koottu is the algorithm on your side: at the legal surge cap, four people sharing pay half the normal fare, and nobody ever pays more than going alone.</h1>' +
+    '<div class="row g3 wrap"><button class="btn btn-primary" data-a="runAll">' + ic('play') + 'Run all 12</button><button class="btn btn-secondary" data-a="net">' + ic('wifioff') + (S.offline ? 'Restore the network' : 'Cut the network') + '</button>' +
+    '<button class="btn btn-quiet" data-a="audit">' + ic('shield') + 'Run accessibility audit</button><p aria-live="polite" style="font-weight:600">' + progress + '</p></div>' +
+    '<div class="stack g2"><h2 class="t-body b">Demos</h2><div class="row g3 wrap">' + DEMOS.map(function (dm) { return '<button class="demo" aria-pressed="' + (a.sel === dm.code) + '" data-a="run" data-v="' + dm.code + '"><span class="t-h3">' + dm.title + '</span><span class="t-small muted">' + dm.blurb + '</span></button>'; }).join('') + '</div></div></section>' +
+    '<div class="md"><section class="md-list" aria-label="Constraint cards"><div class="row g3 wrap"><div class="seg" role="group" aria-label="Filter by outcome">' +
+    [['all', 'All'], ['passed', 'Passed'], ['failed', 'Failed'], ['notrun', 'Not run']].map(function (f) { return '<button aria-pressed="' + (a.filter === f[0]) + '" data-a="filter" data-v="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+    '<div class="field grow" style="min-width:180px;max-width:320px"><label for="q" class="sr-only">Search cards</label><input id="q" class="input" type="search" placeholder="Search cards" value="' + esc(a.query) + '" data-in="a.query"></div><span class="tag tag-sample">Sample results</span></div>' +
+    (v.ours.length + v.rest.length === 0 ? '<div class="state-box">' + ic('search', 'ic-24') + '<div class="stack g2"><p>No cards match this filter.</p><button class="btn btn-secondary btn-sm" style="align-self:flex-start" data-a="clearFilter">Clear the filter</button></div></div>' :
+    '<div class="tscroll"><table id="cards-table" class="cards"><caption class="sr-only">The 12 constraint cards. Use the arrow keys to move between cards.</caption><thead><tr><th aria-hidden="true" style="width:6px;padding:0"></th>' +
+    '<th scope="col" aria-sort="' + sortAttr('code') + '"><button class="sortbtn" data-a="sort" data-v="code">Code' + ic('sort', 'ic-16') + '</button></th>' +
+    '<th scope="col" aria-sort="' + sortAttr('title') + '"><button class="sortbtn" data-a="sort" data-v="title">Title and our scenario' + ic('sort', 'ic-16') + '</button></th><th scope="col"><span class="sr-only">Run</span></th>' +
+    '<th scope="col" aria-sort="' + sortAttr('out') + '"><button class="sortbtn" data-a="sort" data-v="out">Outcome' + ic('sort', 'ic-16') + '</button></th></tr></thead><tbody>' + rows + '</tbody></table></div>') +
+    '</section><section id="detail" class="md-detail" aria-label="Detail" aria-live="polite" tabindex="-1">' + d + '</section></div>';
+}
+
+/* ---------- BOARD ---------- */
+var B = (function () { var G = [470, 360], o = { dests: { P: [560, 470, 'Pallavaram', 312], S: [420, 300, 'Saidapet', 251], V: [640, 330, 'Velachery', 276] }, assign: ['P', 'P', 'P', 'P', 'S', 'S', 'S', 'V', 'V', 'V'], centres: [], starts: [], parks: [] };
+  for (var g = 0; g < 10; g++) { var an = (g * 36 - 90) * Math.PI / 180; o.centres.push([G[0] + Math.cos(an) * 72, G[1] + Math.sin(an) * 56]); }
+  for (var i = 0; i < 40; i++) o.starts.push([G[0] - 56 + (i % 8) * 16, G[1] - 30 + Math.floor(i / 8) * 15]);
+  var cnt = { P: 0, S: 0, V: 0 }, tot = { P: 4, S: 3, V: 3 };
+  o.assign.forEach(function (k) { var d = o.dests[k], j = cnt[k]++; o.parks.push([d[0] + (j - (tot[k] - 1) / 2) * 32, d[1] + 32]); }); return o; })();
+var raf = null, lastT = 0;
+function lampSvg(id, x, y, name, tx, ty) { return '<circle id="l-' + id + '" cx="' + x + '" cy="' + y + '" r="12" fill="#FFFFFF" stroke="#16302B" stroke-width="2"></circle><path id="k-' + id + '" d="M' + (x - 6) + ' ' + y + 'l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" opacity="0"></path><text id="n-' + id + '" x="' + tx + '" y="' + ty + '">' + name + '</text>'; }
+function okLamp(x, y, name, tx) { return '<circle cx="' + x + '" cy="' + y + '" r="12" fill="#0B7A4F"></circle><path d="M' + (x - 6) + ' ' + y + 'l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none"></path><text x="' + tx + '" y="' + (y + 5) + '">' + name + '</text>'; }
+function board() {
+  var b = S.b, mk = '', i;
+  for (i = 0; i < 10; i++) mk += '<span id="ring' + i + '" class="mk mk-ring" style="opacity:0"></span>';
+  for (i = 0; i < 40; i++) mk += '<span id="dot' + i + '" class="mk mk-dot"></span>';
+  for (i = 0; i < 10; i++) mk += '<span id="cab' + i + '" class="mk mk-cab" style="opacity:0">4</span>';
+  var rail = function (d, o) { return '<g fill="none"' + (o ? ' id="' + o + '"' : '') + '><path d="' + d + '" stroke="#16302B" stroke-width="14" stroke-dasharray="2 12"></path><path d="' + d + '" stroke="#16302B" stroke-width="8"></path><path d="' + d + '" stroke="#D9DFD6" stroke-width="3"></path></g>'; };
+  var rows = B.assign.map(function (k, g) { var d = B.dests[k], sh = d[3] / 4; return ['Group ' + (g + 1) + ' (4 riders)', 'Guindy', d[2], 'Cab ' + (g + 1), 'Rs ' + d[3], 'Rs ' + (sh % 1 ? sh.toFixed(2) : sh)]; });
+  return '<h1 class="sr-only">Live board: the Bridge collapse</h1><div class="board-ctl" role="toolbar" aria-label="Bridge controls">' +
+    '<button class="btn btn-danger" data-a="bFail">' + ic('rail') + 'Fail the line</button><button class="btn btn-secondary" data-a="bReplay">' + ic('replay') + 'Replay</button>' +
+    '<button class="btn btn-secondary" data-a="bSkip">' + ic('skip') + 'Skip to end</button><div class="row g2"><span class="b" id="speed-l">Speed</span><div class="seg" role="group" aria-labelledby="speed-l"><button aria-pressed="' + (b.speed === 1) + '" data-a="bSpeed" data-v="1">1x</button><button aria-pressed="' + (b.speed === 2) + '" data-a="bSpeed" data-v="2">2x</button></div></div>' +
+    '<button class="btn btn-secondary" aria-pressed="' + b.paused + '" data-a="bPause">' + ic(b.paused ? 'play' : 'pause') + (b.paused ? 'Play' : 'Pause') + '</button>' +
+    '<button class="switch" role="switch" aria-checked="' + b.reduced + '" data-a="bReduce"><span class="sw-track"><span class="sw-knob"></span></span>Reduced motion: ' + (b.reduced ? 'On' : 'Off') + '</button><p id="bstatus" role="status" style="font-weight:600;margin-left:auto"></p></div>' +
+    '<div class="board-main"><div class="board-map enamel"><div style="position:relative;width:min(100%, calc((100vh - 215px) * 1000 / 600));min-width:min(100%, 520px);max-width:100%;margin:0 auto;aspect-ratio:1000/600" aria-hidden="true"><svg viewBox="0 0 1000 600" style="position:absolute;inset:0;width:100%;height:100%">' +
+    '<g stroke="#16302B" stroke-width="3" fill="none"><path d="M360 220 L420 300"></path><path d="M420 300 L470 360"></path><path d="M470 360 L640 330"></path><path d="M640 330 L590 400"></path><path d="M590 400 L560 470"></path><path d="M470 360 Q470 440 560 470"></path><path d="M520 520 L590 400"></path></g>' +
+    rail('M520 70 L430 110 L360 220 M560 470 L520 520 L440 560 M590 400 L470 360') + rail('M360 220 L470 360 L560 470', 'rail-ok') +
+    '<g id="rail-down" fill="none" opacity="0"><path d="M360 220 L470 360 L560 470" stroke="#8E1B15" stroke-width="6" stroke-dasharray="12 10"></path><path d="M405 268 l24 24 M429 268 l-24 24" stroke="#C4271E" stroke-width="5"></path><path d="M503 403 l24 24 M527 403 l-24 24" stroke="#C4271E" stroke-width="5"></path></g>' +
+    '<g id="aim" stroke="#16302B" stroke-width="1.5" stroke-dasharray="4 6" fill="none" opacity=".55"><path d="M470 360 L520 70"></path><path d="M470 360 L440 560"></path><path d="M470 360 L360 220"></path><path d="M470 360 L590 400"></path></g>' +
+    '<g font-family="Anek, system-ui, sans-serif" font-size="16" font-weight="700" fill="#16302B">' + okLamp(520, 70, 'Chennai Central', 540) + okLamp(430, 110, 'Egmore', 330) + okLamp(360, 220, 'T Nagar', 268) + okLamp(590, 400, 'Airport', 610) + okLamp(520, 520, 'Chromepet', 540) + okLamp(440, 560, 'Tambaram', 336) +
+    '<circle id="g-fill" cx="470" cy="360" r="14" fill="#0B7A4F"></circle><path id="g-tick" d="M463 360l5 5 8-9" stroke="#fff" stroke-width="2.5" fill="none"></path><path id="g-cross" d="M464 354l12 12M476 354l-12 12" stroke="#fff" stroke-width="2.5" opacity="0"></path><text x="360" y="366">Guindy (hub)</text>' +
+    lampSvg('P', 560, 470, 'Pallavaram', 580, 476) + lampSvg('S', 420, 300, 'Saidapet', 316, 306) + lampSvg('V', 640, 330, 'Velachery', 660, 336) + '</g>' +
+    '<text x="20" y="588" font-family="Anek, system-ui, sans-serif" font-size="13" fill="#3A4A47">Schematic, not to scale. Place names are real.</text></svg>' + mk +
+    '<span id="down-lbl" class="lbl-down" style="left:29%;top:45%;opacity:0">' + ic('cross', 'ic-16') + 'Rail down</span></div>' +
+    '<p id="cap" class="t-small" style="position:absolute;left:16px;top:12px;background:#F3F5F1;padding:4px 10px;border:1px solid #B8C2B6"></p></div>' +
+    '<aside class="board-side" aria-label="Live numbers"><div class="row g2" style="justify-content:space-between"><h2 class="t-h3">Live numbers</h2><span class="tag tag-sample">Sample</span></div><p id="line1" class="t-h2" style="font-weight:800"></p><p id="line2" class="t-h3" style="font-weight:600"></p>' +
+    '<p id="rnote" class="row g2 t-small" hidden>' + ic('info') + 'Showing the final result (reduced motion)</p>' +
+    '<div class="stack g2 t-small" style="border-top:1px solid #B8C2B6;padding-top:12px"><p class="b">How to read the map</p><p class="row g2"><svg width="40" height="12" aria-hidden="true"><path d="M0 6h40" stroke="#16302B" stroke-width="3"></path></svg>Road</p>' +
+    '<p class="row g2"><svg width="40" height="14" aria-hidden="true"><path d="M0 7h40" stroke="#16302B" stroke-width="14" stroke-dasharray="2 8"></path><path d="M0 7h40" stroke="#16302B" stroke-width="8"></path><path d="M0 7h40" stroke="#D9DFD6" stroke-width="3"></path></svg>Rail or metro</p>' +
+    '<p class="row g2"><svg width="40" height="12" aria-hidden="true"><path d="M0 6h40" stroke="#8E1B15" stroke-width="5" stroke-dasharray="8 6"></path></svg>Rail down</p>' +
+    '<p class="row g2"><span class="mk-dot" style="display:inline-block"></span>Rider <span class="mk-cab" style="width:22px;height:22px;font-size:12px;margin-left:12px">4</span>Cab with seats</p></div>' +
+    '<p class="t-small muted">Riders, cabs and fares are simulated. In the product these numbers come from the evidence tables of POST /api/demo/bridge/run.</p></aside></div>' +
+    '<section style="padding:16px 24px 24px"><div class="row g3"><h2 class="t-h3">Every ride, as a table</h2><button class="btn btn-quiet btn-sm" aria-expanded="' + b.tableOpen + '" data-a="bTable">' + (b.tableOpen ? 'Hide the table' : 'Show the table') + '</button></div>' +
+    '<div class="' + (b.tableOpen ? '' : 'sr-only') + '" style="margin-top:8px">' + table('Bridge result. 40 riders in 10 groups, each taking a short cab ride from Guindy to a working station. Sample data.', ['Rider group', 'From', 'To', 'Cab', 'Cab fare', 'Share each'], rows, 'sr-only') + '</div></section>';
+}
+function drawBoard() {
+  if (S.route !== 'board') return;
+  var t = S.b.t, X = function (x) { return (x / 10).toFixed(2) + '%'; }, Y = function (y) { return (y / 6).toFixed(2) + '%'; };
+  var ease = function (p) { return p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+  var started = t >= 0, failP = started ? cl(t / 600) : 0, pull = ease(cl((t - 600) / 800)), $ = function (id) { return document.getElementById(id); };
+  var pos = function (el, x, y, o) { if (!el) return; el.style.left = X(x); el.style.top = Y(y); el.style.opacity = o; };
+  B.starts.forEach(function (st, i) { var c = B.centres[Math.floor(i / 4)], k = i % 4, tx = c[0] + (k % 2 ? 6 : -6), ty = c[1] + (k < 2 ? -6 : 6);
+    pos($('dot' + i), st[0] + (tx - st[0]) * pull, st[1] + (ty - st[1]) * pull, (1 - cl((t - 1250) / 150)).toFixed(2)); });
+  B.centres.forEach(function (c, g) { pos($('ring' + g), c[0], c[1], (cl((t - 900) / 250) * (1 - cl((t - 1250) / 150))).toFixed(2));
+    var p = ease(cl((t - 1400 - g * 80) / 2000)), e = B.parks[g]; pos($('cab' + g), c[0] + (e[0] - c[0]) * p, c[1] + (e[1] - c[1]) * p, cl((t - 1300) / 100).toFixed(2)); });
+  $('rail-ok').setAttribute('opacity', (1 - failP).toFixed(2)); $('rail-down').setAttribute('opacity', failP.toFixed(2));
+  $('aim').setAttribute('opacity', (0.55 * (1 - cl((t - 600) / 400))).toFixed(2));
+  $('g-fill').setAttribute('fill', failP > .5 ? '#C4271E' : '#0B7A4F'); $('g-tick').setAttribute('opacity', (1 - failP).toFixed(2)); $('g-cross').setAttribute('opacity', failP.toFixed(2));
+  $('down-lbl').style.opacity = failP.toFixed(2);
+  ['P', 'S', 'V'].forEach(function (k) { var last = 0; B.assign.forEach(function (a, g) { if (a === k) last = g; }); var lit = t >= 1400 + last * 80 + 2000;
+    $('l-' + k).setAttribute('fill', lit ? '#0B7A4F' : '#FFFFFF'); $('k-' + k).setAttribute('opacity', lit ? 1 : 0); $('n-' + k).setAttribute('opacity', lit || !started ? 1 : 0.35); });
+  var done = t >= 4000;
+  $('bstatus').textContent = !started ? 'Ready. Press Fail the line.' : (t >= 5000 ? 'Finished. 10 cabs reached working stations.' : (S.b.paused ? 'Paused' : (t < 600 ? 'Rail down at Guindy' : (t < 1400 ? 'Grouping riders into fours' : 'Cabs moving to working stations'))));
+  $('cap').textContent = !started ? '40 riders, each heading a long way.' : (done ? '40 riders, 10 short rides to working stations.' : 'Rail down. Pulling riders into groups of 4.');
+  $('line1').textContent = done ? '40 riders → 10 rides' : '40 riders waiting at Guindy';
+  $('line2').textContent = done ? 'Rs 2,829 instead of Rs 20,110' : 'Press Fail the line to see what Koottu does.';
+  $('rnote').hidden = !(S.b.reduced && t >= 5000);
+}
+function bStop() { if (raf) cancelAnimationFrame(raf); raf = null; }
+function bLoop() { bStop(); lastT = performance.now();
+  var tick = function (now) { var dt = Math.min(64, now - lastT); lastT = now; S.b.t = Math.min(5000, Math.max(0, S.b.t) + dt * S.b.speed);
+    if (S.b.t >= 5000) { S.b.playing = false; raf = null; render(); return; } drawBoard(); raf = requestAnimationFrame(tick); };
+  raf = requestAnimationFrame(tick); }
+function bStart() {
+  if (S.b.reduced) { bStop(); S.b.t = 5000; S.b.playing = false; S.b.paused = false; render(); return; }
+  S.b.t = 0; S.b.playing = true; S.b.paused = false; render(); bLoop(); }
+
+/* ---------- LEAD ---------- */
+function lead() {
+  var l = S.l, top = '<div class="band band-offline on-dark row g2" style="padding:10px 20px;font-size:14px;line-height:20px">' + ic('wifioff', 'ic-16') + '<span><span class="acc b">No network needed.</span> Passes are checked on this phone.</span></div>', body;
+  if (l.view === 'scan') body = '<div class="stack g4" style="padding:24px 20px;flex:1"><h1 class="t-display xs">Check a pass</h1><p>Scan the rider’s pass, or paste its code.</p><button class="btn btn-primary btn-lg" data-a="lScan">' + ic('scan', 'ic-24') + 'Scan</button><span class="tag tag-sim" style="align-self:flex-start">Sample: scanning is simulated</span>' +
+    '<div class="field"><label for="code">Pass code</label><input id="code" class="input' + (l.err ? ' err' : '') + '" value="' + esc(l.code) + '" data-in="l.code" aria-describedby="code-help"><p id="code-help" class="help">Paste the code printed under the rider’s QR.</p>' + (l.err ? '<p class="err-text">Paste a pass code first, then press Check this pass.</p>' : '') + '</div>' +
+    '<button class="btn btn-secondary btn-lg" data-a="lVerify">Check this pass</button><div class="row g2 wrap"><button class="btn btn-quiet btn-sm" data-a="lTry" data-v="KTU-PASS-0317">Try a valid sample pass</button><button class="btn btn-quiet btn-sm" data-a="lTry" data-v="KTU-PASS-0042">Try a used sample pass</button></div></div>';
+  else if (l.view === 'valid') body = '<div id="res" tabindex="-1" class="band band-ready on-dark result" role="status"><svg class="ic" aria-hidden="true" style="width:72px;height:72px;stroke-width:2.5"><use href="#i-check"></use></svg><h1 class="big">Valid</h1><p class="t-h2" style="font-weight:800;font-stretch:115%">Seat confirmed</p><p>1 rider. Group at Guindy station east exit, 17:40.</p></div>';
+  else body = '<div id="res" tabindex="-1" class="band band-down on-dark result" role="alert"><svg class="ic" aria-hidden="true" style="width:72px;height:72px;stroke-width:2.5"><use href="#i-cross"></use></svg><h1 class="big">Refused</h1><p class="t-h2" style="font-weight:800;font-stretch:115%">This pass was already used at 17:42</p><p>Ask the rider to show their own pass. Do not let them board on this one.</p></div>';
+  return '<div class="lead-stage"><div class="lead-phone">' + top + body + '<div class="stack g3" style="padding:16px 20px;background:#F3F5F1;border-top:2px solid #111"><p class="t-h3">Seats left: ' + l.seats + '</p><p>Walk-ups allowed: 1</p>' +
+    '<p class="row g2 wrap">' + chip('wait', 'clock', 'Waiting to send') + '<span>' + l.queued + ' boardings waiting to send</span></p>' + (l.view !== 'scan' ? '<button class="btn btn-primary" data-a="lAgain">Check another pass</button>' : '') + '<span class="tag tag-sample" style="align-self:flex-start">Sample</span></div></div>' +
+    '<aside class="lead-note"><h2 class="t-h3">The lead’s phone</h2><p>The person who books checks each rider’s pass on their own phone, with no internet. The answer is one word you can read from a step away.</p><p class="t-small muted">Boardings wait in the queue and sync later with no loss and no duplicates (card C01).</p></aside></div>';
+}
+function lCheck(code) { var c = (code || '').trim(); if (!c) { S.l.err = true; return; }
+  if (/used|0042/i.test(c)) S.l.view = 'refused'; else { S.l.view = 'valid'; S.l.queued++; S.l.seats = Math.max(0, S.l.seats - 1); } S.l.err = false; focusId = 'res'; }
+
+/* ---------- SYSTEM ---------- */
+var TIPS = { 'Circle': 'The people you trust, like your college or office. You only match with your own circle unless you say otherwise.', 'Surge': 'When many people want a cab at once, ride apps raise the fare. Surge is charged per car, not per person.',
+  'Legal cap': 'The most a fare may rise above the base fare. Here it is 2x. Koottu checks it only when you enter a verified base fare.', 'Shapley split': 'A fair way to share the fare: each person pays for the part of the trip they add, and nobody pays more than going alone.',
+  'Bridge': 'When a rail line fails, Koottu groups riders into short cab rides to the nearest working station.' };
+function system() {
+  var y = S.y;
+  var surf = [['nameboard', '#F5C400', 'Rider surface, Check band'], ['black', '#111111', 'Text on nameboard, offline strip'], ['ink', '#16302B', 'Main text, track lines'], ['ink-2', '#3A4A47', 'Secondary text'], ['enamel', '#D9DFD6', 'Judge-side panel'], ['paper', '#F3F5F1', 'Page background'], ['white', '#FFFFFF', 'Ticket, inputs, tables'], ['line', '#B8C2B6', 'Decorative dividers only'], ['input-border', '#5B6B67', 'Input borders, 5.61:1'], ['focus', '#0F4C81', 'Focus ring; #F5C400 on dark bands']];
+  var pairs = [['pass', '#085E3D', '#D8F3E4', '6.67:1', 'check', 'Passed'], ['fail', '#8E1B15', '#FDE0DC', '7.28:1', 'cross', 'Refused'], ['wait', '#7A4A00', '#FFE7A3', '6.13:1', 'clock', 'Waiting'], ['ask', '#5B2A9E', '#EFE6FB', '7.66:1', 'question', 'Needs your answer'], ['info', '#0F4C81', '#DCEBFA', '7.30:1', 'info', 'Finding your group'], ['group', '#0A5A73', '#D5EEF5', '6.38:1', 'group', 'Forming'], ['neutral', '#16302B', '#E9EEE6', '11.96:1', 'dash', 'Not run']];
+  var bands = [['band-check', 'Check', 'search', '#F5C400', '#111111', '11.49:1'], ['band-finding', 'Finding your group', 'people', '#0F4C81', '#FFFFFF', '8.86:1'], ['band-question', 'Needs your answer', 'question', '#5B2A9E', '#FFFFFF', '9.25:1'], ['band-waiting', 'Waiting', 'clock', '#F58A1F', '#111111', '7.68:1'], ['band-forming', 'Forming', 'group', '#0E6E8C', '#FFFFFF', '5.79:1'], ['band-ready', 'Ready', 'ticket', '#0B7A4F', '#FFFFFF', '5.37:1'], ['band-booked', 'Booked', 'checkc', '#064E32', '#FFFFFF', '9.80:1'], ['band-down', 'Rail down', 'rail', '#C4271E', '#FFFFFF', '5.74:1'], ['band-offline', 'You are offline', 'wifioff', '#111111', '#FFFFFF', '18.88:1']];
+  var chips = [['pass', 'check', 'Passed'], ['pass', 'check', 'Locked'], ['pass', 'check', 'Sent'], ['fail', 'cross', 'Refused'], ['fail', 'cross', 'Rail down'], ['wait', 'clock', 'Waiting to send'], ['ask', 'question', 'Needs your answer'], ['info', 'run', 'Running…'], ['group', 'bridge', 'Bridge ride'], ['neutral', 'dash', 'Not run']];
+  var sec = function (id, title, inner) { return '<section class="sys-sec" aria-labelledby="' + id + '"><h2 id="' + id + '" class="t-h2">' + title + '</h2>' + inner + '</section>'; };
+  var stateBox = function (icn, inner, st, role) { return '<div class="state-box"' + (role ? ' role="' + role + '"' : '') + (st ? ' style="' + st + '"' : '') + '>' + ic(icn, 'ic-24') + inner + '</div>'; };
+  return '<div class="' + (y.xa ? 'xa' : '') + '"><section class="sys-sec" style="border-top:0"><h1 class="t-display xs">Koottu design system</h1><p class="measure">A station you can carry. The rider app is a nameboard: black on yellow, read from far away. The judges’ side is a signal cabin panel: matte enamel, track drawn as track. Every status is colour, a word and a shape.</p>' +
+    '<div class="row g3 wrap"><button class="btn btn-secondary" aria-pressed="' + y.xa + '" data-a="xa">' + ic('lang') + (y.xa ? 'Turn off en-XA stress text' : 'Turn on en-XA stress text (+40%)') + '</button><p class="spec">en-XA adds about 40% to text length. Long strings narrow with font-stretch instead of wrapping badly.</p></div></section>' +
+    sec('sa', 'A. Foundations', '<h3 class="t-h3">Surfaces and ink</h3><div class="sw-grid">' + surf.map(function (c) { return '<div class="sw-cell"><div class="chipcol" style="background:' + c[1] + '"></div><div class="meta"><b>--' + c[0] + '</b><br>' + c[1] + '<br><span class="spec">' + c[2] + '</span></div></div>'; }).join('') + '</div>' +
+      '<h3 class="t-h3">Status pairs: ink on wash</h3><div class="sw-grid">' + pairs.map(function (p) { return '<div class="sw-cell"><div class="chipcol row" style="background:' + p[2] + ';color:' + p[1] + ';padding:0 12px;font-weight:700;gap:8px">' + ic(p[4]) + p[5] + '</div><div class="meta"><b>--' + p[0] + '-ink</b> ' + p[1] + '<br><b>--' + p[0] + '-wash</b> ' + p[2] + '<br><span class="spec">' + p[3] + ' ink on wash</span></div></div>'; }).join('') + '</div>' +
+      '<h3 class="t-h3">Type: Anek, one family for Latin, Tamil and Devanagari</h3><div class="stack g3 panel" style="padding:20px">' +
+      '<p class="t-sign xs">Is this fare fair?</p><p class="spec">Sign 56/60, weight 800, width 125%. 44/48 on phones.</p><p class="t-money xs">You pay Rs 325</p><p class="spec">Money 48/52, 800, 115%. 40/44 on phones. Tabular numbers.</p>' +
+      '<p class="t-display xs">Judges</p><p class="spec">Display 36/42, 800, 120%</p><p class="t-h2 xs">Section title</p><p class="spec">H2 24/30, 700, 110%</p><p class="t-h3 xs">Row title</p><p class="spec">H3 20/26, 700</p>' +
+      '<p class="t-body xs">' + (y.xa ? '[Ëvéryţhîñg éļšé îñ ţhé åþþ, ŵrîţţéñ þļåîñļý åñð çåļmļý ƒør å rîðér îñ å hûrrý, one two three four]' : 'Everything else in the app, written plainly and calmly for a rider in a hurry.') + '</p><p class="spec">Body 17/26, 400</p>' +
+      '<p class="t-small">Help text and table cells</p><p class="spec">Small 14/20, 500. Never smaller.</p><p class="t-h2"><span lang="ta">கூட்டு  கிண்டி  தாம்பரம்</span>   <span lang="hi">गिंडी  तांबरम</span></p><p class="spec">Tamil and Devanagari from the same family. Station names only; safety text is never machine-translated.</p></div>' +
+      '<h3 class="t-h3">Spacing (4px grid) and shape</h3><div class="row g4 wrap" style="align-items:flex-end">' + [4, 8, 12, 16, 24, 32, 48, 64].map(function (s) { return '<div class="stack g1" style="align-items:center"><span style="display:block;width:' + s + 'px;height:' + s + 'px;background:#16302B"></span><span class="spec">' + s + '</span></div>'; }).join('') +
+      '<p class="spec" style="max-width:360px">Square corners on panels, tables, ticket and bands. 4px on inputs and buttons. Chips fully rounded. Left aligned everywhere. No shadows on the rider side.</p></div>') +
+    sec('sb', 'B. State language: the band changes colour with each rider state', '<div class="stack g2">' + bands.map(function (b) { return '<div class="band ' + b[0] + ' row g3 wrap" style="padding:14px 20px;justify-content:space-between"><span class="row g2 t-h3" style="font-weight:800;font-stretch:120%">' + ic(b[2], 'ic-24') + b[1] + '</span><span class="t-small">--' + b[0] + ' ' + b[3] + ', text ' + b[4] + ', ' + b[5] + '</span></div>'; }).join('') + '</div><p class="spec">Check (yellow) and Waiting (orange) are close in hue, so they are always told apart by the magnifier and clock icons and their words.</p>') +
+    sec('sc', 'C. Money and ticket', '<div class="row g8 wrap" style="align-items:flex-start;background:#F5C400;padding:24px;--notch-bg:#F5C400">' +
+      '<article class="ticket" style="width:340px;max-width:100%" aria-label="Ticket, with save line"><div class="ticket-sec"><p class="t-money" style="font-size:40px;line-height:44px">You pay Rs 325</p><p>Alone it would cost Rs 649.</p><p class="save">You save Rs 324.</p></div><div class="tear" aria-hidden="true"></div><div class="ticket-sec"><p class="t-h3" style="font-weight:800;font-stretch:120%">Guindy station east exit 17:40</p><p>To Tambaram</p>' + chip('pass', 'check', 'Locked', 'align-self:flex-start') + '</div></article>' +
+      '<article class="ticket" style="width:340px;max-width:100%" aria-label="Ticket, alone"><div class="ticket-sec"><p class="t-money" style="font-size:40px;line-height:44px">You pay Rs 649</p><p>No group yet. You only join if you pay less than going alone.</p></div><div class="tear" aria-hidden="true"></div><div class="ticket-sec"><div class="seats" style="gap:6px">' + seats() + '</div><p class="t-small b">SeatRow: you, joined, open, open</p></div></article></div>' +
+      '<p class="spec">“You pay” is ink. “You save” is pass ink on white, never green on yellow. A refund is never a red negative number.</p>') +
+    sec('sd', 'D. Actions and inputs', '<div class="demo-row"><button class="btn btn-primary">Primary</button><button class="btn btn-green">Lock my share</button><button class="btn btn-secondary">Secondary</button><button class="btn btn-quiet">Quiet</button><button class="btn btn-danger">Fail the line</button><span style="background:#0F4C81;padding:8px" class="on-dark"><button class="btn btn-yellow">On a dark band</button></span></div>' +
+      '<div class="demo-row"><div class="stack g2"><button class="btn" disabled>Find my group</button><p class="reason">' + ic('wifioff', 'ic-16') + 'Needs a network. Queued until you reconnect.</p></div><button class="btn btn-primary btn-busy" aria-busy="true">' + ic('run') + 'Checking…</button><p class="spec">States: default, hover (darkens), focus (3px ring, 2px offset), pressed (moves 1px, 80ms), disabled with the reason beside it, busy with words.</p></div>' +
+      '<div class="sw-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))"><div class="field"><label for="f1">Text</label><input id="f1" class="input" value="Guindy station east exit"></div><div class="field"><label for="f2">Money</label><div class="money"><span class="pre" aria-hidden="true">Rs</span><input id="f2" class="input" value="649.00"></div></div>' +
+      '<div class="field"><label for="f3">Select</label><select id="f3" class="input"><option>Ride app A</option><option>Ride app B</option><option>Auto or bike app</option></select></div><div class="field"><label for="f4">Error</label><input id="f4" class="input err" value="-200" aria-describedby="f4e"><p id="f4e" class="err-text">' + ic('warn', 'ic-16') + 'A fare cannot be below zero. Type the amount your app shows.</p></div>' +
+      '<div class="field"><label for="f5">Disabled</label><input id="f5" class="input" disabled value="Saved fare"></div><div class="field"><label for="f6">Screenshot picker</label><input id="f6" type="file" class="input" style="padding:10px"><p class="help">Read Rs 649 from the screenshot.</p></div></div>' +
+      '<div class="row g6 wrap" style="align-items:flex-start"><div class="stack g3" style="width:340px;max-width:100%;background:#F5C400;padding:16px"><p class="b">OptionButton</p><button class="btn btn-secondary btn-lg">Yes, anyone going my way</button><button class="btn btn-secondary btn-lg">Only people in my circle</button></div>' +
+      '<div class="stack g3"><p class="b">Network switch and language picker</p><button class="switch" role="switch" aria-checked="true"><span class="sw-track"><span class="sw-knob"></span></span>Network: On</button><button class="switch" role="switch" aria-checked="false"><span class="sw-track"><span class="sw-knob"></span></span>Network: Cut</button>' + langSeg(false) + '</div></div>') +
+    sec('se', 'E. Content blocks', '<h3 class="t-h3">StatusChip</h3><div class="demo-row">' + chips.map(function (c) { return chip(c[0], c[1], c[2]); }).join('') + '</div>' +
+      '<h3 class="t-h3">Tag</h3><div class="demo-row"><span class="tag tag-sample">Sample</span><span class="tag tag-our">Our card</span><span class="tag tag-live"><i></i>Live</span><span class="tag tag-replay">' + ic('play') + 'Replay</span><span class="tag tag-sim">Simulated</span></div>' +
+      '<div class="row g6 wrap" style="align-items:flex-start"><div style="width:360px;max-width:100%;background:#F5C400;padding:16px"><p class="b">AdviceList</p><ul style="list-style:none;margin:0;padding:0"><li class="adv">' + ic('people', 'ic-24') + '<span><b>Share.</b> Split one cab with people going your way.</span></li><li class="adv">' + ic('clock', 'ic-24') + '<span><b>Wait.</b> The fare may drop in about 15 minutes.</span></li><li class="adv">' + ic('walk', 'ic-24') + '<span><b>Walk to another gate.</b> The west exit is quieter.</span></li><li class="adv">' + ic('phone', 'ic-24') + '<span><b>Try another app.</b> Check the same trip elsewhere.</span></li></ul></div>' +
+      '<div class="grow stack g2" style="min-width:0;flex-basis:420px"><p class="b">CardRow states</p><div class="tscroll"><table class="cards"><thead><tr><th style="width:6px;padding:0"></th><th>Code</th><th>Title</th><th>Outcome</th></tr></thead><tbody>' +
+      '<tr class="cr"><td class="edge edge-neutral"></td><td class="code">C03</td><td>API change <span class="tag tag-our">Our card</span></td><td>' + chip('neutral', 'dash', 'Not run') + '</td></tr><tr class="cr"><td class="edge edge-info"></td><td class="code">C05</td><td>Resource shortage</td><td>' + chip('info', 'run', 'Running…') + '</td></tr>' +
+      '<tr class="cr sel"><td class="edge edge-pass"></td><td class="code">C01</td><td>Offline <span class="tag tag-our">Our card</span></td><td>' + chip('pass', 'check', 'Passed') + '</td></tr><tr class="cr"><td class="edge edge-fail"></td><td class="code">C10</td><td>Sensor fault</td><td>' + chip('fail', 'cross', 'Failed') + '</td></tr></tbody></table></div>' +
+      '<p class="spec">The failed row is a showcase only. Rows stay white; the chip and a 6px edge carry the colour.</p></div></div>' +
+      '<div class="row g3 wrap"><p class="b">Tooltip, “What’s this?”</p>' + Object.keys(TIPS).map(function (k) { return '<button class="btn btn-quiet btn-sm" aria-expanded="' + (y.tip === k) + '" data-a="tip" data-v="' + k + '">' + ic('info') + k + '</button>'; }).join('') + '</div>' +
+      (y.tip ? '<p class="panel" role="status" style="padding:12px 16px;max-width:560px;box-shadow:0 8px 24px rgba(22,48,43,.18)"><b>' + y.tip + '.</b> ' + TIPS[y.tip] + '</p>' : '')) +
+    sec('sf', 'F. Overlays', '<div class="demo-row"><button class="btn btn-secondary" data-a="drawer">Open the drawer</button><button class="btn btn-secondary" data-a="dialog">Open the confirm dialog</button><p class="spec">Drawer closes with Esc or its Close button. The dialog says in words what will happen.</p></div>' +
+      '<div style="position:relative;height:300px;border:1px solid #B8C2B6;background:#D9DFD6;overflow:hidden"><p class="spec" style="padding:16px">Overlay preview area</p>' +
+      (y.drawer ? '<div class="drawer" role="dialog" aria-label="Group details"><h3 class="t-h3">Group details</h3><p>4 seats. 2 joined. Leaves Guindy station east exit at 17:40.</p><button id="drawer-close" class="btn btn-secondary" style="align-self:flex-start" data-a="closeAll">Close</button></div>' : '') +
+      (y.dialog ? '<div class="scrim"><div class="dialog" role="alertdialog" aria-label="Restore the network?"><h3 class="t-h3">Restore the network?</h3><p>The 14 boardings waiting to send will be sent to the hub now. Nothing already sent is sent twice.</p><div class="row g3 wrap"><button id="dialog-ok" class="btn btn-primary" data-a="closeAll">Restore and send 14</button><button class="btn btn-quiet" data-a="closeAll">Keep it cut</button></div></div></div>' : '') + '</div>') +
+    sec('sg', 'G. System states', '<div class="sw-grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">' +
+      stateBox('search', '<div class="stack g2"><p>No cards match this filter.</p><button class="btn btn-secondary btn-sm" style="align-self:flex-start">Clear the filter</button></div>') + stateBox('run', '<p>Running C05… waiting for the hub</p>', '', 'status') +
+      stateBox('warn', '<div class="stack g2"><p>The hub did not answer. Run it again, or cut the network to see offline mode.</p><button class="btn btn-secondary btn-sm" style="align-self:flex-start">Run it again</button></div>', 'border-color:#8E1B15;background:#FDE0DC;color:#8E1B15') + '</div>' +
+      '<h3 class="t-h3">Banner</h3><div class="stack g2"><div class="banner banner-dark on-dark">' + ic('wifioff') + '<p><span class="acc b">Network cut.</span> Koottu is still working offline.</p></div><div class="banner banner-info">' + ic('keyboard') + '<p>Keyboard-only test mode: pointer is off and colour is removed.</p></div>' +
+      '<div class="banner banner-warn">' + ic('lang') + '<p>Shown in English: a verified translation is not available.</p></div><div class="banner banner-problem">' + ic('warn') + '<p>Rail down between T Nagar and Pallavaram. Short cab rides are taking riders to working stations.</p></div></div>' +
+      '<h3 class="t-h3">OfflineStrip</h3><div class="row g4 wrap" style="align-items:flex-start"><div style="width:340px;max-width:100%" class="stack g1"><p class="spec">Online: #net is empty and hidden</p><p class="t-small" style="border:1px dashed #B8C2B6;padding:8px">(nothing shown)</p></div>' +
+      '<div style="width:340px;max-width:100%" class="stack g1"><p class="spec">Offline</p><div class="net-strip"><span class="acc b">You are offline.</span> Your pass and saved fares still work. New group requests are queued until you reconnect.</div></div>' +
+      '<div style="width:340px;max-width:100%" class="stack g1"><p class="spec">Syncing</p><div class="net-strip row g2">' + ic('run', 'ic-16') + '<span>Back online. Sending 2 waiting actions…</span></div></div></div>') + '</div>';
+}
+
+/* ---------- render + events ---------- */
+var VIEWS = { arena: arena, board: board, rider: rider, lead: lead, system: system };
+var TITLES = { arena: 'Judges', board: 'Live board', rider: 'Rider app', lead: 'Lead’s phone', system: 'Design system' };
+function render() {
+  var ae = document.activeElement, keep = ae && ae.id, ss = null, se = null;
+  try { if (ae && ae.selectionStart != null) { ss = ae.selectionStart; se = ae.selectionEnd; } } catch (e) {}
+  var y = window.scrollY;
+  app.innerHTML = shell(VIEWS[S.route]());
+  document.documentElement.setAttribute('data-mode', S.kb && S.route === 'rider' ? 'keyboard' : 'default');
+  document.documentElement.setAttribute('data-offline-ready', 'true');
+  document.title = 'Koottu · ' + TITLES[S.route];
+  if (S.route === 'board') drawBoard();
+  window.scrollTo(0, y);
+  var f = focusId ? document.getElementById(focusId) : (keep ? document.getElementById(keep) : null);
+  if (f) { f.focus({ preventScroll: !focusId }); if (!focusId && ss != null) { try { f.setSelectionRange(ss, se); } catch (e) {} } }
+  focusId = null;
+}
+function setNet(off) {
+  S.offline = off;
+  if (!off) setTimeout(function () { var q = S.r.lockQueued; S.outbox = S.outbox.map(function (o) { return { id: o.id, text: o.text, sent: true }; }); saveOb(); if (q) { S.r.lockQueued = false; S.r.locked = true; } render(); }, 900);
+}
+function queue(text) { S.outbox = S.outbox.concat([{ id: Date.now(), text: text, sent: false }]); saveOb(); }
+var A = {
+  net: function () { setNet(!S.offline); }, lang: function (v) { S.lang = v; }, sample: function () { S.sampleOpen = !S.sampleOpen; },
+  skip: function () { focusId = S.route === 'arena' ? 'detail' : 'next'; },
+  pick: function (v) { if (v === 'bridge') { S.r.bridge = !S.r.bridge; return; } S.r.bridge = false; if (v === 'booked') S.r.locked = true; go(v); },
+  kb: function () { navigate(S.kb ? 'rider' : 'rider-keyboard'); return false; },
+  find: function () { go('finding', true); rLater(2800, function () { if (S.r.st === 'finding') { go('question', true); render(); } }); },
+  queueGroup: function () { queue('Ask for a group: ' + S.r.spot + ' to ' + S.r.dest); },
+  dotsPause: function () { S.r.paused = !S.r.paused; },
+  answer: function (v) { if (v === 'alone') { go('check', true); return; } go('forming', true); rLater(3200, function () { if (S.r.st === 'forming') { go('ready', true); render(); } }); },
+  lock: function () { S.r.locked = true; focusId = 'next'; }, queueLock: function () { queue('Lock my share: Rs 325, group at Guindy station east exit'); S.r.lockQueued = true; },
+  bids: function () { S.r.bids = true; }, accept: function () { go('booked', true); },
+  reset: function () { S.r.checked = false; S.r.locked = false; S.r.lockQueued = false; S.r.bridge = false; S.r.shot = false; go('check', true); },
+  selcard: function (v) { S.a.sel = v; S.a.pasteErr = false; S.a.pasteNote = ''; }, run: function (v) { runCard(v); return false; }, runAll: function () { runAll(); return false; },
+  audit: function () { S.a.audit = true; S.a.allDone = false; }, filter: function (v) { S.a.filter = v; }, clearFilter: function () { S.a.filter = 'all'; S.a.query = ''; },
+  sort: function (v) { S.a.dir = S.a.sort === v ? -S.a.dir : 1; S.a.sort = v; },
+  runPaste: function () { var txt = S.a.paste.trim(); if (!txt) { S.a.pasteErr = true; return; }
+    try { var j = JSON.parse(txt), n = Array.isArray(j) ? j.length : (j && Array.isArray(j.records) ? j.records.length : 1); S.a.pasteErr = false; runCard(S.a.sel, 'Read your pasted response: ' + n + ' record' + (n === 1 ? '' : 's') + '.'); return false; } catch (e) { S.a.pasteErr = true; } },
+  bFail: function () { if (S.b.t < 0 || S.b.t >= 5000) bStart(); return false; }, bReplay: function () { bStart(); return false; },
+  bSkip: function () { bStop(); S.b.t = 5000; S.b.playing = false; S.b.paused = false; }, bSpeed: function (v) { S.b.speed = +v; },
+  bPause: function () { if (!S.b.playing) return; if (S.b.paused) { S.b.paused = false; render(); bLoop(); return false; } bStop(); S.b.paused = true; },
+  bReduce: function () { S.b.reduced = !S.b.reduced; if (S.b.reduced && S.b.playing) { bStop(); S.b.t = 5000; S.b.playing = false; S.b.paused = false; } },
+  bTable: function () { S.b.tableOpen = !S.b.tableOpen; },
+  lScan: function () { lCheck('KTU-PASS-0317'); }, lVerify: function () { lCheck(S.l.code); }, lTry: function (v) { S.l.code = v; lCheck(v); }, lAgain: function () { S.l.view = 'scan'; S.l.code = ''; },
+  xa: function () { S.y.xa = !S.y.xa; }, tip: function (v) { S.y.tip = S.y.tip === v ? null : v; },
+  drawer: function () { S.y.drawer = true; S.y.dialog = false; focusId = 'drawer-close'; }, dialog: function () { S.y.dialog = true; S.y.drawer = false; focusId = 'dialog-ok'; }, closeAll: function () { S.y.drawer = false; S.y.dialog = false; }
+};
+/* Navigate in-page so tabs work even where the host frame blocks hash changes */
+function navigate(h) {
+  var prev = S.route; parseHash(h);
+  try { history.replaceState(null, '', '#' + h); } catch (err) {}
+  if (prev === 'board' && S.route !== 'board') bStop();
+  S.sampleOpen = false; window.scrollTo(0, 0); render();
+}
+document.addEventListener('click', function (e) {
+  var ln = e.target.closest('a[href^="#"]');
+  if (ln && !ln.dataset.a) { var h = ln.getAttribute('href').slice(1); if (h && h !== 'next' && h !== 'detail') { e.preventDefault(); navigate(h); return; } }
+  var t = e.target.closest('[data-a]'); if (!t || t.disabled) return;
+  if (t.tagName === 'A' && t.dataset.a !== 'skip') return;
+  if (t.dataset.a === 'skip') e.preventDefault();
+  if (t.tagName === 'TR' && e.target.closest('button')) return;
+  var f = A[t.dataset.a]; if (!f) return;
+  if (f(t.dataset.v, t) !== false) render();
+  if (S.sampleOpen && t.dataset.a !== 'sample') { S.sampleOpen = false; render(); }
+});
+function onField(e) {
+  var t = e.target, k = t.dataset && t.dataset.in;
+  if (t.id === 'shot' && e.type === 'change') { S.r.shot = true; S.r.amount = '649'; render(); return; }
+  if (!k) return; var p = k.split('.'); S[p[0]][p[1]] = t.value;
+  if (k === 'a.query' || t.tagName === 'SELECT') render();
+  if (k === 'a.paste') S.a.pasteErr = false;
+}
+document.addEventListener('input', onField); document.addEventListener('change', onField);
+document.addEventListener('submit', function (e) { if (e.target.id === 'fare-form') { e.preventDefault(); S.r.checked = true; focusId = 'result'; render(); } });
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { if (S.y.drawer || S.y.dialog || S.sampleOpen) { S.y.drawer = S.y.dialog = false; S.sampleOpen = false; render(); } return; }
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target.closest && e.target.closest('#cards-table')) {
+    e.preventDefault(); var v = visibleCards(), list = v.ours.concat(v.rest), i = list.map(function (c) { return c.code; }).indexOf(S.a.sel);
+    var n = list[Math.max(0, Math.min(list.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; if (!n) return;
+    S.a.sel = n.code; focusId = 'row-' + n.code; render();
+  }
+});
+window.addEventListener('hashchange', function () { var prev = S.route; parseHash(); if (prev === 'board' && S.route !== 'board') bStop(); window.scrollTo(0, 0); render(); });
+parseHash(); render();
+})();
+</script>
