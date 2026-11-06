@@ -238,5 +238,12 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   if (existsSync(web)) app.register(fastifyStatic, { root: web });
   else app.get('/', async () => ({ name: 'Koottu hub', ui: 'Not built yet. Run npm run build.' }));
 
+  // The team's RAHA simulation is a separate static app. It is served as is under /sim/.
+  const sim = join(process.cwd(), 'sim');
+  if (existsSync(sim)) {
+    app.register(fastifyStatic, { root: sim, prefix: '/sim/', decorateReply: false });
+    app.get('/sim', (_req, reply) => reply.redirect('/sim/'));
+  }
+
   return { app, arena, ctx };
 }

@@ -2,7 +2,8 @@
 // the outcome from stored data. Everything marked simulated is simulated, and each demo says so.
 
 import type { CardCheck, CardResult } from '../core/types.ts';
-import { nodeName, SPOTS } from '../core/world.ts';
+import { fareFor, KM_PER_MIN } from '../core/fare.ts';
+import { NODES, nodeName, SPOTS } from '../core/world.ts';
 import type { ArenaContext } from './arena.ts';
 import type { Hub } from './hub.ts';
 
@@ -18,6 +19,7 @@ interface Out {
   checks: CardCheck[];
   evidence: CardResult['evidence'];
   summary: string;
+  facts?: Record<string, unknown>;
 }
 
 const check = (o: Out, id: string, requirement: string, ok: boolean, observed: string | number) => o.checks.push({ id, requirement, ok, observed: String(observed) });
@@ -80,7 +82,16 @@ async function bloc({ hub }: ArenaContext, o: Out) {
 
   o.evidence.push({ label: 'Driver bids (simulated drivers)', rows: [...res.ranked.map((b) => ({ driver: b.driver, bid: b.amount, etaMin: b.etaMin, rating: b.rating, outcome: b.id === res.best!.id ? 'Won' : 'Lost' })), ...res.rejected.map((x) => ({ driver: x.bid.driver, bid: x.bid.amount, etaMin: x.bid.etaMin, rating: x.bid.rating, outcome: x.why }))] });
   o.evidence.push({ label: 'Blocks through the payment gateway (simulated, no money moves)', rows: hub.reservationsFor(pod.id).map((r) => ({ rider: r.pid, amount: r.amount, state: r.state })) });
-  o.summary = `Alone, Rs ${soloEach} each. As a bloc, Rs ${res.best.amount} for the whole group, and a no-show cost nobody anything.`;
+  const spot = SPOTS.find((s) => s.id === pod.spot)!;
+  const normal = fareFor(Math.max(1, pod.routeMin * KM_PER_MIN));
+  const finalShares = after.shares.map((m) => m.share);
+  o.facts = {
+    spot: spot.name, from: spot.node, stops: pod.stops, stopNames: pod.stops.map(nodeName), surge: spot.surge,
+    soloEach, normalFare: normal, bid: res.best.amount, driver: res.best.driver, etaMin: res.best.etaMin,
+    riders: members.length, boarded: after.shares.length, shareEach: Math.max(...finalShares), shares: finalShares,
+    bids: [...res.ranked.map((b) => ({ driver: b.driver, amount: b.amount, etaMin: b.etaMin, won: b.id === res.best!.id, why: null })), ...res.rejected.map((x) => ({ driver: x.bid.driver, amount: x.bid.amount, etaMin: x.bid.etaMin, won: false, why: x.why }))],
+  };
+  o.summary = `Alone, each rider pays Rs ${soloEach} at ${spot.surge}x surge. Together they hire one cab for Rs ${res.best.amount}, about Rs ${Math.max(...finalShares)} each. The driver earns more than the normal Rs ${normal} fare, and a no-show cost nobody anything.`;
 }
 
 async function bridge({ hub }: ArenaContext, o: Out) {
@@ -109,6 +120,12 @@ async function bridge({ hub }: ArenaContext, o: Out) {
     const p = hub.pod(id)!;
     return { group: id, riders: n, to: p.stops.map(nodeName).join(', '), minutes: p.routeMin, fare: p.fare };
   }) });
+  const nodeByName = new Map(NODES.map((n) => [n.name, n.id]));
+  o.facts = {
+    riders: 40, bridged: bridged.length, placed: placed.length, cabs, hop, full, failedAt: 'GDY',
+    stations: res.stations.map((s) => ({ node: nodeByName.get(s.station) ?? null, name: s.station, riders: s.riders })),
+    rides: [...byPod.entries()].map(([id, n]) => ({ riders: n, to: hub.pod(id)!.stops, fare: hub.pod(id)!.fare })),
+  };
   o.summary = `40 riders became ${cabs} short bridge rides, costing Rs ${hop} in total instead of Rs ${full}.`;
 }
 
@@ -177,6 +194,6 @@ export async function runDemo(ctx: ArenaContext, id: string): Promise<CardResult
   return {
     card: id, title: info.title, status: o.checks.length > 0 && o.checks.every((c) => c.ok) ? 'PASS' : 'FAIL',
     summary: o.summary || 'This demo did not complete. See the failed checks.', ranAtMs: Date.now(), durationMs: Math.round(performance.now() - t0),
-    steps: o.steps, checks: o.checks, evidence: o.evidence,
+    steps: o.steps, checks: o.checks, evidence: o.evidence, facts: o.facts,
   };
 }

@@ -1,7 +1,8 @@
 node_modules/
 dist/
-data/
-logs/
+# Only the hub's own data and logs. sim/data is part of the simulation and must be committed.
+/data/
+/logs/
 *.db
 *.db-wal
 *.db-shm
