@@ -59,25 +59,33 @@ function showNet() {
   $('net').textContent = online ? '' : 'You are offline. Your pass still works. New requests will send when you reconnect.';
 }
 
-async function flush() {
+/** Sends queued items in order. Returns how many left the queue. */
+async function flush(): Promise<number> {
+  let done = 0;
   for (const item of outbox.filter((o) => o.state === 'waiting')) {
     try {
       const res = await api(item.path, item.body);
       item.state = 'sent';
+      done++;
       if (item.path === '/api/field/request') store.set('pid', res.pid);
       saveOutbox();
     } catch (e: Any) {
-      if (e.http) {
+      // A 4xx is the hub's final answer. A 5xx, or a 502 from a host's proxy when the hub drops the
+      // connection, means it never arrived, so it stays queued. Retrying is safe: it has an opId.
+      if (e.http >= 400 && e.http < 500 && e.http !== 408 && e.http !== 429) {
         item.state = 'sent';
+        done++;
         saveOutbox();
       }
       break;
     }
   }
+  return done;
 }
 
 async function heartbeat() {
   const was = online;
+  let sent = 0;
   try {
     await api('/api/field/ping');
     online = true;
@@ -86,7 +94,7 @@ async function heartbeat() {
   }
   showNet();
   if (online) {
-    if (!was || outbox.some((o) => o.state === 'waiting')) await flush();
+    if (!was || outbox.some((o) => o.state === 'waiting')) sent = await flush();
     await refreshRider();
     try {
       pack = await api('/api/field/offline-pack');
@@ -95,7 +103,8 @@ async function heartbeat() {
       /* keep the last saved pack */
     }
   }
-  if (was !== online && location.hash.startsWith('#/rider')) renderRider();
+  // A short outage can pass between beats, so redraw when the queue moved as well.
+  if ((was !== online || sent > 0) && location.hash.startsWith('#/rider')) renderRider();
 }
 
 // ---------- rider ----------

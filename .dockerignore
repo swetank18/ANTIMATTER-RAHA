@@ -4,5 +4,16 @@ logs
 dist
 .git
 *.md
+*.pdf
+*.jpeg
+*.jpg
+*.png
+constraints
+$S
+e2e
+tests
 test-results
 playwright-report
+src/web/public/ocr
+.env
+.env.*
