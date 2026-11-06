@@ -1,8 +1,9 @@
 // The demo world: a schematic of south and central Chennai. Place names are real; every time,
-// capacity and passenger in this file is synthetic and exists only for the simulation.
+// fare, cab count and rider in this file is synthetic and exists only for the simulation.
 
+import { fareFor, KM_PER_MIN } from './fare.ts';
 import { rng } from './hash.ts';
-import type { DeadlineKind, Need, Passenger, PlanMode, Vehicle } from './types.ts';
+import type { DeadlineKind, Need, Rider, ShareWith } from './types.ts';
 
 export interface WorldNode {
   id: string;
@@ -21,16 +22,6 @@ export interface WorldEdge {
   min: number;
   mode: 'ROAD' | 'METRO';
 }
-
-export interface Corridor {
-  id: string;
-  name: string;
-  terminal: string;
-  covers: string[];
-  pivot: { node: string; metroMin: number; stepFree: boolean } | null;
-}
-
-export const HUB = 'GDY';
 
 export const NODES: WorldNode[] = [
   { id: 'GDY', name: 'Guindy', x: 470, y: 330, lat: 13.0067, lng: 80.2206, stepFree: true },
@@ -62,17 +53,37 @@ export const EDGES: WorldEdge[] = [
   metro('EGM', 'MAS', 4), metro('GDY', 'ALD', 3), metro('GDY', 'TNG', 6), metro('TNG', 'EGM', 7),
 ];
 
-export const CORRIDORS: Corridor[] = [
-  { id: 'AIR', name: 'Airport', terminal: 'MAA', covers: ['ALD', 'MAA'], pivot: { node: 'ALD', metroMin: 6, stepFree: true } },
-  { id: 'STH', name: 'Tambaram and SRM', terminal: 'SRM', covers: ['ALD', 'TBM', 'SRM'], pivot: null },
-  { id: 'OMR', name: 'Velachery and OMR', terminal: 'SHO', covers: ['VLC', 'SHO'], pivot: null },
-  { id: 'CEN', name: 'Egmore and Central', terminal: 'MAS', covers: ['TNG', 'EGM', 'MAS'], pivot: { node: 'TNG', metroMin: 11, stepFree: false } },
-  { id: 'KLK', name: 'Kilpauk', terminal: 'KLK', covers: ['VDP', 'KLK'], pivot: { node: 'VDP', metroMin: 8, stepFree: true } },
-  { id: 'WST', name: 'Porur and Poonamallee', terminal: 'PML', covers: ['VDP', 'PRR', 'PML'], pivot: null },
+export interface Spot {
+  id: string;
+  name: string;
+  node: string;
+  circle: string;
+  carsPerSlot: number;
+  accessPerSlot: number;
+  surge: number;
+}
+
+/** Where groups meet. One pickup per group keeps every booking a plain point-to-point trip. */
+export const SPOTS: Spot[] = [
+  { id: 'SRM-MAIN', name: 'SRM main gate', node: 'SRM', circle: 'SRM', carsPerSlot: 8, accessPerSlot: 1, surge: 1.6 },
+  { id: 'SRM-TP', name: 'SRM Tech Park gate', node: 'SRM', circle: 'SRM', carsPerSlot: 5, accessPerSlot: 0, surge: 1.3 },
+  { id: 'GDY-E', name: 'Guindy station east exit', node: 'GDY', circle: 'PUBLIC', carsPerSlot: 9, accessPerSlot: 1, surge: 1.9 },
+  { id: 'GDY-W', name: 'Guindy station west exit', node: 'GDY', circle: 'PUBLIC', carsPerSlot: 6, accessPerSlot: 0, surge: 1.4 },
+  { id: 'TBM-W', name: 'Tambaram west exit', node: 'TBM', circle: 'PUBLIC', carsPerSlot: 7, accessPerSlot: 1, surge: 1.5 },
+  { id: 'SHO-TP', name: 'Sholinganallur tech park', node: 'SHO', circle: 'TECHPARK', carsPerSlot: 8, accessPerSlot: 1, surge: 1.7 },
 ];
 
-export const DESTINATIONS = [...new Set(CORRIDORS.flatMap((c) => c.covers))];
+export const CIRCLES = [...new Set(SPOTS.map((s) => s.circle))];
+export const spotOf = (id: string) => SPOTS.find((s) => s.id === id);
+export const DESTINATIONS = NODES.map((n) => n.id);
 export const nodeName = (id: string) => NODES.find((n) => n.id === id)?.name ?? id;
+
+/** Spots at the same place are a short walk apart. */
+export function nearbySpots(id: string): { spot: string; name: string; walkMin: number }[] {
+  const me = spotOf(id);
+  if (!me) return [];
+  return SPOTS.filter((s) => s.id !== id && s.node === me.node).map((s) => ({ spot: s.id, name: s.name, walkMin: 6 }));
+}
 
 export function shortest(from: string, to: string, closed: Set<string>, modes: WorldEdge['mode'][] = ['ROAD']): { min: number; path: string[]; edges: string[] } | null {
   const dist = new Map<string, number>([[from, 0]]);
@@ -106,18 +117,6 @@ export function shortest(from: string, to: string, closed: Set<string>, modes: W
   return { min: dist.get(to)!, path, edges };
 }
 
-export function makeFleet(): Vehicle[] {
-  const v: Vehicle[] = [];
-  const add = (n: number, kind: Vehicle['kind'], label: string, seats: number, bays: number) => {
-    for (let i = 0; i < n; i++) v.push({ id: `V${String(v.length + 1).padStart(2, '0')}`, label: `${label} ${i + 1}`, kind, seats, bays, active: true });
-  };
-  add(6, 'BUS', 'Bus', 60, 0);
-  add(6, 'SHUTTLE', 'Shuttle', 45, 2);
-  add(3, 'SHUTTLE', 'Mini shuttle', 28, 2);
-  add(3, 'MICROVAN', 'Access van', 14, 3);
-  return v;
-}
-
 export interface GenOptions {
   count: number;
   arrivalSpreadMin: number;
@@ -125,112 +124,46 @@ export interface GenOptions {
   idPrefix?: string;
 }
 
+const pickW = <T,>(r: () => number, items: [T, number][]): T => {
+  const total = items.reduce((s, [, w]) => s + w, 0);
+  let x = r() * total;
+  for (const [v, w] of items) if ((x -= w) <= 0) return v;
+  return items[items.length - 1][0];
+};
+
 /** Destination weights are illustrative, not survey data. */
 const DEST_WEIGHTS: [string, number][] = [
-  ['MAA', 10], ['ALD', 5], ['TBM', 12], ['SRM', 10], ['VLC', 11], ['SHO', 13],
-  ['TNG', 8], ['EGM', 8], ['MAS', 9], ['KLK', 5], ['VDP', 4], ['PRR', 3], ['PML', 2],
+  ['MAA', 10], ['ALD', 5], ['TBM', 10], ['SRM', 8], ['VLC', 11], ['SHO', 11],
+  ['TNG', 9], ['EGM', 8], ['MAS', 9], ['KLK', 5], ['VDP', 5], ['PRR', 3], ['PML', 2],
 ];
 
-export function makePassengers(seed: number, opt: GenOptions): Passenger[] {
+export function makeRiders(seed: number, opt: GenOptions): Rider[] {
   const r = rng(seed);
-  const pick = <T,>(items: [T, number][]): T => {
-    const total = items.reduce((s, [, w]) => s + w, 0);
-    let x = r() * total;
-    for (const [v, w] of items) if ((x -= w) <= 0) return v;
-    return items[items.length - 1][0];
-  };
   const start = opt.startAt ?? 0;
-  const out: Passenger[] = [];
+  const closed = new Set<string>();
+  const out: Rider[] = [];
   let people = 0;
   let i = 0;
   while (people < opt.count) {
-    const dest = pick(DEST_WEIGHTS);
-    const need = pick<Need>([['NONE', 90], ['ASSIST', 7], ['WHEELCHAIR', 3]]);
-    const kind = pick<DeadlineKind>(dest === 'MAA' ? [['FLIGHT', 70], ['NONE', 30]] : dest === 'MAS' || dest === 'EGM' ? [['RAIL', 55], ['SHIFT', 10], ['NONE', 35]] : dest === 'KLK' ? [['MEDICAL', 30], ['SHIFT', 20], ['NONE', 50]] : [['SHIFT', 28], ['NONE', 72]]);
-    const party = need === 'WHEELCHAIR' ? pick<number>([[1, 60], [2, 40]]) : pick<number>([[1, 82], [2, 11], [3, 5], [4, 2]]);
+    const spot = pickW(r, SPOTS.map((s): [typeof s, number] => [s, s.carsPerSlot]));
+    let dest = pickW(r, DEST_WEIGHTS);
+    if (dest === spot.node) dest = spot.node === 'MAS' ? 'TNG' : 'MAS';
+    const need = pickW<Need>(r, [['NONE', 90], ['ASSIST', 7], ['WHEELCHAIR', 3]]);
+    const kind = pickW<DeadlineKind>(r, dest === 'MAA' ? [['FLIGHT', 60], ['NONE', 40]] : dest === 'MAS' || dest === 'EGM' ? [['RAIL', 40], ['SHIFT', 10], ['NONE', 50]] : [['SHIFT', 20], ['NONE', 80]]);
+    const party = need === 'WHEELCHAIR' ? 1 : pickW<number>(r, [[1, 80], [2, 15], [3, 5]]);
+    const shareWith = pickW<ShareWith>(r, [['ANYONE', 78], ['WOMEN_ONLY', 22]]);
     const arrive = start + Math.round(r() * opt.arrivalSpreadMin);
     const span = kind === 'NONE' ? 0 : 40 + Math.round(r() * 170);
+    const path = shortest(spot.node, dest, closed);
+    const solo = fareFor((path?.min ?? 20) * KM_PER_MIN, spot.surge);
     out.push({
-      pid: `${opt.idPrefix ?? 'P'}-${String(i).padStart(5, '0')}`,
-      dest,
-      need,
-      party: Math.min(party, opt.count - people),
-      deadlineKind: kind,
-      deadlineAt: kind === 'NONE' ? null : arrive + span,
-      deadlineVerified: kind === 'NONE' ? false : r() < 0.6,
-      checkinAt: arrive,
-      state: 'WAITING',
-      displaced: false,
+      pid: `${opt.idPrefix ?? 'R'}-${String(i).padStart(5, '0')}`,
+      circle: spot.circle, spot: spot.id, dest, need, party: Math.min(party, opt.count - people), shareWith,
+      deadlineKind: kind, deadlineAt: kind === 'NONE' ? null : arrive + span, deadlineVerified: kind === 'NONE' ? false : r() < 0.6,
+      checkinAt: arrive, maxWaitMin: 10 + Math.round(r() * 10), maxDetourMin: 8 + Math.round(r() * 10), soloFare: solo, state: 'WAITING', displaced: false,
     });
     people += out[out.length - 1].party;
     i++;
-  }
-  return out;
-}
-
-export interface TripPlan {
-  corridor: string;
-  dropAt: string;
-  mode: PlanMode;
-  oneWayMin: number;
-  rttMin: number;
-  arriveExtraMin: number;
-  routeEdges: string[];
-}
-
-const DWELL_MIN = 4;
-
-export function tripFor(c: Corridor, mode: PlanMode, closed: Set<string>): TripPlan | null {
-  const useTrunk = mode === 'TRUNK' && c.pivot !== null;
-  const target = useTrunk ? c.pivot!.node : c.terminal;
-  const path = shortest(HUB, target, closed);
-  if (!path) return null;
-  return {
-    corridor: c.id,
-    dropAt: target,
-    mode: useTrunk ? 'TRUNK' : 'DIRECT',
-    oneWayMin: path.min,
-    rttMin: path.min * 2 + DWELL_MIN,
-    arriveExtraMin: useTrunk ? c.pivot!.metroMin : 0,
-    routeEdges: path.edges,
-  };
-}
-
-export interface CorridorDemand {
-  corridor: string;
-  people: number;
-  wheelchairs: number;
-}
-
-/**
- * Hands vehicles to corridors by Sainte-Lague highest averages, weighted by trips per hour:
- * no corridor can be starved and small corridors are not swallowed by large ones. Vehicles with
- * wheelchair bays go first, to wherever wheelchair demand is greatest.
- */
-export function apportion(vehicles: Vehicle[], demand: CorridorDemand[], trips: Map<string, TripPlan>): Map<string, string> {
-  const out = new Map<string, string>();
-  const served = new Map(demand.map((d) => [d.corridor, 0]));
-  const bays = new Map(demand.map((d) => [d.corridor, 0]));
-  const usable = demand.filter((d) => trips.has(d.corridor));
-  if (usable.length === 0) return out;
-
-  const hourly = (v: Vehicle, c: string) => (v.seats * 60) / trips.get(c)!.rttMin;
-  const list = [...vehicles].sort((a, b) => b.bays - a.bays || b.seats - a.seats || a.id.localeCompare(b.id));
-
-  for (const v of list) {
-    let best: CorridorDemand | null = null;
-    let bestQ = -Infinity;
-    for (const d of usable) {
-      const need = v.bays > 0 ? d.wheelchairs * 6 / (1 + bays.get(d.corridor)!) : 0;
-      const q = d.people / (2 * served.get(d.corridor)! + hourly(v, d.corridor)) + need;
-      if (q > bestQ || (q === bestQ && best !== null && d.corridor < best.corridor)) {
-        bestQ = q;
-        best = d;
-      }
-    }
-    out.set(v.id, best!.corridor);
-    served.set(best!.corridor, served.get(best!.corridor)! + hourly(v, best!.corridor));
-    bays.set(best!.corridor, bays.get(best!.corridor)! + v.bays);
   }
   return out;
 }

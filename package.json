@@ -1,9 +1,9 @@
 {
-  "name": "omnistrand",
+  "name": "koottu",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Fair, offline-safe recovery for stranded transit passengers.",
+  "description": "Riders compare fares, share cabs and split them fairly, on top of Uber and Ola.",
   "scripts": {
     "dev:hub": "tsx watch src/hub/main.ts",
     "dev:web": "vite",

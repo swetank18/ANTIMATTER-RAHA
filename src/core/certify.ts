@@ -10,7 +10,7 @@ export interface CertPool {
 }
 
 export interface CertOption {
-  run: string;
+  slot: string;
   demand: Record<string, number>;
 }
 
@@ -81,6 +81,47 @@ function maxFlow(nodes: number, edges: [number, number, number][], s: number, t:
   return flow;
 }
 
+export interface PodAudit {
+  id: string;
+  seatsTotal: number;
+  fare: number;
+  members: { pid: string; party: number; share: number; solo: number; detour: number; maxDetour: number; circle: string; shareWith: string | null }[];
+}
+
+/** Rechecks every group from stored values, sharing no code with the matcher. */
+export function auditPods(pods: PodAudit[]): CertificateCheck[] {
+  const seen = new Set<string>();
+  let twice = 0;
+  let overSeats = 0;
+  let badSum = 0;
+  let noSaving = 0;
+  let overDetour = 0;
+  let mixedCircle = 0;
+  let mixedPref = 0;
+  for (const p of pods) {
+    if (p.members.reduce((s, m) => s + m.party, 0) > p.seatsTotal) overSeats++;
+    if (p.members.reduce((s, m) => s + m.share, 0) !== p.fare) badSum++;
+    if (new Set(p.members.map((m) => m.circle)).size > 1) mixedCircle++;
+    if (new Set(p.members.map((m) => m.shareWith)).size > 1) mixedPref++;
+    for (const m of p.members) {
+      if (seen.has(m.pid)) twice++;
+      seen.add(m.pid);
+      if (p.members.length > 1 && m.share >= m.solo) noSaving++;
+      if (p.members.length > 1 && m.detour > m.maxDetour) overDetour++;
+    }
+  }
+  const n = pods.length;
+  return [
+    { id: 'pod-one-each', label: 'Nobody is in two groups at once', ok: twice === 0, observed: `${seen.size} riders across ${n} groups, ${twice} duplicated` },
+    { id: 'pod-seats', label: 'No group has more people than seats', ok: overSeats === 0, observed: `${n} groups recounted, ${overSeats} over` },
+    { id: 'pod-sum', label: 'Every split adds up to the fare exactly', ok: badSum === 0, observed: `${n} splits summed, ${badSum} wrong` },
+    { id: 'pod-saves', label: 'Everyone in a group pays less than going alone', ok: noSaving === 0, observed: `${noSaving} would pay the same or more` },
+    { id: 'pod-detour', label: 'Nobody exceeds the detour they agreed to', ok: overDetour === 0, observed: `${overDetour} over their limit` },
+    { id: 'pod-circle', label: 'Groups stay inside one trusted circle', ok: mixedCircle === 0, observed: `${mixedCircle} mixed` },
+    { id: 'pod-pref', label: 'Sharing preferences are respected', ok: mixedPref === 0, observed: `${mixedPref} mixed` },
+  ];
+}
+
 const unitsOf = (o: CertOption) => Object.values(o.demand).reduce((a, b) => a + b, 0);
 
 /** The most that could be seated if every group were willing to split up. */
@@ -134,7 +175,7 @@ export function certify(input: CertInput): Certificate {
   const over = pools.filter((p) => (used.get(p.id) ?? 0) > p.cap);
   checks.push({
     id: 'capacity',
-    label: 'No vehicle holds more people than it has room for',
+    label: 'No more cabs are assigned than are available',
     ok: over.length === 0,
     observed: over.length ? `${over.length} over capacity` : `${pools.length} seat and bay pools recounted, none over`,
   });
@@ -143,19 +184,19 @@ export function certify(input: CertInput): Certificate {
   for (const [id, o] of Object.entries(placed)) {
     const u = byId.get(id);
     const allowed = u && (u.locked ? [u.locked] : u.options);
-    if (!allowed || !allowed.some((a) => a.run === o.run && JSON.stringify(a.demand) === JSON.stringify(o.demand))) bad++;
+    if (!allowed || !allowed.some((a) => a.slot === o.slot && JSON.stringify(a.demand) === JSON.stringify(o.demand))) bad++;
   }
   checks.push({
     id: 'admissible',
-    label: 'Everyone seated is on a vehicle that can actually serve them',
+    label: 'Every group is on a slot that can actually serve it',
     ok: bad === 0,
-    observed: bad ? `${bad} placed on an invalid run` : `${Object.keys(placed).length} placements checked`,
+    observed: bad ? `${bad} placed on an invalid slot` : `${Object.keys(placed).length} placements checked`,
   });
 
-  const broken = units.filter((u) => u.locked && placed[u.id]?.run !== u.locked.run);
+  const broken = units.filter((u) => u.locked && placed[u.id]?.slot !== u.locked.slot);
   checks.push({
     id: 'commitments',
-    label: 'Every issued pass is still honoured',
+    label: 'Every confirmed ride is still honoured',
     ok: broken.length === 0,
     observed: `${units.filter((u) => u.locked).length} commitments kept, ${broken.length} broken`,
   });
@@ -167,7 +208,7 @@ export function certify(input: CertInput): Certificate {
     id: 'complete',
     label: 'Everyone has exactly one outcome',
     ok: both.length === 0 && missing.length === 0,
-    observed: `${seen.size} seated, ${refused.length} refused, ${missing.length} without an outcome`,
+    observed: `${seen.size} served, ${refused.length} refused, ${missing.length} without an outcome`,
   });
 
   let hallChecked = 0;
@@ -193,7 +234,7 @@ export function certify(input: CertInput): Certificate {
   }
   checks.push({
     id: 'hall',
-    label: 'Each refusal has a proof that no rearrangement could seat that person',
+    label: 'Each refusal has a proof that no rearrangement could provide a cab',
     ok: hallBad === 0,
     observed: `${hallChecked - hallBad} of ${hallChecked} refusal proofs verified`,
   });
@@ -207,9 +248,9 @@ export function certify(input: CertInput): Certificate {
   const gap = bound - unitsSeated;
   checks.push({
     id: 'bound',
-    label: 'Seats filled are compared with the most any plan could fill',
+    label: 'Cabs assigned are compared with the most any plan could assign',
     ok: gap >= 0,
-    observed: `${unitsSeated} seated against an upper bound of ${bound}`,
+    observed: `${unitsSeated} served against an upper bound of ${bound}`,
   });
 
   return {

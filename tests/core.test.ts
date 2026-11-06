@@ -7,12 +7,13 @@ import { newKeyPair, signToken, verifyPass } from '../src/core/pass.ts';
 import { compare, POLICY_V1, prioritise, validatePolicy } from '../src/core/priority.ts';
 import { assess, hampel } from '../src/core/sensors.ts';
 import { naiveNewestArrival, resolveRoute } from '../src/core/truth.ts';
-import type { Passenger, PassPayload, RouteRecord } from '../src/core/types.ts';
+import type { PassPayload, Rider, RouteRecord } from '../src/core/types.ts';
 import { checkBatch, parseCsv, parseJsonTolerant, safeExcerpt } from '../src/core/validate.ts';
 import { dbscan, shortest } from '../src/core/world.ts';
 
-const person = (o: Partial<Passenger> = {}): Passenger => ({
-  pid: 'P-1', dest: 'MAA', need: 'NONE', party: 1, deadlineKind: 'NONE', deadlineAt: null, deadlineVerified: false, checkinAt: 0, state: 'WAITING', displaced: false, ...o,
+const person = (o: Partial<Rider> = {}): Rider => ({
+  pid: 'P-1', circle: 'X', spot: 'GDY-E', dest: 'MAA', need: 'NONE', party: 1, shareWith: 'ANYONE', deadlineKind: 'NONE', deadlineAt: null, deadlineVerified: false,
+  checkinAt: 0, maxWaitMin: 15, maxDetourMin: 12, soloFare: 300, state: 'WAITING', displaced: false, ...o,
 });
 
 describe('priority', () => {
@@ -74,7 +75,7 @@ describe('passes', () => {
     expect(scan(s, token, 0).ok).toBe(true);
     expect(scan(s, token, 0)).toMatchObject({ ok: false, code: 'ALREADY_USED' });
     const other = newFieldSnapshot('D2', 'R2', pk, null);
-    expect(scan(other, token, 0)).toMatchObject({ ok: false, code: 'WRONG_VEHICLE' });
+    expect(scan(other, token, 0)).toMatchObject({ ok: false, code: 'WRONG_RIDE' });
     expect(scan(newFieldSnapshot('D3', 'R1', pk, null), token, 99)).toMatchObject({ ok: false, code: 'EXPIRED' });
   });
 
@@ -231,6 +232,28 @@ describe('contract adapter', () => {
     expect(res.unknownFields).toContain('currentState.crowding');
   });
 
+  it('accepts a field that became optional, and only when marked so', () => {
+    const partial = { data: { items: [
+      { routeInfo: { routeId: 'A-B' }, currentState: { status: 'running' }, lastUpdated: 1793934000000 },
+      { routeInfo: { routeId: 'C-D' }, currentState: { status: 'delayed' } },
+    ] } };
+    const p = proposeMapping(partial, 'v2')!;
+    expect(p.mapping.fields.observedAtIso.optional).toBe(true);
+    const res = adapt(partial, p.mapping);
+    expect(res.records.length).toBe(2);
+    expect(res.records[1].observedAtIso).toBeNull();
+    const strict = { ...p.mapping, fields: { ...p.mapping.fields, observedAtIso: { ...p.mapping.fields.observedAtIso, optional: false } } };
+    expect(adapt(partial, strict).records.length).toBe(1);
+  });
+
+  it('rejects one bad record without losing the good ones', () => {
+    const mixed = { routes: [{ route_id: 'A-B', status: 'running', updated_at: '2026-11-06T03:00:00Z' }, { route_id: 'C-D', status: 'on fire', updated_at: '2026-11-06T03:00:00Z' }] };
+    const res = adapt(mixed, MAPPING_V1);
+    expect(res.ok).toBe(true);
+    expect(res.records.length).toBe(1);
+    expect(res.errors.length).toBe(1);
+  });
+
   it('does not propose a mapping from nonsense', () => {
     const p = proposeMapping({ a: [{ b: 1 }] }, 'v9');
     expect(p === null || !p.complete).toBe(true);
@@ -257,14 +280,14 @@ describe('input validation', () => {
   });
 
   it('does not coerce values into something plausible', () => {
-    const csv = 'passenger_id,destination,need,party\nA,MAA,NONE,12 people\nB,MAA,NONE,1.5\nC,MAA,NONE,0\nD,MAA,NONE,-1\nE,MAA,NONE,2\n';
+    const csv = 'rider_id,destination,need,party\nA,MAA,NONE,12 people\nB,MAA,NONE,1.5\nC,MAA,NONE,0\nD,MAA,NONE,-1\nE,MAA,NONE,2\n';
     const r = checkBatch(csv, stops);
     expect(r.accepted.map((x) => x.externalId)).toEqual(['E']);
     expect(r.quarantined.length).toBe(4);
   });
 
   it('rejects impossible dates that JavaScript would quietly roll over', () => {
-    const csv = 'passenger_id,destination,need,deadline_kind,deadline_at\nA,MAA,NONE,FLIGHT,2026-02-31T10:00:00+05:30\nB,MAA,NONE,FLIGHT,2026-02-28T10:00:00+05:30\n';
+    const csv = 'rider_id,destination,need,deadline_kind,deadline_at\nA,MAA,NONE,FLIGHT,2026-02-31T10:00:00+05:30\nB,MAA,NONE,FLIGHT,2026-02-28T10:00:00+05:30\n';
     expect(checkBatch(csv, stops).accepted.map((x) => x.externalId)).toEqual(['B']);
   });
 
@@ -283,15 +306,15 @@ describe('input validation', () => {
 });
 
 describe('language rules', () => {
-  const pack = { code: 'ta', name: 'Tamil', strings: { 'nav.pass': 'tamil', 'pass.show': 'guess' }, glossary: {} };
+  const pack = { code: 'ta', name: 'Tamil', strings: { 'nav.ride': 'tamil', 'pod.show': 'guess' }, glossary: {} };
 
   it('never shows an unverified critical translation', () => {
-    expect(translate('pass.show', pack)).toMatchObject({ lang: 'en', criticalUnverified: true });
+    expect(translate('pod.show', pack)).toMatchObject({ lang: 'en', criticalUnverified: true });
   });
 
   it('uses a verified term', () => {
-    const p = { ...pack, glossary: { 'pass.show': { text: 'verified', verifiedBy: 'Organiser' } } };
-    expect(translate('pass.show', p)).toMatchObject({ text: 'verified', lang: 'ta' });
+    const p = { ...pack, glossary: { 'pod.show': { text: 'verified', verifiedBy: 'Organiser' } } };
+    expect(translate('pod.show', p)).toMatchObject({ text: 'verified', lang: 'ta' });
   });
 
   it('falls back on non-critical text', () => {

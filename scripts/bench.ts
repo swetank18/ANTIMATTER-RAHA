@@ -5,11 +5,11 @@ import { Hub } from '../src/hub/hub.ts';
 
 const rows = [];
 for (const n of [1500, 5000, 20000]) {
-  const hub = new Hub({ passengers: n });
-  const a = hub.allocateEpoch('bench');
+  const hub = new Hub({ riders: n });
+  const a = hub.matchEpoch('bench');
   const t0 = performance.now();
   const c = hub.cohorts();
-  rows.push({ passengers: n, solveMs: Math.round(a.solveMs * 10) / 10, clusterMs: c.ms, clusterTotalMs: Math.round((performance.now() - t0) * 10) / 10, seated: a.seated, certified: a.certificate.ok });
+  rows.push({ riders: n, solveMs: Math.round(a.solveMs * 10) / 10, clusterMs: c.ms, clusterTotalMs: Math.round((performance.now() - t0) * 10) / 10, groups: a.pods, certified: a.certificate.ok });
   hub.close();
 }
 console.table(rows);

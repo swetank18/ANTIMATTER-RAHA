@@ -1,50 +1,60 @@
-// Shared domain types. Everything in src/core is pure and runs on the hub,
-// on a driver handheld and on a passenger phone without modification.
+// Shared domain types. Everything in src/core is pure and runs on the hub and on phones unchanged.
 
-export type Need = 'NONE' | 'ASSIST' | 'WHEELCHAIR' | 'UNKNOWN';
+export type Need = 'NONE' | 'ASSIST' | 'WHEELCHAIR';
 export type DeadlineKind = 'NONE' | 'FLIGHT' | 'RAIL' | 'SHIFT' | 'MEDICAL';
-export type PassengerState = 'WAITING' | 'ASSIGNED' | 'BOARDED' | 'DEPARTED' | 'AWAITING_INFO' | 'CANCELLED';
+export type RiderState = 'WAITING' | 'ASSIGNED' | 'RIDING' | 'DONE' | 'AWAITING_INFO' | 'CANCELLED';
 export type SeatState = 'HELD' | 'COMMITTED' | 'BOARDED' | 'RELEASED';
-export type RunState = 'PLANNED' | 'DEPARTED' | 'CANCELLED';
-export type PlanMode = 'DIRECT' | 'TRUNK';
+export type PodState = 'FORMING' | 'LOCKED' | 'BOOKED' | 'RIDING' | 'DONE' | 'DISSOLVED';
 
-export interface Passenger {
+/** null means the rider has not said. It is a real state, never a default. */
+export type ShareWith = 'ANYONE' | 'WOMEN_ONLY' | null;
+
+export interface Rider {
   pid: string;
+  circle: string;
+  spot: string;
   dest: string;
   need: Need;
   party: number;
+  shareWith: ShareWith;
   deadlineKind: DeadlineKind;
   deadlineAt: number | null;
   deadlineVerified: boolean;
   checkinAt: number;
-  state: PassengerState;
+  maxWaitMin: number;
+  maxDetourMin: number;
+  soloFare: number;
+  state: RiderState;
   displaced: boolean;
 }
 
-export interface Vehicle {
+export interface Pod {
   id: string;
-  label: string;
-  kind: 'BUS' | 'SHUTTLE' | 'MICROVAN';
-  seats: number;
-  bays: number;
-  active: boolean;
-}
-
-export interface Run {
-  id: string;
-  vehicleId: string;
-  corridor: string;
-  dropAt: string;
-  mode: PlanMode;
-  departAt: number;
-  arriveAt: number;
-  returnAt: number;
+  spot: string;
+  circle: string;
+  slotId: string | null;
+  slotAt: number | null;
+  accessible: boolean;
   seatsTotal: number;
   seatsTaken: number;
-  baysTotal: number;
-  baysTaken: number;
   escrowSeats: number;
-  state: RunState;
+  stops: string[];
+  routeMin: number;
+  estFare: number;
+  fare: number;
+  lead: string | null;
+  bookedApp: string | null;
+  state: PodState;
+}
+
+export interface CabSlot {
+  id: string;
+  spot: string;
+  at: number;
+  carsTotal: number;
+  carsTaken: number;
+  accessTotal: number;
+  accessTaken: number;
 }
 
 export interface PolicyRule {
@@ -91,9 +101,10 @@ export interface Priority {
 }
 
 export interface Alternative {
-  kind: 'NEXT_WAVE' | 'STAGING' | 'METRO' | 'WALK';
+  kind: 'NEXT_SLOT' | 'WALK' | 'SOLO' | 'METRO';
   title: string;
   etaMin: number | null;
+  costRs: number | null;
   stepFree: boolean;
   detail: string;
 }
@@ -108,9 +119,8 @@ export interface Witness {
 export interface Decision {
   pid: string;
   epoch: number;
-  outcome: 'SEATED' | 'WAITLISTED' | 'AWAITING_INFO' | 'COMMITTED_KEPT';
-  runId: string | null;
-  pool: 'S' | 'B' | null;
+  outcome: 'MATCHED' | 'WAITLISTED' | 'AWAITING_INFO' | 'COMMITTED_KEPT';
+  podId: string | null;
   priority: Priority;
   witness: Witness | null;
   rivals: number;

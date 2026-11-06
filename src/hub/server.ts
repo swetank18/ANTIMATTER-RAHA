@@ -4,7 +4,7 @@ import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { coverage } from '../core/i18n.ts';
 import { verifyChain } from '../core/ledger.ts';
-import { CORRIDORS, DESTINATIONS, EDGES, NODES } from '../core/world.ts';
+import { DESTINATIONS, EDGES, NODES, SPOTS } from '../core/world.ts';
 import { Arena, CARDS, type ArenaContext } from './arena.ts';
 import { Hub, HubError } from './hub.ts';
 import type { Outside } from './outside.ts';
@@ -20,9 +20,9 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   const ctx: ArenaContext = { hub, outside, baseUrl: null };
   const arena = new Arena(ctx);
 
-  // Passenger batches arrive here untouched: the tolerant parser must see even broken JSON.
+  // Rider batches arrive here untouched: the tolerant parser must see even broken JSON.
   app.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
-    if (req.url.startsWith('/api/ingest/passengers')) return done(null, body);
+    if (req.url.startsWith('/api/ingest/riders')) return done(null, body);
     try {
       done(null, body ? JSON.parse(body as string) : {});
     } catch {
@@ -55,7 +55,7 @@ export function buildServer(hub: Hub, outside: Outside): Server {
     pending = setTimeout(() => {
       pending = null;
       try {
-        hub.allocateEpoch('New check-ins');
+        hub.matchEpoch('New requests');
       } catch {
         hub.log.write('error', 'deferred_allocation_failed');
       }
@@ -66,12 +66,12 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   const body = <T = any>(req: { body: unknown }) => (req.body ?? {}) as T;
 
   // Field
-  app.post('/api/field/checkin', async (req) => {
-    const out = hub.checkin(body(req));
+  app.post('/api/field/request', async (req) => {
+    const out = hub.request(body(req));
     allocateSoon();
     return out;
   });
-  app.get('/api/field/passenger/:pid', async (req) => hub.passengerView((req.params as { pid: string }).pid));
+  app.get('/api/field/rider/:pid', async (req) => hub.riderView((req.params as { pid: string }).pid));
   app.post('/api/field/answer', async (req) => {
     const b = body(req);
     return hub.answerClarification(b.pid, Number(b.clarificationId), b.value);
@@ -81,9 +81,18 @@ export function buildServer(hub: Hub, outside: Outside): Server {
     return hub.cancel(b.opId, b.pid);
   });
   app.post('/api/field/claim', async (req) => hub.claim(body(req)));
-  app.get('/api/field/device/:runId', async (req) => {
+  app.post('/api/field/quote', async (req) => hub.submitQuote(body(req)));
+  app.post('/api/field/book', async (req) => hub.book(body(req)));
+  app.post('/api/field/paid', async (req) => {
+    const b = body(req);
+    return hub.markPaid(b.opId, b.pid, b.podId);
+  });
+  app.post('/api/field/check', async (req) => hub.checkQuote(body(req)));
+  app.get('/api/field/ping', async () => ({ ok: true }));
+  app.get('/api/field/offline-pack', async () => hub.offlinePack());
+  app.get('/api/field/group/:podId', async (req) => {
     const q = req.query as { device?: string };
-    return hub.deviceSnapshot((req.params as { runId: string }).runId, q.device ?? 'unknown');
+    return hub.deviceSnapshot((req.params as { podId: string }).podId, q.device ?? 'unknown');
   });
   app.post('/api/field/escrow', async (req) => hub.grantEscrow(body(req)));
   app.post('/api/field/sync', async (req) => {
@@ -93,18 +102,18 @@ export function buildServer(hub: Hub, outside: Outside): Server {
 
   // Operations
   app.get('/api/health', async () => ({ ok: true, offline: hub.offline, clock: hub.now }));
-  app.get('/api/world', async () => ({ nodes: NODES, edges: EDGES, corridors: CORRIDORS, destinations: DESTINATIONS }));
+  app.get('/api/world', async () => ({ nodes: NODES, edges: EDGES, spots: SPOTS, destinations: DESTINATIONS }));
   app.get('/api/state', async () => hub.state());
   app.get('/api/cohorts', async () => hub.cohorts());
   app.post('/api/reset', async (req) => {
     const b = body(req);
-    hub.reset(Number(b.seed ?? 842), Number(b.passengers ?? 1420));
+    hub.reset(Number(b.seed ?? 842), Number(b.riders ?? 1200));
     outside.shape = 'v1';
     arena.last.clear();
     return hub.state();
   });
   app.post('/api/clock/advance', async (req) => hub.advance(Number(body(req).minutes)));
-  app.post('/api/allocate', async () => hub.allocateEpoch('Operator request', 'operator'));
+  app.post('/api/match', async () => hub.matchEpoch('Operator request', 'operator'));
   app.get('/api/decisions', async (req) => {
     const q = req.query as { outcome?: string; limit?: string };
     return hub.decisions(q.outcome ?? null, Math.min(Number(q.limit ?? 100), 1000));
@@ -130,8 +139,8 @@ export function buildServer(hub: Hub, outside: Outside): Server {
     const b = body(req);
     return hub.decideApproval(Number((req.params as { id: string }).id), b.decision, b.by);
   });
-  app.post('/api/ingest/passengers', async (req) => {
-    const report = hub.ingestPassengers(String(req.body ?? ''));
+  app.post('/api/ingest/riders', async (req) => {
+    const report = hub.ingestRiders(String(req.body ?? ''));
     allocateSoon();
     return report;
   });
@@ -155,6 +164,8 @@ export function buildServer(hub: Hub, outside: Outside): Server {
   app.post('/api/feed/poll', async () => hub.pollFeed());
   app.get('/api/feed', async () => hub.feedState());
   app.post('/api/feed/adapters/:version/approve', async (req) => hub.approveAdapter((req.params as { version: string }).version, body(req).by));
+  app.get('/api/fare-rule', async () => hub.fareRule('MINI'));
+  app.post('/api/fare-rule', async (req) => hub.setFareRule(body(req)));
   app.get('/api/egress', async () => hub.db.prepare('SELECT at, dest, decision, reason, bytes FROM egress_log ORDER BY id DESC LIMIT 200').all());
   app.get('/api/i18n', async () => hub.packs().map((pack) => ({ pack, coverage: coverage(pack) })));
   app.post('/api/i18n/pack', async (req) => hub.loadPack(req.body));
@@ -201,7 +212,7 @@ export function buildServer(hub: Hub, outside: Outside): Server {
 
   const web = join(process.cwd(), 'dist/web');
   if (existsSync(web)) app.register(fastifyStatic, { root: web });
-  else app.get('/', async () => ({ name: 'OmniStrand hub', ui: 'Not built yet. See the API under /api.' }));
+  else app.get('/', async () => ({ name: 'Koottu hub', ui: 'Not built yet. Run npm run build.' }));
 
   return { app, arena, ctx };
 }

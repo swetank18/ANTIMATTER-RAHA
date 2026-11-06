@@ -16,7 +16,7 @@ if (at >= 0) {
   anchor = { seq: Number(seq), hash };
   args.splice(at, 2);
 }
-const file = args[0] ?? 'data/omnistrand.db';
+const file = args[0] ?? 'data/koottu.db';
 const db = new Database(file, { readonly: true });
 const rows = (db.prepare('SELECT * FROM ledger ORDER BY seq').all() as any[]).map((r): LedgerEntry => ({ ...r, payload: JSON.parse(r.payload) }));
 const res = verifyChain(rows, anchor);

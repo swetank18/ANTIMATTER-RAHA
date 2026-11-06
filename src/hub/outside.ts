@@ -1,6 +1,7 @@
 // A stand-in for the internet: a separate listener on its own port. It serves the transport
 // provider's feed and records everything sent to it, so privacy claims can be measured at the
-// socket and not merely asserted.
+// socket and not merely asserted. The v2 shape applies every change the card names: fields are
+// renamed, moved into nested objects, change type, and one becomes optional.
 
 import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
@@ -43,10 +44,10 @@ export class Outside {
       return JSON.stringify({
         apiVersion: '2.0',
         data: {
-          items: this.routes.map((r) => ({
+          items: this.routes.map((r, i) => ({
             routeInfo: { routeId: r.id, operator: 'MTC' },
             currentState: { status: r.status.toLowerCase(), crowding: 'high' },
-            lastUpdated: r.atMs,
+            ...(i === this.routes.length - 1 ? {} : { lastUpdated: r.atMs }),
           })),
         },
       });

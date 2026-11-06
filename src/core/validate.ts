@@ -8,8 +8,10 @@ export const MAX_BATCH_BYTES = 2_000_000;
 export const MAX_ROWS = 20_000;
 export const MAX_FIELD_CHARS = 200;
 
-export interface CleanPassenger {
+export interface CleanRider {
   externalId: string;
+  spot: string | null;
+  shareWith: 'ANYONE' | 'WOMEN_ONLY' | null;
   dest: string;
   need: Need;
   party: number;
@@ -79,7 +81,7 @@ export function parseCsv(text: string): ParsedRow[] {
 export function parseJsonTolerant(text: string): ParsedRow[] {
   try {
     const v = JSON.parse(text);
-    const list = Array.isArray(v) ? v : Array.isArray(v?.passengers) ? v.passengers : [v];
+    const list = Array.isArray(v) ? v : Array.isArray(v?.riders) ? v.riders : [v];
     return list.map((raw: unknown, i: number) => ({ line: i + 1, raw }));
   } catch {
     /* fall through to salvage */
@@ -140,7 +142,7 @@ const INJECTION = [
   { re: /\.\.[/\\]/, why: 'looks like a path traversal' },
 ];
 
-const NEEDS: Record<string, Need> = { NONE: 'NONE', ASSIST: 'ASSIST', WHEELCHAIR: 'WHEELCHAIR', UNKNOWN: 'UNKNOWN', '': 'UNKNOWN' };
+const NEEDS: Record<string, Need> = { NONE: 'NONE', ASSIST: 'ASSIST', WHEELCHAIR: 'WHEELCHAIR', '': 'NONE' };
 const KINDS = new Set<DeadlineKind>(['NONE', 'FLIGHT', 'RAIL', 'SHIFT', 'MEDICAL']);
 
 function unsafeText(label: string, v: string): string[] {
@@ -164,7 +166,7 @@ function strictIso(v: string): boolean {
   return month >= 1 && month <= 12 && day >= 1 && day <= new Date(Date.UTC(Number(m[1]), month, 0)).getUTCDate() && hour <= 23;
 }
 
-export function checkRecord(raw: unknown, knownDest: Set<string>): { ok: true; value: CleanPassenger } | { ok: false; reasons: string[] } {
+export function checkRecord(raw: unknown, knownDest: Set<string>, knownSpots?: Set<string>): { ok: true; value: CleanRider } | { ok: false; reasons: string[] } {
   if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return { ok: false, reasons: ['Record is not an object'] };
   const r = raw as Record<string, unknown>;
   const reasons: string[] = [];
@@ -181,12 +183,18 @@ export function checkRecord(raw: unknown, knownDest: Set<string>): { ok: true; v
     return s;
   };
 
-  const id = text('passenger_id');
-  if (!id) reasons.push('passenger_id: missing');
+  const id = text('rider_id');
+  if (!id) reasons.push('rider_id: missing');
 
   const dest = text('destination');
   if (!dest) reasons.push('destination: missing');
   else if (!knownDest.has(dest.toUpperCase())) reasons.push(`destination: "${dest.slice(0, 40)}" is not a known stop`);
+
+  const pickup = text('pickup');
+  if (pickup && knownSpots && !knownSpots.has(pickup.toUpperCase())) reasons.push(`pickup: "${pickup.slice(0, 40)}" is not a known pickup spot`);
+
+  const shareRaw = (text('share_with') ?? '').toUpperCase();
+  if (shareRaw && shareRaw !== 'ANYONE' && shareRaw !== 'WOMEN_ONLY') reasons.push(`share_with: "${shareRaw.slice(0, 40)}" is not recognised`);
 
   const needRaw = text('need');
   const need = NEEDS[(needRaw ?? '').toUpperCase()];
@@ -219,6 +227,8 @@ export function checkRecord(raw: unknown, knownDest: Set<string>): { ok: true; v
     ok: true,
     value: {
       externalId: id!,
+      spot: pickup ? pickup.toUpperCase() : null,
+      shareWith: shareRaw === 'ANYONE' || shareRaw === 'WOMEN_ONLY' ? shareRaw : null,
       dest: dest!.toUpperCase(),
       need,
       party,
@@ -232,12 +242,12 @@ export function checkRecord(raw: unknown, knownDest: Set<string>): { ok: true; v
 export interface BatchReport {
   format: 'json' | 'csv';
   total: number;
-  accepted: CleanPassenger[];
+  accepted: CleanRider[];
   quarantined: QuarantineEntry[];
   duplicates: number;
 }
 
-const EXCERPT_KEYS = ['destination', 'need', 'party', 'party_size', 'deadline_kind', 'deadline_at'];
+const EXCERPT_KEYS = ['pickup', 'destination', 'need', 'party', 'party_size', 'deadline_kind', 'deadline_at', 'share_with'];
 
 /** Removes anything that could identify a person from text that is about to be stored. */
 export function scrub(text: string): string {
@@ -263,12 +273,12 @@ export function safeExcerpt(raw: unknown): string {
   return JSON.stringify(kept);
 }
 
-export function checkBatch(text: string, knownDest: Set<string>): BatchReport {
+export function checkBatch(text: string, knownDest: Set<string>, knownSpots?: Set<string>): BatchReport {
   if (text.length > MAX_BATCH_BYTES) {
     return { format: 'csv', total: 0, accepted: [], duplicates: 0, quarantined: [{ line: 0, reasons: [`Batch is larger than ${MAX_BATCH_BYTES} bytes`], excerpt: '' }] };
   }
   const { rows, format } = parseBatch(text);
-  const accepted: CleanPassenger[] = [];
+  const accepted: CleanRider[] = [];
   const quarantined: QuarantineEntry[] = [];
   const seen = new Set<string>();
   let duplicates = 0;
@@ -278,12 +288,12 @@ export function checkBatch(text: string, knownDest: Set<string>): BatchReport {
       quarantined.push({ line: row.line, reasons: [row.parseError], excerpt: safeExcerpt(row.raw) });
       continue;
     }
-    const res = checkRecord(row.raw, knownDest);
+    const res = checkRecord(row.raw, knownDest, knownSpots);
     if (!res.ok) {
       quarantined.push({ line: row.line, reasons: res.reasons, excerpt: safeExcerpt(row.raw) });
     } else if (seen.has(res.value.externalId)) {
       duplicates++;
-      quarantined.push({ line: row.line, reasons: ['Duplicate of an earlier passenger_id in this batch'], excerpt: safeExcerpt(row.raw) });
+      quarantined.push({ line: row.line, reasons: ['Duplicate of an earlier rider_id in this batch'], excerpt: safeExcerpt(row.raw) });
     } else {
       seen.add(res.value.externalId);
       accepted.push(res.value);

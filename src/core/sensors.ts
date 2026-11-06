@@ -1,7 +1,8 @@
 // C10. A single sensor never triggers an action. GPS is cross-checked against the odometer
 // (a separate signal), and passenger counts against the signed boarding manifest. The key
 // distinction: a frozen GPS repeats exactly while the odometer climbs, which is a sensor fault;
-// a real stop shows normal GPS jitter while the odometer also stands still.
+// a real stop shows normal GPS jitter while the odometer also stands still. Koottu reads this
+// from a ride's shared trip, and a real stop asks the riders if they are safe.
 
 import type { Reading, SensorReport } from './types.ts';
 
@@ -102,7 +103,7 @@ export function assess(
   if (genuine) {
     return {
       vehicleId, verdict: 'GENUINE_STOP', flags, lastGood, autoAction: false,
-      action: 'GPS and odometer agree the vehicle has stopped. Asking the driver to confirm before any re-dispatch.',
+      action: 'GPS and odometer agree the ride has stopped. Asking the riders if they are safe before anything else happens.',
     };
   }
 
@@ -110,7 +111,7 @@ export function assess(
   if (hardFault) {
     return {
       vehicleId, verdict: 'SENSOR_FAULT', flags, lastGood, autoAction: false,
-      action: 'Bad readings ignored. ETA now uses the last good position and is marked uncertain. No vehicle is re-dispatched.',
+      action: 'Bad readings ignored. ETA now uses the last good position and is marked uncertain. No alert is raised on this alone.',
     };
   }
   if (flags.length > 0) {

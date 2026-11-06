@@ -1,14 +1,14 @@
 import { sha256Hex } from './hash.ts';
-import type { DeadlineKind, Passenger, Policy, PolicyRule, Priority, ScorePart } from './types.ts';
+import type { DeadlineKind, Policy, PolicyRule, Priority, Rider, ScorePart } from './types.ts';
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 export const POLICY_V1: Policy = {
   version: 1,
   name: 'Recovery baseline',
-  note: 'People who cannot wait safely go first. Waiting always raises priority, so nobody is left behind forever.',
+  note: 'When cabs are scarce, people who cannot wait safely go first. Waiting always raises priority, so nobody is left behind forever.',
   tiers: [
-    { id: 'T0', label: 'Displaced from a cancelled vehicle', match: { displaced: true } },
+    { id: 'T0', label: 'Lost a confirmed cab', match: { displaced: true } },
     { id: 'T1', label: 'Cannot wait safely', match: { need: ['WHEELCHAIR'] } },
     { id: 'T2', label: 'Verified deadline under 90 minutes', match: { deadlineVerified: true, deadlineWithinMin: 90 } },
     { id: 'T3', label: 'Everyone else', match: {} },
@@ -32,7 +32,7 @@ export const POLICY_V2: Policy = {
   name: 'Verified deadlines only',
   note: 'New instruction from control: unverified deadlines no longer count, and shift deadlines lose priority.',
   tiers: [
-    { id: 'T0', label: 'Displaced from a cancelled vehicle', match: { displaced: true } },
+    { id: 'T0', label: 'Lost a confirmed cab', match: { displaced: true } },
     { id: 'T1', label: 'Cannot wait safely', match: { need: ['WHEELCHAIR', 'ASSIST'] } },
     { id: 'T2', label: 'Verified flight, rail or medical deadline', match: { deadlineVerified: true, deadlineKinds: ['FLIGHT', 'RAIL', 'MEDICAL'], deadlineWithinMin: 120 } },
     { id: 'T3', label: 'Everyone else', match: {} },
@@ -48,7 +48,7 @@ const DEADLINE_LABEL: Record<Exclude<DeadlineKind, 'NONE'>, string> = {
   SHIFT: 'work shift',
 };
 
-export function matches(rule: PolicyRule, p: Passenger, now: number): boolean {
+export function matches(rule: PolicyRule, p: Rider, now: number): boolean {
   if (rule.need && !rule.need.includes(p.need)) return false;
   if (rule.deadlineKinds && !rule.deadlineKinds.includes(p.deadlineKind)) return false;
   if (rule.deadlineVerified !== undefined && p.deadlineVerified !== rule.deadlineVerified) return false;
@@ -60,8 +60,8 @@ export function matches(rule: PolicyRule, p: Passenger, now: number): boolean {
   return true;
 }
 
-/** Every point shown to the passenger is a part of the total, so the breakdown always adds up. */
-export function prioritise(p: Passenger, now: number, policy: Policy, seed: string): Priority {
+/** Every point shown to the rider is a part of the total, so the breakdown always adds up. */
+export function prioritise(p: Rider, now: number, policy: Policy, seed: string): Priority {
   const parts: ScorePart[] = [];
   const w = policy.weights;
 
@@ -93,7 +93,7 @@ export function prioritise(p: Passenger, now: number, policy: Policy, seed: stri
   }
 
   if (p.displaced) {
-    parts.push({ key: 'DISPLACED', label: 'Vehicle cancelled', points: w.displaced, detail: 'Your earlier vehicle was withdrawn' });
+    parts.push({ key: 'DISPLACED', label: 'Cab fell through', points: w.displaced, detail: 'Your earlier cab fell through' });
   }
 
   const tierIndex = policy.tiers.findIndex((t) => matches(t.match, p, now));

@@ -5,7 +5,8 @@
 export interface RouteStatus {
   route: string;
   status: 'RUNNING' | 'DELAYED' | 'SUSPENDED';
-  observedAtIso: string;
+  /** null when the provider left an optional timestamp out. */
+  observedAtIso: string | null;
 }
 
 export type Transform = 'identity' | 'isoDate' | 'epochMsToIso' | 'epochSecToIso' | 'toString' | 'upper';
@@ -14,6 +15,8 @@ export interface FieldMap {
   path: string;
   transform: Transform;
   values?: Record<string, RouteStatus['status']>;
+  /** The provider may leave this out. Only a field marked optional is allowed to be missing. */
+  optional?: boolean;
 }
 
 export interface Mapping {
@@ -89,16 +92,19 @@ export function adapt(raw: unknown, m: Mapping): AdaptResult {
     const route = transform(getPath(item, m.fields.route.path), m.fields.route.transform);
     let status = transform(getPath(item, m.fields.status.path), m.fields.status.transform);
     if (m.fields.status.values && typeof status === 'string') status = m.fields.status.values[status] ?? status;
-    const observedAtIso = transform(getPath(item, m.fields.observedAtIso.path), m.fields.observedAtIso.transform);
+    const rawTime = getPath(item, m.fields.observedAtIso.path);
+    const timeMissing = rawTime === undefined || rawTime === null;
+    const observedAtIso = timeMissing && m.fields.observedAtIso.optional ? null : transform(rawTime, m.fields.observedAtIso.transform);
     const problems: string[] = [];
     if (typeof route !== 'string' || !route) problems.push('route is missing');
     if (typeof status !== 'string' || !STATUSES.has(status)) problems.push(`status "${String(status)}" is not recognised`);
-    if (typeof observedAtIso !== 'string') problems.push('timestamp is missing or invalid');
+    if (observedAtIso !== null && typeof observedAtIso !== 'string') problems.push('timestamp is missing or invalid');
     if (problems.length) errors.push(`Record ${i}: ${problems.join(', ')}`);
-    else records.push({ route: route as string, status: status as RouteStatus['status'], observedAtIso: observedAtIso as string });
+    else records.push({ route: route as string, status: status as RouteStatus['status'], observedAtIso: observedAtIso as string | null });
   });
 
-  return { ok: errors.length === 0 && records.length > 0, records, errors, unknownFields: [...unknown].sort() };
+  // One bad record is rejected on its own. The feed only fails if nothing at all could be read.
+  return { ok: records.length > 0, records, errors, unknownFields: [...unknown].sort() };
 }
 
 function flatten(value: unknown, prefix = '', out = new Map<string, unknown>()): Map<string, unknown> {
@@ -121,7 +127,7 @@ function findRecordList(raw: unknown, prefix = ''): { path: string; list: unknow
   return null;
 }
 
-const tokens = (s: string) => s.toLowerCase().split(/[._\-\s]+|(?<=[a-z])(?=[A-Z])/).filter(Boolean);
+const tokens = (s: string) => s.split(/[._\-\s]+|(?<=[a-z])(?=[A-Z])/).filter(Boolean).map((t) => t.toLowerCase());
 
 function nameScore(path: string, words: string[]): number {
   const t = tokens(path);
@@ -143,7 +149,7 @@ export interface MappingProposal {
 export function proposeMapping(raw: unknown, version: string): MappingProposal | null {
   const found = findRecordList(raw);
   if (!found) return null;
-  const sample = found.list.slice(0, 20);
+  const sample = found.list.slice(0, 50);
   const paths = new Map<string, unknown[]>();
   for (const item of sample) {
     for (const [p, v] of flatten(item)) {
@@ -201,7 +207,7 @@ export function proposeMapping(raw: unknown, version: string): MappingProposal |
       fields: {
         route: { path: routeBest.path, transform: routeT },
         status: { path: statusBest.path, transform: 'upper' },
-        observedAtIso: { path: timeBest.path, transform: timeT },
+        observedAtIso: { path: timeBest.path, transform: timeT, optional: (paths.get(timeBest.path)?.filter((v) => v !== null).length ?? 0) < sample.length },
       },
     },
     confidence: Math.min(...notes.map((n) => n.confidence)),

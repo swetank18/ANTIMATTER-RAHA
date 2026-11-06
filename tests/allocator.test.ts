@@ -3,7 +3,7 @@ import { allocate, type OptionIn, type PoolIn, type UnitIn } from '../src/core/a
 import { certify, relaxedBound } from '../src/core/certify.ts';
 import { rng } from '../src/core/hash.ts';
 
-const solo = (pool: string): OptionIn => ({ run: pool, demand: { [pool]: 1 } });
+const solo = (pool: string): OptionIn => ({ slot: pool, demand: { [pool]: 1 } });
 
 function instance(r: () => number) {
   const int = (n: number) => Math.floor(r() * n);
@@ -25,7 +25,7 @@ function feasibleSets(pools: PoolIn[], units: UnitIn[]) {
     const go = (i: number): boolean => {
       if (i === ids.length) return true;
       for (const o of units[ids[i]].options) {
-        const q = o.run;
+        const q = o.slot;
         if (left[q] > 0) {
           left[q]--;
           if (go(i + 1)) {
@@ -77,7 +77,7 @@ describe('priority allocator against brute force', () => {
         const size = r() < 0.75 ? 1 : 2 + int(3);
         const ids = pools.map((p) => p.id).filter(() => r() < 0.5);
         if (ids.length === 0) ids.push('q0');
-        return { id: `p${i}`, rank: i, options: ids.map((q) => ({ run: q, demand: { [q]: size } })) };
+        return { id: `p${i}`, rank: i, options: ids.map((q) => ({ slot: q, demand: { [q]: size } })) };
       });
       const res = allocate(pools, units);
       const cert = certify({ pools, units, placed: Object.fromEntries(res.placed), refused: res.refused });
@@ -95,8 +95,8 @@ describe('priority allocator against brute force', () => {
     ];
     const res = allocate(pools, units);
     expect(res.refused).toEqual([]);
-    expect(res.placed.get('onlyA')!.run).toBe('a');
-    expect(res.placed.get('flexible')!.run).toBe('b');
+    expect(res.placed.get('onlyA')!.slot).toBe('a');
+    expect(res.placed.get('flexible')!.slot).toBe('b');
   });
 
   it('keeps a locked commitment in place', () => {
@@ -106,7 +106,7 @@ describe('priority allocator against brute force', () => {
       { id: 'hasPass', rank: 9, options: [solo('a')], locked: solo('a') },
     ];
     const res = allocate(pools, units);
-    expect(res.placed.get('hasPass')!.run).toBe('a');
+    expect(res.placed.get('hasPass')!.slot).toBe('a');
     expect(res.refused[0].id).toBe('urgent');
   });
 
@@ -146,8 +146,8 @@ describe('the independent checker catches a dishonest solver', () => {
 
   it('computes the upper bound with its own max-flow', () => {
     expect(relaxedBound([{ id: 'a', cap: 3 }, { id: 'b', cap: 1 }], [
-      { id: 'x', rank: 0, options: [{ run: 'a', demand: { a: 2 } }] },
-      { id: 'y', rank: 1, options: [{ run: 'a', demand: { a: 4 } }, { run: 'b', demand: { b: 4 } }] },
+      { id: 'x', rank: 0, options: [{ slot: 'a', demand: { a: 2 } }] },
+      { id: 'y', rank: 1, options: [{ slot: 'a', demand: { a: 4 } }, { slot: 'b', demand: { b: 4 } }] },
     ])).toBe(4);
   });
 });

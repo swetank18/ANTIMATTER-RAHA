@@ -10,9 +10,9 @@ const attempt = db.transaction((key) => {
   const seen = db.prepare('SELECT response FROM idempotency WHERE key = ?').get(key);
   if (seen) return { replay: true, outcome: seen.response };
   const r = db.prepare(
-    `UPDATE runs SET seats_taken = seats_taken + 1
-     WHERE id = ? AND state = 'PLANNED' AND seats_taken + escrow_seats + 1 <= seats_total`,
-  ).run(w.runId);
+    `UPDATE pods SET seats_taken = seats_taken + 1
+     WHERE id = ? AND state = 'LOCKED' AND seats_taken + escrow_seats + 1 <= seats_total`,
+  ).run(w.podId);
   const outcome = r.changes === 1 ? 'WON' : 'TAKEN';
   db.prepare('INSERT INTO idempotency(key, fingerprint, status, response) VALUES (?, ?, 200, ?)').run(key, 'hammer', outcome);
   return { replay: false, outcome };

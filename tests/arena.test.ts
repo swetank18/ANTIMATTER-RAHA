@@ -19,8 +19,8 @@ const post = async (path: string, body: unknown = {}) => {
 const failed = (c: any) => c.checks.filter((x: any) => !x.ok).map((x: any) => `${x.id}: ${x.observed}`);
 
 beforeAll(async () => {
-  dir = mkdtempSync(join(tmpdir(), 'omnistrand-'));
-  hub = new Hub({ file: join(dir, 'hub.db'), passengers: 1420 });
+  dir = mkdtempSync(join(tmpdir(), 'koottu-'));
+  hub = new Hub({ file: join(dir, 'hub.db'), riders: 1200 });
   outside = new Outside();
   const url = await outside.start();
   hub.egress.allowlist = { 'transit-feed': url, analytics: url };
@@ -54,9 +54,33 @@ describe('each card on a fresh world', () => {
     const { json } = await post('/api/arena/C06/run');
     if (UI_DEPENDENT.length) {
       expect(json.status).toBe('FAIL');
-      expect(json.checks.find((c: any) => c.id === 'browser').observed).toMatch(/UI/);
+      expect(json.checks.find((c: any) => c.id === 'browser').observed).toMatch(/browser test/);
     }
   });
+});
+
+describe('the two cards we were dealt', () => {
+  it('C01 covers every point on the card', async () => {
+    const { json } = await post('/api/arena/C01/run');
+    const ids = json.checks.map((c: any) => c.id);
+    for (const id of ['third-party', 'no-hosted-ai', 'journey-check', 'journey-match', 'offline-verify', 'no-loss', 'no-duplicates', 'queued-once']) expect(ids).toContain(id);
+  }, 60000);
+
+  it('C03 covers rename, nesting, type change and optional', async () => {
+    const { json } = await post('/api/arena/C03/run');
+    const ids = json.checks.map((c: any) => c.id);
+    for (const id of ['v1-fails', 'nested', 'type-change', 'optional', 'unknown-fields', 'garbage']) expect(ids).toContain(id);
+    expect(failed(json)).toEqual([]);
+  }, 60000);
+
+  it('C03 adapts to an organiser response it has never seen', async () => {
+    const response = JSON.stringify({ result: { lines: [
+      { lineCode: 'GDY-ALD', operationalStatus: 'RUNNING', stamp: 1793934000 },
+      { lineCode: 'TNG-EGM', operationalStatus: 'DELAYED', stamp: 1793934060 },
+    ] } });
+    const { json } = await post('/api/arena/C03/run', { params: { response } });
+    expect(failed(json)).toEqual([]);
+  }, 60000);
 });
 
 describe('cards can really fail', () => {
@@ -67,13 +91,13 @@ describe('cards can really fail', () => {
 
   it('C10 flags faults in organiser data', async () => {
     const now = hub.now;
-    const readings = [0, 1, 2, 3].map((i) => ({ vehicleId: 'V07', observedAt: now - 4 + i, receivedAt: now - 4 + i, lat: i === 2 ? 20 : 13, lng: 80, odoKm: 5 + i, occupancy: null }));
+    const readings = [0, 1, 2, 3].map((i) => ({ vehicleId: 'RIDE-9', observedAt: now - 4 + i, receivedAt: now - 4 + i, lat: i === 2 ? 20 : 13, lng: 80, odoKm: 5 + i, occupancy: null }));
     const { json } = await post('/api/arena/C10/run', { params: { readings } });
     expect(json.status).toBe('PASS');
   });
 
   it('C04 takes organiser data', async () => {
-    const data = 'passenger_id,destination,need\nORG-1,MAA,NONE\nORG-2,NOWHERE,NONE\n';
+    const data = 'rider_id,destination,need\nORG-1,MAA,NONE\nORG-2,NOWHERE,NONE\n';
     const { json } = await post('/api/arena/C04/run', { params: { data } });
     expect(json.summary).toMatch(/1 accepted, 1 quarantined/);
   });
@@ -107,35 +131,35 @@ describe('all twelve stacked on one world', () => {
 describe('HTTP behaviour', () => {
   it('drops field connections during an outage but keeps operations up', async () => {
     await post('/api/arena/offline', { on: true });
-    await expect(fetch(`${base}/api/field/passenger/x`)).rejects.toThrow();
+    await expect(fetch(`${base}/api/field/rider/x`)).rejects.toThrow();
     expect((await fetch(`${base}/api/state`)).ok).toBe(true);
     await post('/api/arena/offline', { on: false });
-    expect((await fetch(`${base}/api/field/passenger/x`)).status).toBe(404);
+    expect((await fetch(`${base}/api/field/rider/x`)).status).toBe(404);
   });
 
   it('never echoes the request back in an error', async () => {
-    const r = await fetch(`${base}/api/field/checkin`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"name":"Secret Person",' });
+    const r = await fetch(`${base}/api/field/request`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"name":"Secret Person",' });
     const text = await r.text();
     expect(r.status).toBe(400);
     expect(text).not.toContain('Secret');
   });
 
   it('accepts a broken JSON batch at the boundary', async () => {
-    const r = await fetch(`${base}/api/ingest/passengers`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '[{"passenger_id":"H1","destination":"MAA","need":"NONE"},{"oops' });
+    const r = await fetch(`${base}/api/ingest/riders`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '[{"rider_id":"H1","destination":"MAA","need":"NONE"},{"oops' });
     const j = await r.json();
     expect(j.accepted).toBe(1);
     expect(j.quarantined.length).toBe(1);
   });
 
   it('accepts CSV as plain text', async () => {
-    const r = await fetch(`${base}/api/ingest/passengers`, { method: 'POST', headers: { 'content-type': 'text/csv' }, body: 'passenger_id,destination,need\nH2,TBM,NONE\n' });
+    const r = await fetch(`${base}/api/ingest/riders`, { method: 'POST', headers: { 'content-type': 'text/csv' }, body: 'rider_id,destination,need\nH2,TBM,NONE\n' });
     expect((await r.json()).accepted).toBe(1);
   });
 
-  it('runs a passenger journey end to end', async () => {
-    const { json: made } = await post('/api/field/checkin', { opId: 'journey-1', dest: 'MAA', party: 1, need: 'NONE' });
-    await post('/api/allocate');
-    const v = await (await fetch(`${base}/api/field/passenger/${made.pid}`)).json();
+  it('runs a rider journey end to end', async () => {
+    const { json: made } = await post('/api/field/request', { opId: 'journey-1', spot: 'GDY-E', dest: 'MAA', party: 1, shareWith: 'ANYONE' });
+    await post('/api/match');
+    const v = await (await fetch(`${base}/api/field/rider/${made.pid}`)).json();
     expect(v.decision).toBeTruthy();
     expect(v.explanation.headline.length).toBeGreaterThan(0);
   });
@@ -144,7 +168,7 @@ describe('HTTP behaviour', () => {
     const ctl = new AbortController();
     const res = await fetch(`${base}/api/stream`, { signal: ctl.signal });
     const reader = res.body!.getReader();
-    await post('/api/allocate');
+    await post('/api/match');
     let text = '';
     while (!text.includes('changed')) text += new TextDecoder().decode((await reader.read()).value);
     ctl.abort();
@@ -155,16 +179,14 @@ describe('HTTP behaviour', () => {
 describe('restart', () => {
   it('resumes the ledger from disk with the chain intact', async () => {
     const file = join(dir, 'restart.db');
-    const a = new Hub({ file, passengers: 100 });
-    const key = a.keys;
+    const a = new Hub({ file, riders: 100 });
     a.advance(5);
     const seq = a.state().ledgerHead.seq;
     a.close();
     const b = new Hub({ file });
     expect(b.state().ledgerHead.seq).toBe(seq);
-    b.allocateEpoch('after restart');
+    b.matchEpoch('after restart');
     expect(b.ledger(0, 100000).length).toBe(seq + 1);
-    void key;
     b.close();
   });
 });

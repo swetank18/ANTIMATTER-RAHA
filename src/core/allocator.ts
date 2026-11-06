@@ -1,17 +1,16 @@
-// Priority allocator.
+// Priority allocator: gives scarce cabs to ride groups.
 //
-// People are seated strictly in priority order. When nobody's preferred seat is free,
-// already-seated flexible passengers are shifted along an augmenting path, so a seat is
-// only ever refused when no rearrangement could provide it.
+// Groups are served strictly in priority order. When no preferred slot is free, already-placed
+// flexible groups are shifted along an augmenting path, so a cab is only ever refused when no
+// rearrangement could provide one.
 //
-// For single travellers the sets of people who can be seated together form a transversal
-// matroid, so this greedy order is provably optimal: it seats the maximum number of people
-// and the i-th highest-priority person seated is at least as senior as the i-th in any other
-// feasible outcome. Each refusal comes with a Hall witness: a closed set of full pools.
+// When each unit needs one cab, the sets that can be served together form a transversal matroid,
+// so this greedy order is provably optimal: it serves the maximum number, and the i-th
+// highest-priority group served is at least as senior as the i-th in any other feasible outcome.
+// Each refusal comes with a Hall witness: a closed set of full pools.
 //
-// Groups that must travel together break the matroid property (the problem becomes a
-// generalised assignment). Capacity is still never exceeded, but optimality is not claimed;
-// certify.ts reports the gap against the relaxed upper bound instead.
+// Units demanding several pools at once break the matroid property. Capacity is still never
+// exceeded, but optimality is not claimed; certify.ts reports the gap against an upper bound.
 
 import type { Witness } from './types.ts';
 
@@ -21,7 +20,7 @@ export interface PoolIn {
 }
 
 export interface OptionIn {
-  run: string;
+  slot: string;
   demand: Record<string, number>;
 }
 
@@ -202,7 +201,7 @@ export function allocate(pools: PoolIn[], input: UnitIn[]): AllocationResult {
     const now = placed.get(u.id);
     if (!now || !movable(u)) continue;
     for (const o of u.options) {
-      if (o === now || o.run === now.run) break;
+      if (o === now || o.slot === now.slot) break;
       if (fits(o)) {
         unseat(u);
         seat(u, o);
